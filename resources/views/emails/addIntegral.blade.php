@@ -1,0 +1,1 @@
+{{$integral->customer->name}}你好，当前你的积分变更为：{{$integral->integral}}。

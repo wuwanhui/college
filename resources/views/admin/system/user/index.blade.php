@@ -1,0 +1,245 @@
+@extends('layouts.admin')
+@section('content')
+    <section class="content-header">
+        <h1>
+            系统用户
+            <small>列表</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 管理中心</a></li>
+            <li class="active">系统用户</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success" v-on:click="create()">新增</button>
+                    </div>
+                    <div class="col-md-10 text-right">
+                        <form method="get" class="form-inline">
+                            <div class="input-group">
+                                <select id="type" name="type" class="form-control" style="width: auto;"
+                                        v-model="params.state">
+                                    <option value="" selected>用户状态</option>
+                                    <option v-bind:value="0">正常</option>
+                                    <option v-bind:value="1">禁用</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="关键字"
+                                       name="key" v-model="params.key">
+                                <span class="input-group-btn">
+								<button class="btn btn-default" type="button" v-on:click="search()">搜索</button>
+                                     <button type="button" class="btn btn-default" v-on:click="params={};init();">
+                                    重置
+                                </button>
+							</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary">
+            <form method="Post" class="form-inline">
+                <table class="table table-bordered table-hover  table-condensed">
+                    <thead>
+                    <tr style="text-align: center" class="text-center">
+                        <th style="width: 20px"><input type="checkbox"
+                                                       name="CheckAll" value="Checkid"/></th>
+                        <th style="width: 60px;"><a href="">编号</a>
+                        </th>
+                        <th>姓名
+                        </th>
+                        <th><a href="">邮箱</a></th>
+                        <th><a href="">角色</a></th>
+                        <th style="width: 100px;">状态</th>
+                        <th style="width: 120px;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in userList.data">
+                        <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
+                        <td style="text-align: center" v-text="item.id"></td>
+                        <td v-text="item.name"></td>
+
+                        <td v-text="item.email">
+                        </td>
+                        <td>
+                            <span v-text="roleItem.name+','" v-for="roleItem in item.roles"></span>
+                        </td>
+                        <td style="text-align: center" v-text="item.state_cn"></td>
+
+                        <td style="text-align: center"><a
+                                    v-on:click="edit(item)">编辑</a>
+                            |
+                            <a v-on:click="delete(item)">删除</a>
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </form>
+            <div class="box-footer no-padding">
+                <div class="mailbox-controls">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"
+                                                                                v-on:click="delete(ids)"></i>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
+                                                                                v-on:click="btnBank()"></i>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                    <div class="pull-right">
+                        <page v-bind:lists="userList"></page>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
+@section('script')
+    <script type="application/javascript">
+        //sidebar.menu = {type: 'system', item: 'user'};
+        var vue = new Vue({
+            el: '.content',
+            data: {
+                ids: [],
+                params: {page: '', state: ''},
+                userList: [],
+                roleList: [],
+                user: {},
+                role_user: {id: '', roles: {'id': []}},
+            },
+            watch: {
+                'params.state': function () {
+                    this.init();
+                },
+//                'params.page': function () {
+//                    this.init();
+//                }
+            },
+            created: function () {
+                this.init();
+            },
+
+            methods: {
+                init: function () {
+                    var _self = this;
+                    $.ajax({
+                        type: 'GET',
+                        url: "{{url('/admin/system/user?json')}}",
+                        data: _self.params,
+                        success: function (_obj) {
+                            _self.userList = _obj.data;
+
+                        }
+                    });
+
+                },
+                search: function () {
+                    this.init();
+                },
+                create: function () {
+                    openUrl('{{url('/admin/system/user/create')}}', '新增用户', 800, 600);
+                },
+                edit: function (item) {
+                    this.user = item;
+                    openUrl('{{url('/admin/system/user/edit')}}?id=' + item.id, '编辑"' + item.name + '"用户', 800, 600);
+                },
+                delete: function (item) {
+                    layer.confirm('您确认要删除“' + item.name + '”吗？', {
+                        btn: ['确认', '取消']
+                    }, function () {
+                        layer.msg('的确很重要', {icon: 1});
+                    }, function () {
+                        layer.msg('也可以这样', {
+                            time: 20000, //20s后自动关闭
+                            btn: ['明白了', '知道了']
+                        });
+                    });
+                },
+
+
+                initRole: function () {
+                    var _self = this;
+                    //加载数据
+                    $.ajax({
+                        type: 'GET',
+                        url: "{{url('/admin/system/role?json')}}",
+                        success: function (_obj) {
+                            if (_obj.code == 0) {
+                                _self.roleList = _obj.data;
+                            } else {
+                                alert(_obj.msg);
+
+                            }
+
+                        }
+                    });
+                },
+                filterRole: function () {
+                    var _self = this;
+                    var arr = _self.roleList.data;
+
+//                    for (var i = 0; i < _self.roleList.data.length; i++) {
+//                        var item = _self.roleList.data[i];
+//                        for (var j = 0; i < _self.roleList.data.length; i++) {
+//                            var subItem = _self.user.roles[j];
+//                            //alert(JSON.stringify(subItem.id+":"+item.id));
+//                            if (subItem == item) {
+//                                arr.splice(i, 1);
+//                            }
+//                        }
+//                    }
+
+                    return arr;
+
+                },
+                addRole: function () {
+                    var _self = this;
+                    _self.role_user.id = _self.user.id;
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{url('/admin/system/user/addrole')}}",
+                        data: _self.role_user,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (_obj) {
+                            if (_obj.code == 0) {
+                                _self.init();
+                            }
+
+                            alert(_obj.msg);
+                        }
+                    });
+                },
+                removeRole: function () {
+                    var _self = this;
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{url('/admin/system/user/role')}}",
+                        data: _self.role_user,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (_obj) {
+                            if (_obj.code == 0) {
+                                _self.init();
+                            }
+
+                            alert(_obj.msg);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+@endsection
