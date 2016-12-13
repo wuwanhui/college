@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Manage\Crm;
+namespace App\Http\Controllers\Manage;
 
 use App\Http\Controllers\Common\RespJson;
 use App\Http\Controllers\Manage\BaseController;

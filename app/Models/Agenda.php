@@ -12,6 +12,7 @@ use stdClass;
 class Agenda extends Model
 {
     use SoftDeletes;
+    protected $table = "agenda";
     protected $guarded = ['_token'];
 
     /**

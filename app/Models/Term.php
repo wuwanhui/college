@@ -12,6 +12,7 @@ use stdClass;
 class Term extends Model
 {
     use SoftDeletes;
+    protected $table = "term";
     protected $guarded = ['_token'];
 
     /**
