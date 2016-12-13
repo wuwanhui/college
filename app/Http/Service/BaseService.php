@@ -96,9 +96,16 @@ class BaseService
     {
         $config = Cache::get('config', function () {
             $value = Config::first();
-            Cache::put(['config' => $value], 100);
-            return $value;
+            if (isset($value)) {
+                Cache::put(['config' => $value], 100);
+                return $value;
+            }
+
         });
+
+        if (!isset($config)) {
+            return '';
+        }
 
         if ($key) {
             return $config->$key;
@@ -199,7 +206,7 @@ class BaseService
                 array_push($permissions, $item->perms);
             }
         }
-        return array_unique($permissions) ;
+        return array_unique($permissions);
     }
 
 }

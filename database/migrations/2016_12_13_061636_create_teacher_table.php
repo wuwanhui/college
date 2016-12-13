@@ -7,13 +7,28 @@ use Illuminate\Database\Migrations\Migration;
 class CreateTeacherTable extends Migration
 {
     /**
-     * Run the migrations.
+     * 教师管理
      *
      * @return void
      */
     public function up()
     {
-        //
+        Schema::create('teachers', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');//姓名
+            $table->string('number')->unique();//教师编号
+            $table->string('email')->unique();
+            $table->string('password')->default('000000');
+            $table->integer('teacher_id')->default(0);//任课教师
+            $table->integer('panent_id')->default(0);//上级
+            $table->string('content')->nullable();//课程内容
+            $table->integer('user_id')->default(0);//创建者
+            $table->integer('state')->default(0);//状态
+            $table->integer('sort')->default(0);//排序
+            $table->text('remark')->nullable();//备注
+            $table->softDeletes();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +38,6 @@ class CreateTeacherTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('teachers');
     }
 }
