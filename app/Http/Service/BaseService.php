@@ -56,13 +56,13 @@ class BaseService
     }
 
     /**
-     *获取用户信息
+     *获取学生信息
      * @param $key
      * @return mixed
      */
-    public function member($key = null)
+    public function student($key = null)
     {
-        $this->user = Auth::guard('member')->user();
+        $this->user = Auth::guard('student')->user();
         if ($key) {
             return $this->user->$key;
         } else {

@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use stdClass;
 
 /**
- * 客户档案
+ * 选课记录
  * @package App\Models
  */
 class Syllabus extends Model
 {
     use SoftDeletes;
+    protected $table = "syllabus";
     protected $guarded = ['_token'];
 
     /**

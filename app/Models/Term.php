@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use stdClass;
 
 /**
- * 客户档案
+ * 学期信息
  * @package App\Models
  */
 class Term extends Model
 {
+    protected $table = "terms";
     use SoftDeletes;
-    protected $table = "term";
     protected $guarded = ['_token'];
 
     /**
@@ -41,10 +41,24 @@ class Term extends Model
     }
 
 
+    /**
+     *关联课程
+     */
+    public function agendas()
+    {
+        return $this->belongsToMany('App\Models\Agenda','term_agenda');
+    }
+
+    /**
+     *关联学生
+     */
+    public function students()
+    {
+        return $this->belongsToMany('App\Models\Student','term_student');
+    }
 
 
     protected $appends = ['state_cn'];
-
 
 
     //状态

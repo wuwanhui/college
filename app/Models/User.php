@@ -9,6 +9,8 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    protected $table = "users";
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,4 +28,30 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    /**
+     * 获取应用到请求的验证规则
+     *
+     * @return array
+     */
+    public function Rules()
+    {
+        return [
+            'name' => 'required|max:255|min:2',
+        ];
+    }
+
+
+    /**
+     * 获取应用到请求的验证规则
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'name.required' => '名称为必填项',
+        ];
+    }
 }

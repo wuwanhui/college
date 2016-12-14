@@ -13,7 +13,7 @@ class CreateTermAgendaTable extends Migration
      */
     public function up()
     {
-        Schema::create('term_agendas', function (Blueprint $table) {
+        Schema::create('term_agenda', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('agenda_id');//课程内容
             $table->integer('term_id');//学期表
@@ -33,6 +33,6 @@ class CreateTermAgendaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('term_agendas');
+        Schema::dropIfExists('term_agenda');
     }
 }

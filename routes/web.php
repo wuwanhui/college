@@ -34,99 +34,10 @@ Route::group(['prefix' => 'student', 'namespace' => 'Student'], function () {
 
     Route::get('/', 'HomeController@index');
 
-    Route::group(['prefix' => 'system', 'namespace' => 'System', 'middleware' => 'auth.admin'], function () {
+    Route::group(['prefix' => 'syllabus', 'middleware' => 'auth.student'], function () {
 
-        /**
-         * 系统参数
-         */
-        Route::group(['prefix' => 'config', 'middleware' => 'auth.admin'], function () {
-            Route::any('/', 'ConfigController@index');
-        });
-        /**
-         * 全局参数
-         */
-        Route::group(['prefix' => 'maps', 'middleware' => 'auth.admin'], function () {
-            Route::any('/', 'MapsController@index');
-            Route::any('/create', 'MapsController@create');
-            Route::any('/edit', 'MapsController@edit');
-            Route::post('/delete', 'MapsController@delete');
-        });
-
-        /**
-         * 区域管理
-         */
-        Route::group(['prefix' => 'area', 'middleware' => 'auth.admin'], function () {
-            Route::get('/', 'AreaController@index');
-            Route::any('/create', 'AreaController@create');
-            Route::any('/edit', 'AreaController@edit');
-            Route::post('/delete', 'AreaController@delete');
-
-        });
-        /**
-         * 企业管理
-         */
-        Route::group(['prefix' => 'enterprise', 'middleware' => 'auth.admin'], function () {
-            Route::any('/', 'EnterpriseController@index');
-        });
-
-
-        /**
-         * 部门管理
-         */
-        Route::group(['prefix' => 'dept', 'middleware' => 'auth.admin'], function () {
-            Route::get('/', 'DeptController@index');
-            Route::any('/create', 'DeptController@create');
-            Route::any('/edit', 'DeptController@edit');
-            Route::post('/delete', 'DeptController@delete');
-
-        });
-        /**
-         * 用户用户
-         */
-        Route::group(['prefix' => 'user', 'middleware' => 'auth.admin'], function () {
-            Route::any('/', 'UserController@index');
-            Route::any('/create', 'UserController@create');
-            Route::any('/edit', 'UserController@edit');
-            Route::get('/delete', 'UserController@delete');
-            Route::any('/addrole', 'UserController@addRole');
-
-        });
-        /**
-         * 权限定义
-         */
-        Route::group(['prefix' => 'permission', 'middleware' => 'auth.admin'], function () {
-            Route::get('/', 'PermissionController@index');
-            Route::any('/create', 'PermissionController@create');
-            Route::any('/edit/{id}', 'PermissionController@edit');
-            Route::get('/delete', 'PermissionController@delete');
-
-        });
-        /**
-         * 角色
-         */
-        Route::group(['prefix' => 'role', 'middleware' => 'auth.admin'], function () {
-            Route::get('/', 'RoleController@index');
-            Route::get('/create', 'RoleController@getCreate');
-            Route::post('/create', 'RoleController@postCreate');
-            Route::get('/edit', 'RoleController@getEdit');
-            Route::post('/edit', 'RoleController@postEdit');
-            Route::post('/delete', 'RoleController@delete');
-
-        });
-
-
-        /**
-         * 基础数据
-         */
-        Route::group(['prefix' => 'basedata', 'middleware' => 'auth.admin'], function () {
-            Route::get('/', 'BaseDataController@index');
-            Route::post('/create', 'BaseDataController@create');
-            Route::any('/edit/{id}', 'BaseDataController@edit');
-            Route::get('/delete', 'BaseDataController@delete');
-
-            Route::any('/type', 'BaseDataController@type');
-
-        });
+        Route::post('/add', 'HomeController@addSyllabus');
+        Route::post('/delete', 'HomeController@deleteSyllabus');
 
     });
 
@@ -283,6 +194,12 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::post('/edit', 'TermController@postEdit');
         Route::post('/delete', 'TermController@delete');
         Route::get('/api/list', 'TermController@getList');
+
+        Route::get('/bind/agenda', 'TermController@getBindAgenda');
+        Route::post('/bind/agenda', 'TermController@postBindAgenda');
+
+        Route::get('/bind/student', 'TermController@getBindStudent');
+        Route::post('/bind/student', 'TermController@postBindStudent');
 
     });
     /**

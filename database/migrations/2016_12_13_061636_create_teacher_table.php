@@ -19,9 +19,8 @@ class CreateTeacherTable extends Migration
             $table->string('number')->unique();//教师编号
             $table->string('email')->unique();
             $table->string('password')->default('000000');
-            $table->integer('teacher_id')->default(0);//任课教师
-            $table->integer('panent_id')->default(0);//上级
-            $table->string('content')->nullable();//课程内容
+            $table->string('post')->nullable();//职称
+            $table->string('abstract')->nullable();//简介
             $table->integer('user_id')->default(0);//创建者
             $table->integer('state')->default(0);//状态
             $table->integer('sort')->default(0);//排序

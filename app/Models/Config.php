@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Config extends Model
 {
     protected $table = "config";
-    protected $fillable = ['name', 'tel','state'];
+    protected $fillable = ['name', 'tel','state','sort','remark'];
     protected $guarded = ['_token'];
 
     /**

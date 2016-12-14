@@ -32,7 +32,7 @@
                                            v-validate:name="{ required: true, minlength: 2 }">
                                 </div>
                             </div>
-                           
+
                             <div class="form-group ">
                                 <label for="tel" class="col-md-2 control-label">联系电话：</label>
 
@@ -110,7 +110,7 @@
             },
             watch: {},
             created: function () {
-               //this.init();
+                //this.init();
             },
             methods: {
                 init: function () {
@@ -118,8 +118,8 @@
                     //加载数据
                     this.$http.get('{{url('/manage/config?json')}}').then(function (response) {
                         if (response.data.code == 0) {
-                            var _data=response.data.data;
-                            if(_data){
+                            var _data = response.data.data;
+                            if (_data) {
                                 _self.config = _data;
                             }
                             return
@@ -138,10 +138,10 @@
                     this.$http.post('{{url('/manage/config')}}', _self.config).then(function (response) {
                         if (response.data.code == 0) {
                             _self.config = response.data.data;
-                            parent.layer.msg('保存成功', {offset: '2px', time: 2000});
+                            msg('保存成功');
                             return;
                         }
-                        layer.alert(JSON.stringify(response.data.data));
+                        layer.alert(JSON.stringify(response));
 
                     });
 

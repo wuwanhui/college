@@ -7,19 +7,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Manage\BaseController;
 use App\Http\Facades\Base;
 use App\Models\Role;
-use App\Models\User;
+use App\Models\Student;
 use Exception;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends BaseController
+class StudentController extends BaseController
 {
     public function __construct()
     {
         parent::__construct();
-        view()->share(['_model' => 'manage/user']);
+        view()->share(['_model' => 'manage/student']);
     }
 
     /**
@@ -31,7 +31,7 @@ class UserController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $lists = User::where(function ($query) use ($request) {
+            $list = Student::where(function ($query) use ($request) {
 
                 if ($request->state) {
                     $query->where('state', $request->state);
@@ -41,10 +41,10 @@ class UserController extends BaseController
                 }
             })->orderBy('id', 'desc')->paginate($this->pageSize);
             if (isset($request->json)) {
-                $respJson->setData($lists);
+                $respJson->setData($list);
                 return response()->json($respJson);
             }
-            return view('manage.user.index', compact('lists'));
+            return view('manage.student.index', compact('list'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
@@ -53,75 +53,55 @@ class UserController extends BaseController
     }
 
 
-    public function create(Request $request)
+    public function getCreate(Request $request)
     {
         try {
-            $user = new User();
-            return view('manage.user.create', compact('user'));
+            $student = new Student();
+            return view('manage.student.create', compact('student'));
         } catch (Exception $ex) {
             return Redirect::back()->withInput()->withErrors('异常：' . $ex->getMessage() . ",行号：" . $ex->getLine());
         }
     }
 
-    public function edit(Request $request)
-    {
-        try {
-            $id = $request->id;
-            $user = User::find($id);
-            if (!$user) {
-                return Redirect::back()->withErrors('数据加载失败！');
-            }
-            if ($request->isMethod('POST')) {
-                $respJson = new RespJson();
-                $inputs = $request->all();
-                $user->fill($inputs);
-                $user->save();
-                if ($user) {
-                    $respJson->setData($user);
-                    return response()->json($respJson);
-                }
-                $respJson->setMsg("修改失败");
-                return response()->json($respJson);
-            }
-
-            return view('manage.user.edit', compact('user'));
-        } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
-        }
-    }
 
     public function postCreate(Request $request)
     {
+        $respJson = new RespJson();
         try {
-            $user = new User();
+            $student = new Student();
             $input = $request->all();
 
-            $validator = Validator::make($input, $user->Rules(), $user->messages());
+            $validator = Validator::make($input, $student->Rules(), $student->messages());
             if ($validator->fails()) {
-                return redirect('/manage/user/create')
-                    ->withInput()
-                    ->withErrors($validator);
+                $respJson->setCode(2);
+                $respJson->setMsg("效验失败");
+                $respJson->setData($validator);
+                return response()->json($respJson);
             }
-            $user->fill($input);
-            $user->liable_id = Base::user("id");
-            $user->save();
-            if ($user) {
-                return redirect('/manage/user')->withSuccess('保存成功！');
+            $student->fill($input);
+            $student->password = bcrypt($input->password);
+            if ($student->save()) {
+                $respJson->setData($student);
+                return response()->json($respJson);
             }
-            return Redirect::back()->withErrors('保存失败！');
+            $respJson->setCode(1);
+            $respJson->setMsg("新增失败");
+            return response()->json($respJson);
         } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
+            $respJson->setCode(-1);
+            $respJson->setMsg('异常！' . $ex->getMessage());
+            return response()->json($respJson);
         }
     }
 
     public function getEdit(Request $request, $id)
     {
         try {
-            $user = User::find($id);
-            if (!$user) {
+            $student = Student::find($id);
+            if (!$student) {
                 return Redirect::back()->withErrors('数据加载失败！');
             }
-            return view('manage.user.edit', compact('user'));
+            return view('manage.student.edit', compact('student'));
         } catch (Exception $ex) {
             return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
         }
@@ -129,41 +109,45 @@ class UserController extends BaseController
 
     public function postEdit(Request $request, $id)
     {
+        $respJson = new RespJson();
         try {
 
-            $user = User::find($id);
-            if (!$user) {
+            $student = Student::find($id);
+            if (!$student) {
                 return Redirect::back()->withErrors('数据加载失败！');
             }
             $input = $request->all();
 
-            $validator = Validator::make($input, $user->Rules(), $user->messages());
+            $validator = Validator::make($input, $student->Rules(), $student->messages());
             if ($validator->fails()) {
-                return redirect('/manage/user/create')
-                    ->withInput()
-                    ->withErrors($validator);
+                $respJson->setCode(2);
+                $respJson->setMsg("效验失败");
+                $respJson->setData($validator);
+                return response()->json($respJson);
             }
-            $user->fill($input);
-            $user->save();
-            if ($user) {
-                return redirect('/manage/user')->withSuccess('保存成功！');
-            } else {
-                return Redirect::back()->withErrors('保存失败！');
+            $student->fill($input);
+            if ($student->save()) {
+                $respJson->setData($student);
+                return response()->json($respJson);
             }
-            return view('manage.user.edit', compact('user'));
+            $respJson->setMsg("修改失败");
+
+            return response()->json($respJson);
         } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
+            $respJson->setCode(-1);
+            $respJson->setMsg('异常！' . $ex->getMessage());
+            return response()->json($respJson);
         }
     }
 
     public function getDetail(Request $request, $id)
     {
         try {
-            $user = User::find($id);
-            if (!$user) {
-                return redirect('/manage/user')->withErrors('数据加载失败！');
+            $student = Student::find($id);
+            if (!$student) {
+                return redirect('/manage/student')->withErrors('数据加载失败！');
             }
-            return view('manage.user.detail', compact('user'));
+            return view('manage.student.detail', compact('student'));
         } catch (Exception $ex) {
             return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
         }
@@ -172,13 +156,13 @@ class UserController extends BaseController
     public function delete(Request $request, $id)
     {
         try {
-            $user = User::find($id);
-            if (!$user) {
-                return redirect('/manage/user')->withErrors('数据加载失败！');
+            $student = Student::find($id);
+            if (!$student) {
+                return redirect('/manage/student')->withErrors('数据加载失败！');
             }
-            $user->delete();
-            if ($user) {
-                return redirect('/manage/user')->withSuccess('删除成功！');
+            $student->delete();
+            if ($student) {
+                return redirect('/manage/student')->withSuccess('删除成功！');
             }
             return Redirect::back()->withErrors('删除失败！');
 
@@ -197,7 +181,7 @@ class UserController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $list = User::where(function ($query) use ($request) {
+            $list = Student::where(function ($query) use ($request) {
                 if (isset($request->createId)) {
                     $query->where('createId', $request->createId);
                 }

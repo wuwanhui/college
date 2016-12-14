@@ -47,8 +47,6 @@ class ConfigController extends BaseController
                     return response()->json($respJson);
                 }
                 $config->fill($input);
-                $config->editId = Base::user('id');
-                $config->editName = Base::user('name');
 
 
                 if ($config->save()) {

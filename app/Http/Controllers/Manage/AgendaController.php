@@ -8,6 +8,7 @@ use App\Jobs\AgendaChangeJob;
 use App\Jobs\SendAgendaChangeEmail;
 use App\Jobs\SendIntegralEmail;
 use App\Models\Agenda;
+use App\Models\Teacher;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -39,7 +40,9 @@ class AgendaController extends BaseController
                 if (isset($request->key)) {
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->with(['teacher' => function ($request) {
+                $request->select('id', 'name');
+            }, 'parent', 'children'])->where('parent_id', 0)->orderBy('id', 'desc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 $respJson->setData($list);
@@ -57,8 +60,12 @@ class AgendaController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $agenda=new Agenda();
-            return view('manage.agenda.create', compact('agenda'));
+            $agenda = new Agenda();
+            $teacherList = Teacher::  where('state', 0)->get();
+            $agendaList = Agenda::  where('parent_id', 0)->get();
+
+
+            return view('manage.agenda.create', compact('agenda', 'teacherList', 'agendaList'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());

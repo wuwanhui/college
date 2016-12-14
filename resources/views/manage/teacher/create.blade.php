@@ -14,24 +14,63 @@
                                 <legend>基本信息</legend>
 
                                 <div class="form-group">
-                                    <label for="name" class="col-sm-2 control-label">学期名称：</label>
+                                    <label for="name" class="col-sm-2 control-label">姓名：</label>
                                     <div class="col-sm-10">
                                         <input id="name" type="text" class="form-control" name="name"
-                                               v-model="term.name"
+                                               v-model="teacher.name"
                                                :class="{ 'error': $validator.name.invalid && trySubmit }"
                                                v-validate:name="{ required: true}" placeholder="不能为空">
 
                                     </div>
 
                                 </div>
+                                <div class="form-group">
+                                    <label for="number" class="col-sm-2 control-label">教师编号：</label>
+                                    <div class="col-sm-10">
+                                        <input id="number" type="text" class="form-control" name="number"
+                                               v-model="teacher.number">
+
+                                    </div>
+
+                                </div>
 
                                 <div class="form-group">
-                                    <label for="remark" class="col-sm-2 control-label">内部备注：</label>
+                                    <label for="email" class="col-sm-2 control-label">Email：</label>
+                                    <div class="col-sm-10">
+                                        <input id="email" type="text" class="form-control" name="email"
+                                               v-model="teacher.email">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password" class="col-sm-2 control-label">密码：</label>
+                                    <div class="col-sm-10">
+                                        <input id="password" type="password" class="form-control" name="password"
+                                               v-model="teacher.password">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="post" class="col-sm-2 control-label">职称：</label>
+                                    <div class="col-sm-10">
+                                        <input id="post" type="text" class="form-control" name="post"
+                                               v-model="teacher.post">
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="abstract" class="col-sm-2 control-label">教师简介：</label>
 
                                     <div class="col-sm-10">
-                                            <textarea id="remark" type="text" class="form-control"
+                                            <textarea id="abstract" type="text" class="form-control"
                                                       style="width: 100%;height:50px;"
-                                                      v-model="term.remark"></textarea>
+                                                      v-model="teacher.abstract"></textarea>
                                     </div>
                                 </div>
                             </fieldset>
@@ -63,13 +102,12 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                term: jsonFilter('{{json_encode($term)}}'),
+                teacher: {},
             },
             watch: {},
             ready: function () {
 
             },
-
             methods: {
 
 
@@ -77,15 +115,15 @@
                     var _self = this;
 
                     if (form.invalid) {
-                        //this.$log('term');
+                        //this.$log('teacher');
                         this.trySubmit = true;
                         return;
                     }
 
-                    this.$http.post("{{url('/manage/term/edit')}}", this.term)
+                    this.$http.post("{{url('/manage/teacher/create')}}", this.teacher)
                             .then(function (response) {
                                         if (response.data.code == 0) {
-                                            parent.msg('修改成功');
+                                            parent.msg('新增成功');
                                             parent.layer.close(frameindex);
                                             parent.vm.init();
                                             return

@@ -58,8 +58,8 @@
                                     </th>
                                     <th style="width: 60px;"><a href="">编号</a></th>
                                     <th><a href="">名称</a></th>
-                                    <th style="width: 120px;"><a href="">课程</a></th>
-                                    <th style="width: 120px;"><a href="">学生</a></th>
+                                    <th style="width: 80px;"><a href="">课程</a></th>
+                                    <th style="width: 160px;"><a href="">学生</a></th>
                                     <th><a href="">备注</a></th>
                                     <th style="width: 60px;">状态</th>
                                     <th style="width: 100px;">操作</th>
@@ -71,12 +71,8 @@
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
                                     <td style="text-align: center" v-text="item.id"></td>
                                     <td v-text="item.name"></td>
-                                    <td style="text-align: center"><a v-on:click="bindAgenda(item)"
-                                                                      v-text="'绑定课程('+item.agendas.length+')'"></a>
-                                    </td>
-                                    <td style="text-align: center"><a v-on:click="bindStudent(item)"
-                                                                      v-text="'绑定学生('+item.students.length+')'"></a>
-                                    </td>
+                                    <td v-text="item.qq"></td>
+                                    <td v-text="item.email"></td>
                                     <td v-text="item.remark">
                                     </td>
 
@@ -118,6 +114,7 @@
                 </div>
             </div>
         </div>
+
     </section>
 @endsection
 @section('script')
@@ -129,8 +126,6 @@
                 list: jsonFilter('{{json_encode($list)}}'),
                 term: {},
                 ids: [],
-                agendaIds: [],
-                studentIds: [],
                 params: {state: -1, page: 1},
             },
             watch: {
@@ -139,19 +134,7 @@
                 },
                 'params.page': function () {
                     this.init();
-                },
-                'term': function () {
-                    var _self = this;
-                    this.agendaIds = [];
-                    this.term.agendas.forEach(function (item) {
-                        _self.agendaIds.push(item.id)
-                    });
-                    this.studentIds = [];
-                    this.term.students.forEach(function (item) {
-                        _self.studentIds.push(item.id)
-                    });
                 }
-
             },
             ready: function () {
                 if (this.customer) {
@@ -184,19 +167,11 @@
                     this.init();
                 },
                 create: function () {
-                    openUrl('{{url('/manage/term/create')}}', '新增学期', 800, 300);
+                    openUrl('{{url('/manage/term/create')}}', '新增学期', 800, 600);
                 },
                 edit: function (item) {
                     this.term = item;
-                    openUrl('{{url('/manage/term/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"学期', 800, 300);
-                },
-                bindAgenda: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/bind/agenda')}}', '绑定课程', 800, 400);
-                },
-                bindStudent: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/bind/student')}}', '绑定学生', 800, 400);
+                    openUrl('{{url('/manage/term/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"学期', 800, 600);
                 },
                 state: function (item) {
                     var _self = this;

@@ -2,12 +2,12 @@
 @section('content')
     <section class="content-header">
         <h1>
-            学期
+            课程
             <small>列表</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
-            <li class="active">学期</li>
+            <li class="active">课程</li>
         </ol>
     </section>
 
@@ -57,9 +57,9 @@
                                                                    v-on:click="ids=!ids"/>
                                     </th>
                                     <th style="width: 60px;"><a href="">编号</a></th>
-                                    <th><a href="">名称</a></th>
-                                    <th style="width: 120px;"><a href="">课程</a></th>
-                                    <th style="width: 120px;"><a href="">学生</a></th>
+                                    <th><a href="">课程名称</a></th>
+                                    <th style="width: 80px;"><a href="">任课教师</a></th>
+                                    <th><a href="">关联课程</a></th>
                                     <th><a href="">备注</a></th>
                                     <th style="width: 60px;">状态</th>
                                     <th style="width: 100px;">操作</th>
@@ -71,12 +71,8 @@
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
                                     <td style="text-align: center" v-text="item.id"></td>
                                     <td v-text="item.name"></td>
-                                    <td style="text-align: center"><a v-on:click="bindAgenda(item)"
-                                                                      v-text="'绑定课程('+item.agendas.length+')'"></a>
-                                    </td>
-                                    <td style="text-align: center"><a v-on:click="bindStudent(item)"
-                                                                      v-text="'绑定学生('+item.students.length+')'"></a>
-                                    </td>
+                                    <td style="text-align: center" v-text="item.teacher.name"></td>
+                                    <td><span v-for="subItem in item.children" v-text="subItem.name+','"></span></td>
                                     <td v-text="item.remark">
                                     </td>
 
@@ -122,50 +118,30 @@
 @endsection
 @section('script')
     <script type="application/javascript">
-        //sidebar.menu = {type: 'crm', item: 'customerLinkman'};
         var vm = new Vue({
             el: '.content',
             data: {
                 list: jsonFilter('{{json_encode($list)}}'),
-                term: {},
+                agenda: {},
                 ids: [],
-                agendaIds: [],
-                studentIds: [],
                 params: {state: -1, page: 1},
             },
             watch: {
                 'params.state': function () {
-                    // this.init();
                 },
                 'params.page': function () {
                     this.init();
-                },
-                'term': function () {
-                    var _self = this;
-                    this.agendaIds = [];
-                    this.term.agendas.forEach(function (item) {
-                        _self.agendaIds.push(item.id)
-                    });
-                    this.studentIds = [];
-                    this.term.students.forEach(function (item) {
-                        _self.studentIds.push(item.id)
-                    });
                 }
-
             },
             ready: function () {
-                if (this.customer) {
-                    this.params.id = this.customer.id;
-                }
 
-                //this.init();
             },
 
             methods: {
                 init: function () {
                     var _self = this;
                     //加载数据
-                    this.$http.get("{{url('/manage/term?json')}}", {params: this.params})
+                    this.$http.get("{{url('/manage/agenda?json')}}", {params: this.params})
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             _self.list = response.data.data;
@@ -184,29 +160,21 @@
                     this.init();
                 },
                 create: function () {
-                    openUrl('{{url('/manage/term/create')}}', '新增学期', 800, 300);
+                    openUrl('{{url('/manage/agenda/create')}}', '新增课程', 800, 400);
                 },
                 edit: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"学期', 800, 300);
-                },
-                bindAgenda: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/bind/agenda')}}', '绑定课程', 800, 400);
-                },
-                bindStudent: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/bind/student')}}', '绑定学生', 800, 400);
+                    this.agenda = item;
+                    openUrl('{{url('/manage/agenda/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"课程', 800, 400);
                 },
                 state: function (item) {
                     var _self = this;
-                    this.term = item;
-                    this.term.state = this.term.state == 0 ? 1 : 0;
+                    this.agenda = item;
+                    this.agenda.state = this.agenda.state == 0 ? 1 : 0;
 
                     $.ajax({
                         type: 'POST',
-                        url: '{{url('/manage/term/edit')}}',
-                        data: _self.term,
+                        url: '{{url('/manage/agenda/edit')}}',
+                        data: _self.agenda,
                         headers: {
                             'X-CSRF-TOKEN': Laravel.csrfToken
                         },
@@ -226,7 +194,7 @@
                     layer.confirm('确认删除吗？', {
                         btn: ['确认', '取消']
                     }, function () {
-                        _self.$http.post("{{url('/manage/term/delete')}}", {ids: ids})
+                        _self.$http.post("{{url('/manage/agenda/delete')}}", {ids: ids})
                                 .then(function (response) {
                                             if (response.data.code == 0) {
                                                 _self.init();

@@ -58,12 +58,12 @@
 @section('script')
     <script type="application/javascript">
         var frameindex = parent.layer.getFrameIndex(window.name);
-        parent.layer.iframeAuto(frameindex);
+       parent.layer.iframeAuto(frameindex);
         var vm = new Vue({
             el: '.content',
             data: {
                 trySubmit: false,
-                term: jsonFilter('{{json_encode($term)}}'),
+                term: {},
             },
             watch: {},
             ready: function () {
@@ -71,7 +71,7 @@
             },
 
             methods: {
-
+ 
 
                 save: function (form) {
                     var _self = this;
@@ -82,10 +82,10 @@
                         return;
                     }
 
-                    this.$http.post("{{url('/manage/term/edit')}}", this.term)
+                    this.$http.post("{{url('/manage/term/create')}}", this.term)
                             .then(function (response) {
                                         if (response.data.code == 0) {
-                                            parent.msg('修改成功');
+                                            parent.msg('新增成功');
                                             parent.layer.close(frameindex);
                                             parent.vm.init();
                                             return

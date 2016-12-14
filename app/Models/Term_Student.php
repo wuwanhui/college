@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use stdClass;
 
 /**
- * 客户档案
+ * 学期学生
  * @package App\Models
  */
 class Term_Student extends Model
 {
-    use SoftDeletes;
+
+    protected $table = "term_student";
+    //use SoftDeletes;
     protected $guarded = ['_token'];
 
     /**
@@ -39,12 +41,15 @@ class Term_Student extends Model
         ];
     }
 
-
-
+    /**
+     *所属学期
+     */
+    public function term()
+    {
+        return $this->belongsTo('App\Models\Term', 'term_id');
+    }
 
     protected $appends = ['state_cn'];
-
-
 
     //状态
     public static $stateList = [0 => '正常', 1 => '禁用'];

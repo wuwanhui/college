@@ -36,11 +36,11 @@
 <div id="app">
     <div class="login-box">
         <div class="login-logo">
-            <a><b>Travel</b>-v1.0</a>
+            <a><b>EDU</b>-v1.0</a>
         </div>
         <!-- /.login-logo -->
         <div class="login-box-body">
-            <p class="login-box-msg h4"><i class="icon-desktop"></i> 智慧旅游-管理平台</p>
+            <p class="login-box-msg h4"><i class="icon-desktop"></i> 在线选课系统-管理平台</p>
             <form role="form" method="POST">
                 {{ csrf_field() }}
                 <div class="form-group has-feedback">
