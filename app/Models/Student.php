@@ -59,9 +59,17 @@ class Student extends Authenticatable
      */
     public function agendas()
     {
-        return $this->belongsToMany('App\Models\Agenda', 'student_agenda')->withTimestamps()->withPivot('term_id');
+        return $this->belongsToMany('App\Models\Agenda', 'student_agenda') ;
     }
 
+
+    /**
+     *学生选课明细
+     */
+    public function agenda()
+    {
+        return $this->belongsToMany('App\Models\Agenda', 'syllabus') ;
+    }
 
     protected $appends = ['state_cn', 'sex_cn'];
 

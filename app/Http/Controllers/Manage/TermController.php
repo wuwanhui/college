@@ -10,6 +10,8 @@ use App\Jobs\SendIntegralEmail;
 use App\Models\Agenda;
 use App\Models\Student;
 use App\Models\Term;
+use App\Models\Term_Agenda;
+use App\Models\Term_Student;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -41,9 +43,9 @@ class TermController extends BaseController
                 if (isset($request->key)) {
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
-            })->with(['agendas'=>function($query){
-               // $query->select('agenda_id');
-            },'students'])->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->with(['agendas' => function ($query) {
+                // $query->select('agenda_id');
+            }, 'students'])->orderBy('id', 'desc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 $respJson->setData($list);
@@ -166,18 +168,11 @@ class TermController extends BaseController
             if (!$term) {
                 return Redirect::route('alert')->withErrors('数据不存在！');
             }
-            if ($request->isMethod('POST')) {
 
-                $term->fill($request->all());
-                $term->save();
-                if ($term) {
-                    $respJson->setData($term);
-                    return response()->json($respJson);
-                }
-                $respJson->setMsg("修改失败");
-                return response()->json($respJson);
-            }
-            return view('manage.term.detail', compact('term'));
+            $agendas = $term->agendas()->orderBy('id', 'desc')->paginate($this->pageSize);
+            $students = $term->students()->orderBy('id', 'desc')->paginate($this->pageSize);
+
+            return view('manage.term.detail', compact('term', 'agendas', 'students'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());

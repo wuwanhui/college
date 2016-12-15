@@ -58,6 +58,16 @@ class Term extends Model
     }
 
 
+
+    /**
+     *报名学生
+     */
+    public function syllabus()
+    {
+        return $this->hasMany('App\Models\Syllabus','term_id');
+    }
+
+
     protected $appends = ['state_cn'];
 
 

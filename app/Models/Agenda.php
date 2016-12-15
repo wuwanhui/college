@@ -27,6 +27,16 @@ class Agenda extends Model
         ];
     }
 
+
+    /**
+     *任课教师
+     */
+    public function teacher()
+    {
+        return $this->belongsTo('App\Models\Teacher', "teacher_id");
+    }
+
+
     /**
      *关联学期
      */
@@ -71,15 +81,6 @@ class Agenda extends Model
         return [
             'name.required' => '名称为必填项',
         ];
-    }
-
-
-    /**
-     *任课教师
-     */
-    public function teacher()
-    {
-        return $this->belongsTo('App\Models\Teacher', "teacher_id");
     }
 
 

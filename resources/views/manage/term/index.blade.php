@@ -70,7 +70,7 @@
                                     <td><input type="checkbox"
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
                                     <td style="text-align: center" v-text="item.id"></td>
-                                    <td v-text="item.name"></td>
+                                    <td><a v-on:click="detail(item)"  v-text="item.name"></a></td>
                                     <td style="text-align: center"><a v-on:click="bindAgenda(item)"
                                                                       v-text="'绑定课程('+item.agendas.length+')'"></a>
                                     </td>
@@ -189,6 +189,9 @@
                 edit: function (item) {
                     this.term = item;
                     openUrl('{{url('/manage/term/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"学期', 800, 300);
+                },
+                detail: function (item) {
+                    window.location.href = "{{url('/manage/term/detail')}}?id=" + item.id;
                 },
                 bindAgenda: function (item) {
                     this.term = item;

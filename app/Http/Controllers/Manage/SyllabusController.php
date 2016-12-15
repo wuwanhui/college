@@ -7,7 +7,11 @@ use App\Http\Controllers\Manage\BaseController;
 use App\Jobs\SyllabusChangeJob;
 use App\Jobs\SendSyllabusChangeEmail;
 use App\Jobs\SendIntegralEmail;
+use App\Models\Agenda;
+use App\Models\Student;
+use App\Models\Student_Agenda;
 use App\Models\Syllabus;
+use App\Models\Term;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -31,21 +35,30 @@ class SyllabusController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $list = Syllabus::where(function ($query) use ($request) {
-                if (isset($request->state) && $request->state != -1) {
-                    $query->where('state', $request->state);
-                }
+            $termId = $request->termId;
+            if (isset($termId)) {
+                $term = Term::find($termId);
+            } else {
+                $term = Term::first();
+            }
 
-                if (isset($request->key)) {
-                    $query->Where('name', 'like', '%' . $request->key . '%');
-                }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            $list = $term->syllabus()->with(['term' => function ($query) {
+                $query->select('id', 'name');
+            }, 'student' => function ($query) {
+                $query->select('id', 'name');
+            }, 'agenda' => function ($query) {
+                $query->select('id', 'name');
+            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+
 
             if (isset($request->json)) {
                 $respJson->setData($list);
                 return response()->json($respJson);
             }
-            return view('manage.syllabus.index', compact('list'));
+            $terms = Term::with(['students', 'agendas' => function ($query) {
+                $query->where('parent_id', 0);
+            }])->get();
+            return view('manage.syllabus.index', compact('list', 'terms'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
@@ -57,35 +70,81 @@ class SyllabusController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $syllabus=new Syllabus();
-            return view('manage.syllabus.create', compact('syllabus'));
+            $term = Term::where(function ($query) use ($request) {
+                if (isset($request->id)) {
+                    $query->Where('id', $request->id);
+                }
+            })->with(['agendas' => function ($query) {
+                $query->where('parent_id', 0);
+            }, 'students' => function ($query) {
+
+            }])->first();
+            return view('manage.syllabus.create', compact('term'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
             return response()->json($respJson);
         }
+
+
     }
 
     public function postCreate(Request $request)
     {
         $respJson = new RespJson();
         try {
-            $syllabus = new Syllabus();
-            $inputs = $request->all();
-            $validator = Validator::make($inputs, $syllabus->Rules(), $syllabus->messages());
-            if ($validator->fails()) {
-                $respJson->setCode(2);
-                $respJson->setMsg("效验失败");
-                $respJson->setData($validator);
+            $termId = $request->term_id;
+            if (!$termId) {
+                $respJson->setCode(1);
+                $respJson->setMsg('未找到学期信息！');
                 return response()->json($respJson);
             }
-            $syllabus->fill($inputs);
-            if ($syllabus->save()) {
-                $respJson->setData($syllabus);
+            $studentId = $request->student_id;
+            if (!$studentId) {
+                $respJson->setCode(1);
+                $respJson->setMsg('未找到学生信息！');
                 return response()->json($respJson);
             }
-            $respJson->setCode(1);
-            $respJson->setMsg("新增失败");
+
+            $agendaId = $request->agenda_id;
+            if (!$agendaId) {
+                $respJson->setCode(1);
+                $respJson->setMsg('未找到课程信息！');
+                return response()->json($respJson);
+            }
+
+            $term = Term::where('id', $termId)->with(['students' => function ($query) use ($studentId) {
+                $query->where('student_id', $studentId);
+            }, 'agendas' => function ($query) use ($agendaId) {
+                $query->where('agenda_id', $agendaId);
+            }])->first();
+            if (count($term->students) == 0) {
+                $respJson->setCode(1);
+                $respJson->setMsg('未找到学生信息！');
+                return response()->json($respJson);
+            }
+
+            if (count($term->agendas) == 0) {
+                $respJson->setCode(1);
+                $respJson->setMsg('未找到课程信息！');
+                return response()->json($respJson);
+            }
+
+            $syllabus = Syllabus::where('term_id', $termId)->whereAnd('student_id', $studentId)->get();
+
+            if (count($syllabus) == 4) {
+                $respJson->setCode(1);
+                $respJson->setMsg('选课失败，此学生课程已经超限！');
+                return response()->json($respJson);
+            }
+            $syllabusItem = Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $agendaId]);
+
+            if ($syllabusItem) {
+                $respJson->setData($syllabusItem);
+                return response()->json($respJson);
+            }
+
+            $respJson->setMsg("选课失败");
             return response()->json($respJson);
         } catch (Exception $ex) {
             $respJson->setCode(-1);

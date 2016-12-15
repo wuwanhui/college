@@ -79,7 +79,7 @@ class StudentController extends BaseController
                 return response()->json($respJson);
             }
             $student->fill($input);
-            $student->password = bcrypt($input->password);
+            $student->password = bcrypt($request->password);
             if ($student->save()) {
                 $respJson->setData($student);
                 return response()->json($respJson);

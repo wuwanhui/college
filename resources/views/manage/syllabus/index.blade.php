@@ -2,12 +2,12 @@
 @section('content')
     <section class="content-header">
         <h1>
-            学期
+            选课记录
             <small>列表</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
-            <li class="active">学期</li>
+            <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 选课系统</a></li>
+            <li class="active">选课记录</li>
         </ol>
     </section>
 
@@ -23,6 +23,17 @@
                             <div class="col-md-10 text-right">
                                 <form method="get" class="form-inline">
                                     <div class="input-group">
+
+                                        <select id="type" name="type" class="form-control" style="width: auto;"
+                                                v-model="term">
+                                            <option value="" selected>学期</option>
+                                            <option v-for="item in terms" v-bind:value="item"
+                                                    v-text="item.name"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="input-group">
+
                                         <select id="type" name="type" class="form-control" style="width: auto;"
                                                 v-model="params.state">
                                             <option value="-1" selected>所有状态</option>
@@ -57,37 +68,39 @@
                                                                    v-on:click="ids=!ids"/>
                                     </th>
                                     <th style="width: 60px;"><a href="">编号</a></th>
-                                    <th><a href="">名称</a></th>
-                                    <th style="width: 80px;"><a href="">课程</a></th>
-                                    <th style="width: 160px;"><a href="">学生</a></th>
-                                    <th><a href="">备注</a></th>
+                                    <th style="width: 120px;"><a href="">学期</a></th>
+                                    <th style="width: 120px;"><a href="">学号</a></th>
+                                    <th style="width: 120px;"><a href="">姓名</a></th>
+                                    <th><a href="">所选课程</a></th>
                                     <th style="width: 60px;">状态</th>
                                     <th style="width: 100px;">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="item in list.data">
-                                    <td><input type="checkbox"
-                                               name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                    <td style="text-align: center" v-text="item.id"></td>
-                                    <td v-text="item.name"></td>
-                                    <td v-text="item.qq"></td>
-                                    <td v-text="item.email"></td>
-                                    <td v-text="item.remark">
-                                    </td>
+                                <template v-for="item in list.data">
+                                    <tr>
+                                        <td><input type="checkbox"
+                                                   name="id" v-bind:value="item.id" v-model="ids"/></td>
+                                        <td style="text-align: center" v-text="item.id"></td>
+                                        <td v-text="item.term.name"></td>
+                                        <td v-text="item.student.number"></td>
+                                        <td v-text="item.student.name"></td>
+                                        <td v-text="item.agenda.name"></span>
+                                        </td>
 
-                                    <td style="text-align: center"><a
-                                                v-bind:class="{'text-warning':item.state==1 }"
-                                                v-on:click="state(item);" v-text="item.state_cn"></a>
-                                    </td>
+                                        <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
 
-                                    <td style="text-align: center">
-                                        <a v-on:click="edit(item);">编辑</a>
-                                        |
-                                        <a v-on:click="delete(item.id)">删除</a>
+                                        </td>
 
-                                    </td>
-                                </tr>
+                                        <td style="text-align: center">
+                                            <a v-on:click="edit(item);">编辑</a>
+                                            |
+                                            <a v-on:click="delete(item.id)">删除</a>
+
+                                        </td>
+                                    </tr>
+
+                                </template>
                                 </tbody>
                             </table>
                         </form>
@@ -114,16 +127,16 @@
                 </div>
             </div>
         </div>
-
     </section>
 @endsection
 @section('script')
     <script type="application/javascript">
-        //sidebar.menu = {type: 'crm', item: 'customerLinkman'};
         var vm = new Vue({
             el: '.content',
             data: {
                 list: jsonFilter('{{json_encode($list)}}'),
+                terms: jsonFilter('{{json_encode($terms)}}'),
+                syllabus: {},
                 term: {},
                 ids: [],
                 params: {state: -1, page: 1},
@@ -134,21 +147,22 @@
                 },
                 'params.page': function () {
                     this.init();
-                }
-            },
-            ready: function () {
-                if (this.customer) {
-                    this.params.id = this.customer.id;
+                },
+                'term': function () {
+                    Vue.set(this.params, 'termId', this.term.id);
+                    this.init();
                 }
 
-                //this.init();
+
+            },
+            ready: function () {
             },
 
             methods: {
                 init: function () {
                     var _self = this;
                     //加载数据
-                    this.$http.get("{{url('/manage/term?json')}}", {params: this.params})
+                    this.$http.get("{{url('/manage/syllabus?json')}}", {params: this.params})
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             _self.list = response.data.data;
@@ -167,21 +181,21 @@
                     this.init();
                 },
                 create: function () {
-                    openUrl('{{url('/manage/term/create')}}', '新增学期', 800, 600);
+                    openUrl('{{url('/manage/syllabus/create')}}?id=' + this.term.id, '新增选课记录', 800, 300);
                 },
                 edit: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"学期', 800, 600);
+                    this.syllabus = item;
+                    openUrl('{{url('/manage/syllabus/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"选课记录', 800, 300);
                 },
                 state: function (item) {
                     var _self = this;
-                    this.term = item;
-                    this.term.state = this.term.state == 0 ? 1 : 0;
+                    this.syllabus = item;
+                    this.syllabus.state = this.syllabus.state == 0 ? 1 : 0;
 
                     $.ajax({
                         type: 'POST',
-                        url: '{{url('/manage/term/edit')}}',
-                        data: _self.term,
+                        url: '{{url('/manage/syllabus/edit')}}',
+                        data: _self.syllabus,
                         headers: {
                             'X-CSRF-TOKEN': Laravel.csrfToken
                         },
@@ -201,7 +215,7 @@
                     layer.confirm('确认删除吗？', {
                         btn: ['确认', '取消']
                     }, function () {
-                        _self.$http.post("{{url('/manage/term/delete')}}", {ids: ids})
+                        _self.$http.post("{{url('/manage/syllabus/delete')}}", {ids: ids})
                                 .then(function (response) {
                                             if (response.data.code == 0) {
                                                 _self.init();

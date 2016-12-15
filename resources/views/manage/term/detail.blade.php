@@ -3,19 +3,19 @@
 @section('content')
     <section class="content-header">
         <h1>
-            客户档案
+            学期管理
             <small>客户详情</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
-            <li class="active">客户档案</li>
+            <li><a href="{{url('/manage')}}"><i class="fa fa-dashboard"></i> 选课系统</a></li>
+            <li class="active">学期管理</li>
         </ol>
     </section>
     <section class="content">
         <div class="box box-primary">
             <div class="box-header">
-                <h3><span v-text="customer.name"></span>
-                    <small v-text="customer.affiliation"></small>
+                <h3><span v-text="term.name"></span>
+                    <small v-text="term.affiliation"></small>
                 </h3>
                 <hr/>
             </div>
@@ -24,49 +24,12 @@
                 <table class="table table-bordered detail">
                     <tbody>
                     <tr>
-                        <th>客户类型:</th>
-                        <td v-text="customer.type_cn"></td>
-                        <th>来源:</th>
-                        <td v-text="customer.source_cn"></td>
-                    </tr>
-                    <tr>
-                        <th>来源:</th>
-                        <td v-text="customer.source_cn"></td>
-                        <th>评级:</th>
-                        <td v-text="customer.grade_cn"></td>
-
-                    </tr>
-                    <tr>
-                        <th>负责人:</th>
-                        <td v-text="customer.leader_cn"></td>
-                        <th>手机号:</th>
-                        <td v-text="customer.mobile"></td>
-                    </tr>
-                    <tr>
-                        <th>QQ:</th>
-                        <td v-text="customer.qq"></td>
-                        <th>电话:</th>
-                        <td v-text="customer.tel"></td>
-                    </tr>
-                    <tr>
-                        <th>传真:</th>
-                        <td v-text="customer.fax"></td>
-                        <th>邮箱:</th>
-                        <td v-text="customer.email"></td>
+                        <th style="width:200px;">课程数:</th>
+                        <td v-text="agendas.total"></td>
+                        <th style="width:200px;">学生数:</th>
+                        <td v-text="students.total"></td>
                     </tr>
 
-                    <tr>
-                        <th>所在区域:</th>
-                        <td v-text="customer.area"></td>
-                        <th>地址:</th>
-                        <td v-text="customer.address"></td>
-                    </tr>
-                    <tr>
-                        <th>推荐人:</th>
-                        <td v-text="customer.referrerId"></td>
-                        <th>邮箱:</th>
-                        <td v-text="customer.email"></td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -74,175 +37,106 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
 
-                <li role="presentation" class="active"><a href="#config" role="tab"
-                                                          data-toggle="tab">联系人</a></li>
-                <li role="presentation"><a href="#maps" role="tab" data-toggle="tab">联系记录</a>
-                </li>
-                <li role="presentation"><a href="#maps" role="tab" data-toggle="tab">积分</a>
-                </li>
-                <li role="presentation"><a href="#maps" role="tab" data-toggle="tab">往来帐户</a>
+                <li role="presentation" class="active"><a href="#agenda" role="tab"
+                                                          data-toggle="tab">课程安排</a></li>
+                <li role="presentation"><a href="#student" role="tab" data-toggle="tab">参与学生</a>
                 </li>
             </ul>
 
             <div class="tab-content">
-                <div class="active tab-pane" id="config" v-if="loading">
-                    <validator name="validatorConfig">
-                        <form class="form-horizontal" :class="{ 'error': $validatorConfig.invalid && trySubmit }"
-                              novalidate>
+                <div class="active tab-pane" id="agenda">
+                    <table class="table table-bordered table-hover  table-condensed">
+                        <thead>
+                        <tr style="text-align: center" class="text-center">
+                            <th style="width: 20px"><input type="checkbox"
+                                                           name="CheckAll" value="Checkid"
+                                                           v-on:click="ids=!ids"/>
+                            </th>
+                            <th style="width: 60px;"><a href="">编号</a></th>
+                            <th><a href="">课程名称</a></th>
+                            <th style="width: 80px;"><a href="">任课教师</a></th>
+                            <th><a href="">关联课程</a></th>
+                            <th><a href="">备注</a></th>
+                            <th style="width: 60px;">状态</th>
+                            <th style="width: 100px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in agendas.data">
+                            <td><input type="checkbox"
+                                       name="id" v-bind:value="item.id" v-model="ids"/></td>
+                            <td style="text-align: center" v-text="item.id"></td>
+                            <td v-text="item.name"></td>
+                            <td style="text-align: center" v-text="item.teacher.name"></td>
+                            <td><span v-for="subItem in item.children" v-text="subItem.name+','"></span></td>
+                            <td v-text="item.remark">
+                            </td>
 
-                            <fieldset>
-                                <legend>基本信息</legend>
-                                <div class="form-group">
-                                    <label for="name" class="col-md-2 control-label">平台名称：</label>
+                            <td style="text-align: center"><a
+                                        v-bind:class="{'text-warning':item.state==1 }"
+                                        v-on:click="state(item);" v-text="item.state_cn"></a>
+                            </td>
 
-                                    <div class="col-md-10">
-                                        <input id="name" name='name' type="text" class="form-control"
-                                               :class="{ 'error': $validatorConfig.name.invalid  && trySubmit}"
-                                               v-model="config.name"
-                                               placeholder="必填项"
-                                               v-validate:name="{ required: true, minlength: 6 }">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="logo" class="col-md-2 control-label">标志：</label>
-
-                                    <div class="col-md-10">
-                                        <input id="logo" type="text" class="form-control"
-                                               name="logo"
-                                               v-model="config.logo">
-
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group ">
-                                    <label for="domain" class="col-md-2 control-label">平台地址：</label>
-
-                                    <div class="col-md-10">
-                                        <input id="domain" name="domain" type="text" class="form-control"
-                                               :class="{ 'error': $validatorConfig.domain.invalid  && trySubmit}"
-                                               v-model="config.domain"
-                                               placeholder="必填项"
-                                               v-validate:domain="{ required: true}">
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <fieldset>
-                                <legend>授权信息</legend>
-
-                                <div class="form-group">
-                                    <label for="key" class="col-md-2 control-label">序列号：</label>
-
-                                    <div class="col-md-10">
-                                        <input id="key" type="key" class="form-control" name="key"
-                                               style="width: auto;"
-                                               v-model="config.key">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="authNum" class="col-md-2 control-label">授权用户数：</label>
-
-                                    <div class="col-md-10">
-                                        <input id="authNum" type="number" class="form-control"
-                                               name="authNum"
-                                               style="width: auto;"
-                                               v-model="config.authNum">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="endTime" class="col-md-2 control-label">有效期止：</label>
-
-                                    <div class="col-md-10">
-                                        <input id="endTime" type="datetime" class="form-control"
-                                               name="endTime"
-                                               style="width: auto;"
-                                               v-model="config.endTime">
-
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <fieldset>
-                                <legend>系统状态</legend>
-                                <div class="form-group ">
-                                    <label for="state" class="col-md-2 control-label">状态：</label>
-
-                                    <div class="col-md-10">
-                                        <select id="state" name="state" class="form-control"
-                                                style="width: auto;"
-                                                v-model="config.state">
-                                            <option value="0">正常</option>
-                                            <option value="2">维护</option>
-                                        </select>
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="remark" class="col-md-2 control-label">维护信息：</label>
-
-                                    <div class="col-md-10">
-                                        <input id="remark" type="text" class="form-control"
-                                               name="remark"
-                                               style="width: auto;"
-                                               v-model="config.remark">
-
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <div class="text-center">
-                                <button type="button" class="btn btn-default"
-                                        onclick="vbscript:window.history.back()">返回
-                                </button>
-                                <button type="button" class="btn  btn-primary ui fluid large teal submit button "
-                                        v-bind:class="{disabled:$validatorConfig.invalid}"
-                                        v-on:click="saveConfig($validatorConfig)">保存
-                                </button>
-                            </div>
-                        </form>
-                    </validator>
+                            <td style="text-align: center">
+                                <a v-on:click="delete(item.id)">移除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <button type="button" class="btn  btn-primary ui fluid large teal submit button"
+                                v-on:click="bindAgenda()">绑定课程
+                        </button>
+                    </div>
                 </div>
-                <div class="tab-pane" id="maps">
+                <div class="tab-pane" id="student">
                     <form enctype="multipart/form-data" class="form-horizontal" role="form" method="POST">
 
-                        <fieldset v-for="(key,value) in typeList">
-                            <legend v-text="value"></legend>
-                            <div class="form-group" v-for="item in even(key)">
-                                <label v-bind:for="item.code" class="col-md-2 control-label"
-                                       v-text="item.name"></label>
-                                <div class="col-md-10">
-                                    <input v-bind:id="item.code" type="text" class="form-control"
-                                           v-if="item.control=='text'"
-                                           style="width: auto;" v-on:click="newMapItem=item"
-                                           v-on:onfocus="edit()"
-                                           v-model="item.value"/>
-                                    <textarea v-bind:id="item.code" class="form-control"
-                                              v-if="item.control=='textarea'"
-                                              style="width: 100%;height: 50px;"
-                                              v-model="item.value"></textarea>
+                        <table class="table table-bordered table-hover  table-condensed">
+                            <thead>
+                            <tr style="text-align: center" class="text-center">
+                                <th style="width: 20px"><input type="checkbox"
+                                                               name="CheckAll" value="Checkid"/></th>
+                                <th style="width: 60px;"><a href="">编号</a></th>
+                                <th>姓名</th>
+                                <th><a href="">学号</a></th>
+                                <th><a href="">身份证号</a></th>
+                                <th><a href="">邮箱</a></th>
+                                <th><a href="">性别</a></th>
+                                <th><a href="">手机号</a></th>
+                                <th style="width: 100px;">状态</th>
+                                <th style="width: 100px;">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="item in students.data">
+                                <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
+                                <td style="text-align: center" v-text="item.id"></td>
+                                <td style="text-align: center" v-text="item.name"></td>
 
-                                    <input type="checkbox" v-bind:id="item.code" class="form-control"
-                                           v-if="item.control=='checkbox'"
-                                           style="width: auto;"
-                                           v-model="item.value"/>
+                                <td style="text-align: center" v-text="item.number">
+                                </td>
+                                <td style="text-align: center" v-text="item.idCar">
+                                </td>
+                                <td v-text="item.email">
+                                </td>
+                                <td style="text-align: center" v-text="item.sex_cn">
+                                </td>
+                                <td v-text="item.phone">
+                                </td>
+                                <td style="text-align: center" v-text="item.state_cn"></td>
 
-                                    <select v-bind:id="item.code" v-if="item.control=='select'"
-                                            class="form-control"
-                                            style="width: auto;" v-model="item.value">
-                                        <option v-bind:value="key"
-                                                v-for="(key,value) in eval(item.default)">@{{ value }}</option>
-                                    </select>
+                                <td style="text-align: center">
+                                    <a v-on:click="delete(item)">移除</a>
 
+                                </td>
+                            </tr>
 
-                                </div>
-                            </div>
-                        </fieldset>
+                            </tbody>
+                        </table>
                         <div class="text-center">
-                            <button type="button" class="btn btn-default"
-                                    onclick="vbscript:window.history.back()">返回
-                            </button>
                             <button type="button" class="btn  btn-primary ui fluid large teal submit button"
-                                    v-on:click="saveMaps($form)">保存
+                                    v-on:click="bindStudent()">绑定学生
                             </button>
                         </div>
                     </form>
@@ -252,17 +146,19 @@
 
             </div>
         </div>
+        @{{ agendas|json }}
     </section>
 @endsection
 @section('script')
     <script type="application/javascript">
-        //sidebar.menu = {type: 'crm', item: 'customer'};
+        //sidebar.menu = {type: 'crm', item: 'term'};
         var vm = new Vue({
             el: '.content',
             data: {
                 trySubmit: false,
-                initBase: jsonFilter('{{json_encode($initBase)}}'),
-                customer: jsonFilter('{{json_encode($customer)}}')
+                term: jsonFilter('{{json_encode($term)}}'),
+                agendas: jsonFilter('{{json_encode($agendas)}}'),
+                students: jsonFilter('{{json_encode($students)}}'),
             },
             ready: function () {
             },
@@ -270,7 +166,14 @@
             watch: {},
 
             methods: {
-
+                bindAgenda: function (item) {
+                    this.term = item;
+                    openUrl('{{url('/manage/term/bind/agenda')}}', '绑定课程', 800, 400);
+                },
+                bindStudent: function (item) {
+                    this.term = item;
+                    openUrl('{{url('/manage/term/bind/student')}}', '绑定学生', 800, 400);
+                },
                 save: function (form) {
                     var _self = this;
 
@@ -279,11 +182,11 @@
                         return;
                     }
 
-                    this.$http.post("{{url('/manage/crm/customer/edit')}}", this.customer)
+                    this.$http.post("{{url('/manage/crm/term/edit')}}", this.term)
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             msg('编辑成功');
-                                            window.location.href = '{{url('/manage/crm/customer')}}';
+                                            window.location.href = '{{url('/manage/crm/term')}}';
                                             return
                                         }
                                         layer.alert(JSON.stringify(response.data));
@@ -292,14 +195,14 @@
                 },
                 delete: function () {
                     var _self = this;
-                    layer.confirm('确认删除"' + _self.customer.name + '"吗？', {
+                    layer.confirm('确认删除"' + _self.term.name + '"吗？', {
                                 btn: ['确认', '取消']
                             }, function () {
-                                _self.$http.post("{{url('/manage/crm/customer/delete')}}", {ids: _self.customer.id})
+                                _self.$http.post("{{url('/manage/crm/term/delete')}}", {ids: _self.term.id})
                                         .then(function (response) {
                                                     if (response.data.code == 0) {
                                                         msg('成功删除' + response.data.data + '条记录！');
-                                                        window.location.href = '{{url('/manage/crm/customer')}}';
+                                                        window.location.href = '{{url('/manage/crm/term')}}';
                                                         return
                                                     }
                                                     layer.alert(JSON.stringify(response.data));

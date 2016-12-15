@@ -163,6 +163,15 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
     Route::get('/', 'HomeController@index');
     Route::get('/home', 'HomeController@home');
 
+
+    /**
+     * excel
+     */
+    Route::group(['prefix' => 'excel', 'middleware' => 'auth.manage'], function () {
+        Route::get('/export', 'ExcelController@export');
+        Route::get('/import', 'ExcelController@import');
+    });
+
     /**
      * 系统参数
      */
@@ -192,6 +201,7 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::post('/create', 'TermController@postCreate');
         Route::get('/edit', 'TermController@getEdit');
         Route::post('/edit', 'TermController@postEdit');
+        Route::get('/detail', 'TermController@getDetail');
         Route::post('/delete', 'TermController@delete');
         Route::get('/api/list', 'TermController@getList');
 

@@ -13,7 +13,7 @@ class Term_Agenda extends Model
 {
 
     protected $table = "term_agenda";
-   // use SoftDeletes;
+    // use SoftDeletes;
     protected $guarded = ['_token'];
 
     /**
@@ -50,12 +50,16 @@ class Term_Agenda extends Model
         return $this->belongsTo('App\Models\Term', 'term_id');
     }
 
-
-
+    /**
+     *所属课程
+     */
+    public function agenda()
+    {
+        return $this->belongsTo('App\Models\Agenda', 'agenda_id');
+    }
 
 
     protected $appends = ['state_cn'];
-
 
 
     //状态

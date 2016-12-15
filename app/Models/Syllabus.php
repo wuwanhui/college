@@ -40,11 +40,25 @@ class Syllabus extends Model
         ];
     }
 
+    public function student()
+    {
+        return $this->belongsTo('App\Models\Student', 'student_id');
+    }
 
+
+    public function term()
+    {
+        return $this->belongsTo('App\Models\Term', 'term_id');
+    }
+
+
+    public function agenda()
+    {
+        return $this->belongsTo('App\Models\Agenda', 'agenda_id');
+    }
 
 
     protected $appends = ['state_cn'];
-
 
 
     //状态

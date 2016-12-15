@@ -184,6 +184,7 @@ return [
         App\Providers\WeixinServiceProvider::class,//微信服务
         Barryvdh\Debugbar\ServiceProvider::class,//DeBug调试工具
         Zizaco\Entrust\EntrustServiceProvider::class,//角色模块
+        Maatwebsite\Excel\ExcelServiceProvider::class,//excel导入导出
     ],
 
     /*
@@ -238,6 +239,7 @@ return [
         'Entrust' => Zizaco\Entrust\EntrustFacade::class,//角色模块
         'Base' => App\Http\Facades\Base::class,
         'Weixin' => App\Http\Facades\Weixin::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,//excel操作
 
     ],
 
