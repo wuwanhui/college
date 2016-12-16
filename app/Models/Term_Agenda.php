@@ -55,12 +55,19 @@ class Term_Agenda extends Model
      */
     public function agenda()
     {
-        return $this->belongsTo('App\Models\Agenda', 'agenda_id');
+        return $this->hasOne('App\Models\Agenda', 'id', 'agenda_id');
+    }
+
+    /**
+     *选课记录
+     */
+    public function agendaStudent()
+    {
+        return $this->hasMany('App\Models\Syllabus', 'agenda_id');
     }
 
 
     protected $appends = ['state_cn'];
-
 
     //状态
     public static $stateList = [0 => '正常', 1 => '禁用'];

@@ -6,7 +6,7 @@
             <div class="col-sm-12">
                 <div class="box box-primary">
                     <validator name="validator">
-                        <form enctype="multipart/form-data" class="form-horizontal" customer="form" method="POST"
+                        <form enctype="multipart/form-data" class="form-horizontal"  method="POST"
                               novalidate>
 
                             <div class="box-body">

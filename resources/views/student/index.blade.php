@@ -70,7 +70,7 @@
                 <div class="row">
                     <div class="col-sm-12">
 
-                        <form enctype="multipart/form-data" class="form-horizontal" customer="form" method="POST"
+                        <form enctype="multipart/form-data" class="form-horizontal"  method="POST"
                               novalidate>
 
                             <div class="box-body">

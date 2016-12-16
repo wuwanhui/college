@@ -62,13 +62,6 @@ class Agenda extends Model
     }
 
 
-    /**
-     *选课学生记录
-     */
-    public function students()
-    {
-        return $this->belongsToMany('App\Models\Student', 'student_agenda');
-    }
 
 
     /**

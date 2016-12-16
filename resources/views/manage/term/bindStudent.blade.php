@@ -4,12 +4,11 @@
     <section class="content">
         <div class="box box-primary">
             <div class="box-body no-padding">
+
                 <form method="Post" class="form-inline">
                     <table class="table table-bordered table-hover  table-condensed">
                         <thead>
                         <tr style="text-align: center" class="text-center">
-                            <th style="width: 20px"><input type="checkbox"
-                                                           name="CheckAll" value="Checkid"/></th>
                             <th style="width: 60px;"><a href="">编号</a></th>
                             <th>姓名</th>
                             <th><a href="">学号</a></th>
@@ -17,11 +16,11 @@
                             <th><a href="">邮箱</a></th>
                             <th><a href="">性别</a></th>
                             <th><a href="">手机号</a></th>
+                            <th><a href="">操作</a></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="item in list.data">
-                            <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
                             <td style="text-align: center" v-text="item.id"></td>
                             <td style="text-align: center" v-text="item.name"></td>
 
@@ -35,7 +34,8 @@
                             </td>
                             <td v-text="item.phone">
                             </td>
-
+                            <td style="text-align: center"><a v-on:click="bind(item)">加入</a>
+                            </td>
                         </tr>
 
                         </tbody>
@@ -50,20 +50,18 @@
                             @include("common.page")
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="box-footer">
-                <div class="row">
-                    <div class="col-xs-12  text-center">
-                        <button type="button" class="btn btn-default" onclick="parent.layer.close(frameindex)">
-                            关闭
-                        </button>
-                        <button type="button" class="btn  btn-primary"
-                                v-bind:class="{disabled1:$validator.invalid}" v-on:click="bind()">绑定
-                        </button>
 
-                    </div>
                 </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12  text-center">
+                <button type="button" class="btn btn-primary"
+                        onclick="parent.layer.close(frameindex)">
+                    关闭
+                </button>
             </div>
         </div>
     </section>
@@ -77,7 +75,8 @@
             data: {
                 list: jsonFilter('{{json_encode($list)}}'),
                 term: parent.vm.term,
-                ids: parent.vm.studentIds,
+                ids: [],
+                student: {},
                 params: {state: -1, page: 1},
             },
             watch: {
@@ -108,10 +107,13 @@
                 },
 
 
-                bind: function () {
+                bind: function (item) {
                     var _self = this;
-
-                    this.$http.post("{{url('/manage/term/bind/student')}}", {id: this.term.id, ids: this.ids})
+                    this.student = item;
+                    this.$http.post("{{url('/manage/term/bind/student')}}", {
+                        term_id: _self.term.id,
+                        student_id: _self.student.id
+                    })
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             parent.msg('绑定成功');

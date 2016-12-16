@@ -17,6 +17,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 
 class SyllabusController extends BaseController
 {
@@ -42,23 +43,38 @@ class SyllabusController extends BaseController
                 $term = Term::first();
             }
 
-            $list = $term->syllabus()->with(['term' => function ($query) {
-                $query->select('id', 'name');
-            }, 'student' => function ($query) {
-                $query->select('id', 'name');
-            }, 'agenda' => function ($query) {
-                $query->select('id', 'name');
+            $studentList = Syllabus::with(['studentRelate' => function ($query) {
+                $query->with('student');
+            },  'agendaRelate' => function ($query) {
+                $query->with('agenda');
+                // $query->with('teacher');
             }])->orderBy('id', 'desc')->paginate($this->pageSize);
 
 
+            $agendaList = $term->agendas()->with(['agenda' => function ($query) {
+                $query->with('teacher');
+            }, 'agendaStudent'])->orderBy('id', 'desc')->paginate($this->pageSize);
+
+//            $studentList = $term->syllabus()->with(['term' => function ($query) {
+//                $query->select('id', 'name');
+//            }, 'student' => function ($query) {
+//                $query->select('id', 'name');
+//            }, 'agenda' => function ($query) {
+//                $query->select('id', 'name');
+//            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+
+
             if (isset($request->json)) {
-                $respJson->setData($list);
+                $obj = new stdClass();
+                $obj->studentList = $studentList;
+                $obj->agendaList = $agendaList;
+                $respJson->setData($obj);
                 return response()->json($respJson);
             }
             $terms = Term::with(['students', 'agendas' => function ($query) {
-                $query->where('parent_id', 0);
+                // $query->where('parent_id', 0);
             }])->get();
-            return view('manage.syllabus.index', compact('list', 'terms'));
+            return view('manage.syllabus.index', compact('studentList', 'agendaList', 'terms'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());

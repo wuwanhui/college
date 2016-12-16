@@ -46,7 +46,7 @@ class Term extends Model
      */
     public function agendas()
     {
-        return $this->belongsToMany('App\Models\Agenda','term_agenda');
+        return $this->hasMany('App\Models\Term_Agenda', 'term_id');
     }
 
     /**
@@ -54,9 +54,8 @@ class Term extends Model
      */
     public function students()
     {
-        return $this->belongsToMany('App\Models\Student','term_student');
+        return $this->hasMany('App\Models\Term_Student', 'term_id');
     }
-
 
 
     /**
@@ -64,7 +63,7 @@ class Term extends Model
      */
     public function syllabus()
     {
-        return $this->hasMany('App\Models\Syllabus','term_id');
+        return $this->hasMany('App\Models\Syllabus', 'term_id');
     }
 
 

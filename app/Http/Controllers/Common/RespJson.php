@@ -61,4 +61,48 @@ class RespJson
     {
         $this->data = $data;
     }
+
+
+    /**
+     * @param mixed $data
+     */
+    public function succeed($msg = null, $data = null)
+    {
+        $this->code = 0;
+        $this->msg = isset($msg) ? $msg : '成功';
+        if (isset($data)) {
+            $this->data = $data;
+        }
+        return $this;
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function validator($msg = null)
+    {
+        $this->code = 1;
+        $this->msg = isset($msg) ? $msg : '效验失败';
+        return $this;
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function errors($msg = null)
+    {
+        $this->code = 2;
+        $this->msg = isset($msg) ? $msg : '数据错误';
+        return $this;
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function exception($msg = null)
+    {
+        $this->code = -1;
+        $this->msg = isset($msg) ? $msg : '系统异常';
+        return $this;
+    }
 }

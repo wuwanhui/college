@@ -54,9 +54,10 @@
                             </th>
                             <th style="width: 60px;"><a href="">编号</a></th>
                             <th><a href="">课程名称</a></th>
+                            <th style="width: 140px;"><a href="">周期</a></th>
                             <th style="width: 80px;"><a href="">任课教师</a></th>
                             <th><a href="">关联课程</a></th>
-                            <th><a href="">备注</a></th>
+                            <th><a href="">报名数</a></th>
                             <th style="width: 60px;">状态</th>
                             <th style="width: 100px;">操作</th>
                         </tr>
@@ -66,26 +67,29 @@
                             <td><input type="checkbox"
                                        name="id" v-bind:value="item.id" v-model="ids"/></td>
                             <td style="text-align: center" v-text="item.id"></td>
-                            <td v-text="item.name"></td>
-                            <td style="text-align: center" v-text="item.teacher.name"></td>
+                            <td v-text="item.agenda.name"></td>
+                            <td v-text="cycleCN(item.cycle)"></td>
+                            <td style="text-align: center" v-text="item.agenda.teacher.name"></td>
+
+
                             <td><span v-for="subItem in item.children" v-text="subItem.name+','"></span></td>
-                            <td v-text="item.remark">
+                            <td v-text="item.agenda_student.length">
                             </td>
 
                             <td style="text-align: center"><a
                                         v-bind:class="{'text-warning':item.state==1 }"
-                                        v-on:click="state(item);" v-text="item.state_cn"></a>
+                                        v-text="stateCN(item.state)"></a>
                             </td>
 
                             <td style="text-align: center">
-                                <a v-on:click="delete(item.id)">移除</a>
+                                <a v-on:click="deleteAgenda(item.id)">移除</a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <div class="text-center">
                         <button type="button" class="btn  btn-primary ui fluid large teal submit button"
-                                v-on:click="bindAgenda()">绑定课程
+                                v-on:click="bindAgenda()">增加课程
                         </button>
                     </div>
                 </div>
@@ -112,22 +116,22 @@
                             <tr v-for="item in students.data">
                                 <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
                                 <td style="text-align: center" v-text="item.id"></td>
-                                <td style="text-align: center" v-text="item.name"></td>
+                                <td style="text-align: center" v-text="item.student.name"></td>
 
-                                <td style="text-align: center" v-text="item.number">
+                                <td style="text-align: center" v-text="item.student.number">
                                 </td>
-                                <td style="text-align: center" v-text="item.idCar">
+                                <td style="text-align: center" v-text="item.student.idCar">
                                 </td>
-                                <td v-text="item.email">
+                                <td v-text="item.student.email">
                                 </td>
-                                <td style="text-align: center" v-text="item.sex_cn">
+                                <td style="text-align: center" v-text="item.student.sex_cn">
                                 </td>
-                                <td v-text="item.phone">
+                                <td v-text="item.student.phone">
                                 </td>
                                 <td style="text-align: center" v-text="item.state_cn"></td>
 
                                 <td style="text-align: center">
-                                    <a v-on:click="delete(item)">移除</a>
+                                    <a v-on:click="deleteStudent(item.id)">移除</a>
 
                                 </td>
                             </tr>
@@ -136,7 +140,7 @@
                         </table>
                         <div class="text-center">
                             <button type="button" class="btn  btn-primary ui fluid large teal submit button"
-                                    v-on:click="bindStudent()">绑定学生
+                                    v-on:click="bindStudent()">增加学生
                             </button>
                         </div>
                     </form>
@@ -146,7 +150,6 @@
 
             </div>
         </div>
-        @{{ agendas|json }}
     </section>
 @endsection
 @section('script')
@@ -166,14 +169,110 @@
             watch: {},
 
             methods: {
-                bindAgenda: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/bind/agenda')}}', '绑定课程', 800, 400);
+
+                init: function () {
+                    var _self = this;
+                    //加载数据
+                    this.$http.get("{{url('/manage/term/detail?json')}}", {params: {id: this.term.id}})
+                            .then(function (response) {
+                                        if (response.data.code == 0) {
+                                            _self.term = response.data.data.term;
+                                            _self.agendas = response.data.data.agendas;
+                                            _self.students = response.data.data.students;
+                                            return
+                                        }
+                                        layer.alert(JSON.stringify(response));
+                                    }
+                            );
                 },
-                bindStudent: function (item) {
-                    this.term = item;
-                    openUrl('{{url('/manage/term/bind/student')}}', '绑定学生', 800, 400);
+
+
+                bindAgenda: function () {
+
+                    openUrl('{{url('/manage/term/bind/agenda')}}?id=' + this.term.id, '绑定课程', 800, 400);
                 },
+                deleteAgenda: function (id) {
+                    var _self = this;
+                    layer.confirm('确认删除吗？', {
+                                btn: ['确认', '取消']
+                            }, function () {
+                                _self.$http.post("{{url('/manage/term/delete/agenda')}}", {id: id})
+                                        .then(function (response) {
+                                                    if (response.data.code == 0) {
+                                                        msg('成功删除条记录！');
+                                                        _self.init();
+                                                        return
+                                                    }
+                                                    layer.alert(JSON.stringify(response.data));
+                                                }
+                                        );
+                            }, function () {
+                                layer.closeAll();
+                            }
+                    )
+                    ;
+                },
+                bindStudent: function () {
+
+                    openUrl('{{url('/manage/term/bind/student')}}?id=' + this.term.id, '绑定学生', 800, 400);
+                },
+                deleteStudent: function (id) {
+                    var _self = this;
+                    layer.confirm('确认删除吗？', {
+                                btn: ['确认', '取消']
+                            }, function () {
+                                _self.$http.post("{{url('/manage/term/delete/student')}}", {id: id})
+                                        .then(function (response) {
+                                                    if (response.data.code == 0) {
+                                                        msg('成功删除记录！');
+                                                        _self.init();
+                                                        return
+                                                    }
+                                                    layer.alert(JSON.stringify(response.data));
+                                                }
+                                        );
+                            }, function () {
+                                layer.closeAll();
+                            }
+                    )
+                    ;
+                },
+
+                cycleCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 1:
+                            return '第一月 1周-4周';
+                        case 2:
+                            return '第二月 5周-8周';
+                        case 3:
+                            return '第三月 9周-12周';
+                        case 4:
+                            return '第四月 13周-16周';
+                        case 5:
+                            return '第五月 1周-4周';
+                        case 6:
+                            return '第六月 5周-8周';
+                        case 7:
+                            return '第七月 9周-12周';
+                        case 8:
+                            return '第八月 13周-16周';
+
+                    }
+                },
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '开课中';
+                        case 1:
+                            return '报名中';
+                        case 2:
+                            return '结束报名';
+                        case 3:
+                            return '取消课程';
+                    }
+                },
+
+
                 save: function (form) {
                     var _self = this;
 

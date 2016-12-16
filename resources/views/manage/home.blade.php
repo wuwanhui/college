@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i> 教</span>
+                    <span class="info-box-icon bg-aqua">教</span>
 
                     <div class="info-box-content">
                         <span class="info-box-text">教师数</span>
@@ -27,7 +27,7 @@
             <!-- /.col -->
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i> 学</span>
+                    <span class="info-box-icon bg-red">学</span>
 
                     <div class="info-box-content">
                         <span class="info-box-text">学生数</span>
@@ -40,7 +40,7 @@
 
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i> 课</span>
+                    <span class="info-box-icon bg-green">课</span>
 
                     <div class="info-box-content">
                         <span class="info-box-text">课程数</span>
@@ -50,7 +50,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
-                    <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i> 选</span>
+                    <span class="info-box-icon bg-yellow">选</span>
 
                     <div class="info-box-content">
                         <span class="info-box-text">选课人次</span>

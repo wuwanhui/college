@@ -42,7 +42,7 @@ class AgendaController extends BaseController
                 }
             })->with(['teacher' => function ($request) {
                 $request->select('id', 'name');
-            }, 'parent', 'children'])->where('parent_id', 0)->orderBy('id', 'desc')->paginate($this->pageSize);
+            }, 'parent', 'children'])->orderBy('id', 'desc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 $respJson->setData($list);

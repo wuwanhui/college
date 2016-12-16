@@ -12,8 +12,11 @@
     </section>
 
     <section class="content">
+
+
         <div class="row">
             <div class="col-md-12">
+
                 <div class="box">
                     <div class="box-body">
                         <div class="row">
@@ -57,76 +60,159 @@
                         </div>
                     </div>
                 </div>
-                <div class="box box-primary">
-                    <div class="box-body no-padding">
-                        <form method="Post" class="form-inline">
-                            <table class="table table-bordered table-hover  table-condensed">
-                                <thead>
-                                <tr style="text-align: center" class="text-center">
-                                    <th style="width: 20px"><input type="checkbox"
-                                                                   name="CheckAll" value="Checkid"
-                                                                   v-on:click="ids=!ids"/>
-                                    </th>
-                                    <th style="width: 60px;"><a href="">编号</a></th>
-                                    <th style="width: 120px;"><a href="">学期</a></th>
-                                    <th style="width: 120px;"><a href="">学号</a></th>
-                                    <th style="width: 120px;"><a href="">姓名</a></th>
-                                    <th><a href="">所选课程</a></th>
-                                    <th style="width: 60px;">状态</th>
-                                    <th style="width: 100px;">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <template v-for="item in list.data">
-                                    <tr>
-                                        <td><input type="checkbox"
-                                                   name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                        <td style="text-align: center" v-text="item.id"></td>
-                                        <td v-text="item.term.name"></td>
-                                        <td v-text="item.student.number"></td>
-                                        <td v-text="item.student.name"></td>
-                                        <td v-text="item.agenda.name"></span>
-                                        </td>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">按学生</a></li>
+                    <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">按课程</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">
+                        <div class="box box-primary">
+                            <div class="box-body no-padding">
+                                <form method="Post" class="form-inline">
+                                    <table class="table table-bordered table-hover  table-condensed">
+                                        <thead>
+                                        <tr style="text-align: center" class="text-center">
+                                            <th style="width: 20px"><input type="checkbox"
+                                                                           name="CheckAll" value="Checkid"
+                                                                           v-on:click="ids=!ids"/>
+                                            </th>
+                                            <th style="width: 60px;"><a href="">编号</a></th>
+                                            <th style="width: 120px;"><a href="">学号</a></th>
+                                            <th style="width: 120px;"><a href="">姓名</a></th>
+                                            <th><a href="">所选课程</a></th>
+                                            <th style="width: 60px;">状态</th>
+                                            <th style="width: 100px;">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <template v-for="item in studentList.data">
+                                            <tr>
+                                                <td><input type="checkbox"
+                                                           name="id" v-bind:value="item.id" v-model="ids"/></td>
+                                                <td style="text-align: center" v-text="item.id"></td>
+                                                <td v-text="item.student_relate.student.name"></td>
+                                                <td v-text="item.student_relate.student.number"></td>
+                                                <td v-text="item.agenda_relate.agenda.name"></span>
+                                                </td>
 
-                                        <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
+                                                <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
 
-                                        </td>
+                                                </td>
 
-                                        <td style="text-align: center">
-                                            <a v-on:click="edit(item);">编辑</a>
-                                            |
-                                            <a v-on:click="delete(item.id)">删除</a>
+                                                <td style="text-align: center">
+                                                    <a v-on:click="edit(item);">编辑</a>
+                                                    |
+                                                    <a v-on:click="delete(item.id)">删除</a>
 
-                                        </td>
-                                    </tr>
+                                                </td>
+                                            </tr>
 
-                                </template>
-                                </tbody>
-                            </table>
-                        </form>
-                        <div class="box-footer no-padding">
-                            <div class="mailbox-controls">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"
-                                                                                            v-on:click="delete(ids)"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
-                                                                                            v-on:click="btnBank()"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
-                                    </button>
+                                        </template>
+                                        </tbody>
+                                    </table>
+                                </form>
+                                <div class="box-footer no-padding">
+                                    <div class="mailbox-controls">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm"><i
+                                                        class="fa fa-trash-o"
+                                                        v-on:click="delete(ids)"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
+                                                                                                    v-on:click="btnBank()"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm"><i
+                                                        class="fa fa-share"></i>
+                                            </button>
+                                        </div>
+                                        <button type="button" class="btn btn-default btn-sm"><i
+                                                    class="fa fa-refresh"></i>
+                                        </button>
+                                        <div class="pull-right">
+                                            @include("common.page")
+                                        </div>
+                                    </div>
                                 </div>
-                                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i>
-                                </button>
-                                <div class="pull-right">
-                                    @include("common.page")
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="profile">
+                        <div class="box box-primary">
+                            <div class="box-body no-padding">
+                                <form method="Post" class="form-inline">
+                                    <table class="table table-bordered table-hover  table-condensed">
+                                        <thead>
+                                        <tr style="text-align: center" class="text-center">
+                                            <th style="width: 20px"><input type="checkbox"
+                                                                           name="CheckAll" value="Checkid"
+                                                                           v-on:click="ids=!ids"/>
+                                            </th>
+                                            <th style="width: 60px;"><a href="">编号</a></th>
+                                            <th style="width: 120px;"><a href="">课程名称</a></th>
+                                            <th style="width: 120px;"><a href="">教师</a></th>
+                                            <th style="width: 120px;"><a href="">报名人数</a></th>
+                                            <th style="width: 60px;">状态</th>
+                                            <th style="width: 100px;">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <template v-for="item in agendaList.data">
+                                            <tr>
+                                                <td><input type="checkbox"
+                                                           name="id" v-bind:value="item.id" v-model="ids"/></td>
+                                                <td style="text-align: center" v-text="item.id"></td>
+                                                <td v-text="item.agenda.name"></td>
+                                                <td v-text="item.agenda.teacher.name"></td>
+                                                <td v-text="item.agenda_student.length"></td>
+
+
+                                                <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
+
+                                                </td>
+
+                                                <td style="text-align: center">
+                                                    <a v-on:click="edit(item);">编辑</a>
+                                                    |
+                                                    <a v-on:click="delete(item.id)">删除</a>
+
+                                                </td>
+                                            </tr>
+
+                                        </template>
+                                        </tbody>
+                                    </table>
+                                </form>
+                                <div class="box-footer no-padding">
+                                    <div class="mailbox-controls">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm"><i
+                                                        class="fa fa-trash-o"
+                                                        v-on:click="delete(ids)"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
+                                                                                                    v-on:click="btnBank()"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm"><i
+                                                        class="fa fa-share"></i>
+                                            </button>
+                                        </div>
+                                        <button type="button" class="btn btn-default btn-sm"><i
+                                                    class="fa fa-refresh"></i>
+                                        </button>
+                                        <div class="pull-right">
+                                            @include("common.page")
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+        @{{ studentList|json }}
     </section>
 @endsection
 @section('script')
@@ -134,7 +220,8 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                list: jsonFilter('{{json_encode($list)}}'),
+                studentList: jsonFilter('{{json_encode($studentList)}}'),
+                agendaList: jsonFilter('{{json_encode($agendaList)}}'),
                 terms: jsonFilter('{{json_encode($terms)}}'),
                 syllabus: {},
                 term: {},

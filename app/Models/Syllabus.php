@@ -40,23 +40,27 @@ class Syllabus extends Model
         ];
     }
 
-    public function student()
-    {
-        return $this->belongsTo('App\Models\Student', 'student_id');
-    }
-
-
     public function term()
     {
         return $this->belongsTo('App\Models\Term', 'term_id');
     }
 
-
-    public function agenda()
+    /**
+     *选课学生记录
+     */
+    public function studentRelate()
     {
-        return $this->belongsTo('App\Models\Agenda', 'agenda_id');
+        return $this->hasOne('App\Models\Term_Student', 'id', 'student_id');
     }
 
+
+    /**
+     *选课科目
+     */
+    public function agendaRelate()
+    {
+        return $this->hasOne('App\Models\Term_Agenda', 'id', 'agenda_id');
+    }
 
     protected $appends = ['state_cn'];
 

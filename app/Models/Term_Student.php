@@ -49,6 +49,13 @@ class Term_Student extends Model
         return $this->belongsTo('App\Models\Term', 'term_id');
     }
 
+
+
+    public function student()
+    {
+        return $this->hasOne('App\Models\Student','id', 'student_id');
+    }
+
     protected $appends = ['state_cn'];
 
     //状态
