@@ -71,8 +71,7 @@
                             <td v-text="cycleCN(item.cycle)"></td>
                             <td style="text-align: center" v-text="item.agenda.teacher.name"></td>
 
-
-                            <td><span v-for="subItem in item.children" v-text="subItem.name+','"></span></td>
+                            <td><span v-text="item.parent.agenda.name"></span></td>
                             <td v-text="item.agenda_student.length">
                             </td>
 
@@ -150,6 +149,7 @@
 
             </div>
         </div>
+        @{{ agendas|json }}
     </section>
 @endsection
 @section('script')

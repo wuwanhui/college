@@ -38,19 +38,6 @@
 
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="parent_id" class="col-sm-2 control-label">关联课程：</label>
-                                    <div class="col-sm-10">
-                                        <select id="parent_id" name="sex" class="form-control"
-                                                v-model="agenda.parent_id"
-                                        >
-                                            <option value="0" selected>请选择关联课程</option>
-                                            <option v-bind:value="item.id" v-for="item in agendaList"
-                                                    v-text="item.name"></option>
-                                        </select>
-                                    </div>
-
-                                </div>
 
                                 <div class="form-group">
                                     <label for="remark" class="col-sm-2 control-label">内部备注：</label>

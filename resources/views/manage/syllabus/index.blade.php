@@ -29,7 +29,6 @@
 
                                         <select id="type" name="type" class="form-control" style="width: auto;"
                                                 v-model="term">
-                                            <option value="" selected>学期</option>
                                             <option v-for="item in terms" v-bind:value="item"
                                                     v-text="item.name"></option>
                                         </select>
@@ -123,7 +122,7 @@
                                                                                                     v-on:click="btnBank()"></i>
                                             </button>
                                             <button type="button" class="btn btn-default btn-sm"><i
-                                                        class="fa fa-share"></i>
+                                                        class="fa fa-share" v-on:click="init()"></i>
                                             </button>
                                         </div>
                                         <button type="button" class="btn btn-default btn-sm"><i
@@ -212,7 +211,7 @@
 
             </div>
         </div>
-        @{{ studentList|json }}
+        @{{ term|json }}
     </section>
 @endsection
 @section('script')
@@ -224,7 +223,7 @@
                 agendaList: jsonFilter('{{json_encode($agendaList)}}'),
                 terms: jsonFilter('{{json_encode($terms)}}'),
                 syllabus: {},
-                term: {},
+                term: jsonFilter('{{json_encode($term)}}'),
                 ids: [],
                 params: {state: -1, page: 1},
             },
@@ -243,6 +242,8 @@
 
             },
             ready: function () {
+                Vue.set(this.params, 'termId', this.term.id);
+                this.term = jsonFilter('{{json_encode($term)}}')
             },
 
             methods: {
@@ -252,7 +253,8 @@
                     this.$http.get("{{url('/manage/syllabus?json')}}", {params: this.params})
                             .then(function (response) {
                                         if (response.data.code == 0) {
-                                            _self.list = response.data.data;
+                                            _self.studentList = response.data.data.studentList;
+                                            _self.agendaList = response.data.data.agendaList;
                                             return
                                         }
                                         layer.alert(JSON.stringify(response));

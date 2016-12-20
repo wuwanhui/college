@@ -173,27 +173,17 @@ class TermController extends BaseController
                 $query->select('id', 'name', 'teacher_id')->with(['teacher' => function ($query) {
                     $query->select('id', 'name');
                 }]);
-//                ->with(['children' => function ($query) {
-//                    $query->select('id', 'name', 'parent_id');
-//                }]);
-            }, 'agendaStudent'])->orderBy('id', 'desc')->paginate($this->pageSize);
-
-
-//            $agendas = $term->agendas()->with(['children' => function ($query) {
-//                $query->select('id', 'name', 'parent_id');
-//            }])->with('students')->withPivot('cycle', 'state')->with(['teacher' => function ($query) {
-//                $query->select('id', 'name');
-//            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+            }, 'agendaStudent', 'parent' => function ($query) {
+                $query->with(['agenda' => function ($query) {
+                    $query->select('id', 'name', 'teacher_id')->with(['teacher' => function ($query) {
+                        $query->select('id', 'name');
+                    }]);
+                }]);
+            }])->orderBy('id', 'desc')->paginate($this->pageSize);
 
             $students = $term->students()->with(['student' => function ($query) {
 
-//                ->with(['children' => function ($query) {
-//                    $query->select('id', 'name', 'parent_id');
-//                }]);
             }])->orderBy('id', 'desc')->paginate($this->pageSize);
-
-            //$students = $term->students()->orderBy('id', 'desc')->withPivot('id')->paginate($this->pageSize);
-
 
             if (isset($request->json)) {
                 $obj = new stdClass();
@@ -274,12 +264,11 @@ class TermController extends BaseController
     {
         $respJson = new RespJson();
         try {
-
-
-            $list = Agenda::where(function ($query) use ($request) {
-                $termId = $request->id;
-                if (isset($termId)) {
-                    $query->whereNotIn('id', Term::find($termId)->agendas()->pluck('agenda_id'));
+            $termId = $request->id;
+            $term = Term::find($termId);
+            $list = Agenda::where(function ($query) use ($request, $term) {
+                if (isset($term)) {
+                    $query->whereNotIn('id', $term->agendas()->pluck('agenda_id'));
                 }
 
                 if ($request->state) {
@@ -294,7 +283,9 @@ class TermController extends BaseController
                 return response()->json($respJson);
             }
 
-            return view('manage.term.bindAgenda', compact('list'));
+            $agendaList = $term->agendas()->where('parent_id', 0)->with('agenda')->get();
+
+            return view('manage.term.bindAgenda', compact('list', 'agendaList'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
@@ -306,6 +297,7 @@ class TermController extends BaseController
     {
         $respJson = new RespJson();
         try {
+            $parentId = $request->parent_id;
             $agendaId = $request->agenda_id;
             if (!$agendaId) {
                 return response()->json($respJson->validator('请选择课程'));
@@ -329,7 +321,7 @@ class TermController extends BaseController
                 return response()->json($respJson->errors('数据不存在!'));
             }
 
-            $termAgenda = Term_Agenda::firstOrCreate(['term_id' => $termId, 'agenda_id' => $agendaId, 'cycle' => $cycle, 'state' => $state]);
+            $termAgenda = Term_Agenda::firstOrCreate(['term_id' => $termId, 'agenda_id' => $agendaId, 'parent_id' => $parentId, 'cycle' => $cycle, 'state' => $state]);
 
             if ($termAgenda) {
                 return response()->json($respJson->succeed('绑定课程成功'));

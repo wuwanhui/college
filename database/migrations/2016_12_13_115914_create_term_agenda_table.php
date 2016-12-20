@@ -18,6 +18,7 @@ class CreateTermAgendaTable extends Migration
             $table->integer('agenda_id');//课程内容
             $table->integer('term_id');//学期表
             $table->string('cycle')->nullable();//周期
+            $table->integer('parent_id');//关联课程
             $table->integer('user_id')->default(0);//创建者
             $table->integer('state')->default(0);//状态
             $table->integer('sort')->default(0);//排序

@@ -6,28 +6,40 @@
             <div class="col-sm-12">
                 <div class="box box-primary">
                     <validator name="validator">
-                        <form enctype="multipart/form-data" class="form-horizontal"  method="POST"
+                        <form enctype="multipart/form-data" class="form-horizontal" method="POST"
                               novalidate>
 
                             <div class="box-body">
                                 <div class="col-xs-12">
                                     <div class="form-group">
-                                        <label for="name" class="col-sm-2 control-label">学生：</label>
+                                        <label for="name" class="col-sm-2 control-label ">学生：</label>
                                         <div class="col-sm-10">
-                                            <select class="form-control" v-model="student">
+                                            <select class="form-control auto" v-model="student">
                                                 <option value="0" selected>请选择学生</option>
                                                 <option v-bind:value="item" v-for="item in term.students"
-                                                        v-text="item.name"></option>
+                                                        v-text="item.student.name"></option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="name" class="col-sm-2 control-label">课程：</label>
                                         <div class="col-sm-10">
-                                            <select id="parent_id" name="sex" class="form-control" v-model="agenda">
+                                            <select id="parent_id" name="sex" class="form-control auto"
+                                                    v-model="agenda">
                                                 <option value="0" selected>请选择课程</option>
                                                 <option v-bind:value="item" v-for="item in term.agendas"
-                                                        v-text="item.name"></option>
+                                                        v-text="item.agenda.name"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group ">
+                                        <label for="state" class="col-sm-2 control-label">状态：</label>
+                                        <div class="col-sm-10">
+                                            <select id="state" name="state" class="form-control" style="width: auto;"
+                                                    v-model="state">
+                                                <option value="1" selected>待审</option>
+                                                <option value="0">有效</option>
                                             </select>
                                         </div>
                                     </div>
@@ -76,7 +88,8 @@
                 trySubmit: false,
                 term: jsonFilter('{{json_encode($term)}}'),
                 agenda: {},
-                student: {}
+                student: {},
+                state: 1
             },
             watch: {},
             ready: function () {
@@ -96,9 +109,10 @@
                     }
 
                     this.$http.post("{{url('/manage/syllabus/create')}}", {
-                        term_id: this.term.id,
-                        agenda_id: this.agenda.id,
-                        student_id: this.student.id
+                        term_id: _self.term.id,
+                        agenda_id: _self.agenda.id,
+                        student_id: _self.student.id,
+                        state: _self.state
                     })
                             .then(function (response) {
                                         if (response.data.code == 0) {

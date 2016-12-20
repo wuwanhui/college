@@ -51,6 +51,20 @@
                                         </div>
 
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="parent_id" class="col-sm-2 control-label">关联课程：</label>
+                                        <div class="col-sm-10">
+                                            <select id="parent_id" name="sex" class="form-control"
+                                                    v-model="params.parent_id"
+                                            >
+                                                <option value="0" selected>请选择关联课程</option>
+                                                <option v-bind:value="item.id" v-for="item in agendaList"
+                                                        v-text="item.agenda.name"></option>
+                                            </select>
+                                        </div>
+
+                                    </div>
                                     <div class="form-group">
                                         <label for="name" class="col-sm-2 control-label">课程状态：</label>
                                         <div class="col-sm-10">
@@ -97,6 +111,7 @@
                 </validator>
             </div>
         </div>
+        @{{agendaList|json  }}
     </section>
 @endsection
 @section('script')
@@ -108,11 +123,13 @@
             data: {
                 trySubmit: false,
                 list: jsonFilter('{{json_encode($list)}}'),
+                agendaList: jsonFilter('{{json_encode($agendaList)}}'),
                 term: parent.vm.term,
-                params: {term_id: '', agenda_id: '', cycle: '', state: 1, remark: ''},
+                params: {term_id: '', agenda_id: '', cycle: '',parent_id:0, state: 1, remark: ''},
             },
             watch: {},
             ready: function () {
+
                 this.params.term_id = this.term.id;
             },
 

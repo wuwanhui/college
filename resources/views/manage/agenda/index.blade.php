@@ -59,7 +59,6 @@
                                     <th style="width: 60px;"><a href="">编号</a></th>
                                     <th><a href="">课程名称</a></th>
                                     <th style="width: 80px;"><a href="">任课教师</a></th>
-                                    <th><a href="">关联课程</a></th>
                                     <th><a href="">备注</a></th>
                                     <th style="width: 60px;">状态</th>
                                     <th style="width: 100px;">操作</th>
@@ -72,7 +71,7 @@
                                     <td style="text-align: center" v-text="item.id"></td>
                                     <td v-text="item.name"></td>
                                     <td style="text-align: center" v-text="item.teacher.name"></td>
-                                    <td><span v-for="subItem in item.children" v-text="subItem.name+','"></span></td>
+
                                     <td v-text="item.remark">
                                     </td>
 

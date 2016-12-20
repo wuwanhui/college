@@ -66,17 +66,34 @@ class Term_Agenda extends Model
         return $this->hasMany('App\Models\Syllabus', 'agenda_id');
     }
 
-
-    protected $appends = ['state_cn'];
-
-    //状态
-    public static $stateList = [0 => '正常', 1 => '禁用'];
-
-    public function getStateCnAttribute()
+    /**
+     *关联课程
+     */
+    public function parent()
     {
-        if (array_key_exists($this->state, self::$stateList)) {
-            return self::$stateList[$this->state];
-        }
-        return self::$stateList[0];
+        return $this->hasOne('App\Models\Term_Agenda', "parent_id");
     }
+
+//    /**
+//     *子集课程
+//     */
+//    public function children()
+//    {
+//        return $this->hasOne('App\Models\Term_Agenda', "parent_id");
+//    }
+
+
+
+//    protected $appends = ['state_cn'];
+//
+//    //状态
+//    public static $stateList = [0 => '正常', 1 => '禁用'];
+//
+//    public function getStateCnAttribute()
+//    {
+//        if (array_key_exists($this->state, self::$stateList)) {
+//            return self::$stateList[$this->state];
+//        }
+//        return self::$stateList[0];
+//    }
 }
