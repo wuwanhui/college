@@ -77,7 +77,7 @@
 
                                     <td style="text-align: center"><a
                                                 v-bind:class="{'text-warning':item.state==1 }"
-                                                v-on:click="state(item);" v-text="item.state_cn"></a>
+                                                v-on:click="state(item);" v-text="stateCN(item.state)"></a>
                                     </td>
 
                                     <td style="text-align: center">
@@ -207,8 +207,16 @@
                     }, function () {
                         layer.closeAll();
                     });
-                }
+                } ,
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '正常';
+                        case 1:
+                            return '禁用';
 
+                    }
+                },
 
             }
         });

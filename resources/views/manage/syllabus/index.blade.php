@@ -28,9 +28,9 @@
                                     <div class="input-group">
 
                                         <select id="type" name="type" class="form-control" style="width: auto;"
-                                                v-model="term">
-                                            <option v-for="item in terms" v-bind:value="item"
-                                                    v-text="item.name"></option>
+                                                v-model="params.termId">
+                                            <option v-for="item in terms" v-bind:value="item.id"
+                                                    v-text="item.name" v-bind:selected="term.id==item.id"></option>
                                         </select>
                                     </div>
 
@@ -172,8 +172,10 @@
 
                                                 <td style="text-align: center">
                                                     <a v-on:click="edit(item);">编辑</a>
-                                                    |
-                                                    <a v-on:click="random(item)">随机选</a>
+                                                    <template v-if="item.agenda_student.length>4">
+                                                        |
+                                                        <a v-on:click="random(item)">随机选</a>
+                                                    </template>
                                                 </td>
                                             </tr>
 
@@ -210,7 +212,6 @@
 
             </div>
         </div>
-        @{{ term|json }}
     </section>
 @endsection
 @section('script')
@@ -224,7 +225,7 @@
                 syllabus: {},
                 term: jsonFilter('{{json_encode($term)}}'),
                 ids: [],
-                params: {state: -1, page: 1},
+                params: {state: -1, page: 1,termId:0},
             },
             watch: {
                 'params.state': function () {
@@ -233,16 +234,15 @@
                 'params.page': function () {
                     this.init();
                 },
-                'term': function () {
-                    Vue.set(this.params, 'termId', this.term.id);
+                'params.termId': function (val) {
+                   // Vue.set(this.params, 'termId', this.term.id);
                     this.init();
                 }
 
 
             },
             ready: function () {
-                Vue.set(this.params, 'termId', this.term.id);
-                this.term = jsonFilter('{{json_encode($term)}}')
+
             },
 
             methods: {

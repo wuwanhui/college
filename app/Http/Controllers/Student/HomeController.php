@@ -14,6 +14,7 @@ use App\Models\Term_Student;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -51,15 +52,21 @@ class HomeController extends BaseController
             })->with(['agendas' => function ($query) {
                 // $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->get();
 //               / $query->whereNotIn('id', $query->syllabus()->pluck('id'));
-
+                $query->where('parent_id', 0);
                 $query->with(['agenda' => function ($query) {
                     $query->with(['teacher', 'parent']);
-                }, 'parent']);
+                }, 'parent' => function ($query) {
+                    $query->with(['agenda' => function ($query) {
+                        $query->select('id', 'name', 'parent_id');
+                    }]);
+                }]);
 
             }, 'students' => function ($query) {
                 $query->where('student_id', Base::student('id'))->first()->select('id', 'name');
 
-                $query->with(['student', 'syllabus' => function ($query) {
+                $query->with(['student' => function ($query) {
+                    $query->select('id', 'name');
+                }, 'syllabus' => function ($query) {
                     $query->with(['agendaRelate' => function ($query) {
                         $query->with(['agenda' => function ($query) {
                             $query->with(['teacher' => function ($qurey) {
@@ -125,13 +132,17 @@ class HomeController extends BaseController
             if (count($syllabus) == 4) {
                 return response()->json($respJson->errors('选课失败，此学生课程已经超限'));
             }
-            $syllabusItem = Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $agendaId]);
-            if (isset($syllabusItem)) {
-                return response()->json($respJson->succeed('选课成功', $syllabusItem));
-            }
 
-            $respJson->setMsg("选课失败");
-            return response()->json($respJson);
+            DB::beginTransaction();
+
+            $syllabusItem = Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $agendaId]);
+            $parent = $term->agendas->first()->parent;
+            if (isset($parent)) {
+                Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $parent->id]);
+
+            }
+            DB::commit();
+            return response()->json($respJson->succeed('选课成功', $syllabusItem));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());

@@ -71,7 +71,7 @@ class Term_Agenda extends Model
      */
     public function parent()
     {
-        return $this->hasOne('App\Models\Term_Agenda', "parent_id");
+        return $this->hasOne('App\Models\Term_Agenda', "parent_id",'id');
     }
 
 //    /**

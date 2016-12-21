@@ -69,7 +69,7 @@
                         </td>
                         <td style="text-align: center" v-text="item.post">
                         </td>
-                        <td style="text-align: center" v-text="item.state==0?'正常':'禁用'">
+                        <td style="text-align: center" v-text="stateCN(item.state)">
                         </td>
                         <td style="text-align: center"><a
                                     v-on:click="edit(item)">编辑</a>
@@ -167,6 +167,15 @@
                             btn: ['明白了', '知道了']
                         });
                     });
+                } ,
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '正常';
+                        case 1:
+                            return '禁用';
+
+                    }
                 },
 
 

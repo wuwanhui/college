@@ -123,11 +123,11 @@
                                 </td>
                                 <td v-text="item.student.email">
                                 </td>
-                                <td style="text-align: center" v-text="item.student.sex_cn">
+                                <td style="text-align: center" v-text="sexCN(item.student.sex)">
                                 </td>
                                 <td v-text="item.student.phone">
                                 </td>
-                                <td style="text-align: center" v-text="item.state_cn"></td>
+                                <td style="text-align: center" v-text="studentStateCN(item.state)"></td>
 
                                 <td style="text-align: center">
                                     <a v-on:click="deleteStudent(item.id)">移除</a>
@@ -149,7 +149,6 @@
 
             </div>
         </div>
-        @{{ agendas|json }}
     </section>
 @endsection
 @section('script')
@@ -272,7 +271,25 @@
                     }
                 },
 
+                sexCN: function (id) {
+                    switch (parseInt(id)) {
 
+                        case 0:
+                            return '男生';
+                        case 1:
+                            return '女生';
+                        default :
+                            return '未知';
+                    }
+                }, studentStateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '正常';
+                        case 1:
+                            return '禁用';
+
+                    }
+                },
                 save: function (form) {
                     var _self = this;
 

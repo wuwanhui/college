@@ -71,10 +71,10 @@
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
                                     <td style="text-align: center" v-text="item.id"></td>
                                     <td><a v-on:click="detail(item)"  v-text="item.name"></a></td>
-                                    <td style="text-align: center"><a v-on:click="bindAgenda(item)"
+                                    <td style="text-align: center"><a
                                                                       v-text="'绑定课程('+item.agendas.length+')'"></a>
                                     </td>
-                                    <td style="text-align: center"><a v-on:click="bindStudent(item)"
+                                    <td style="text-align: center"><a
                                                                       v-text="'绑定学生('+item.students.length+')'"></a>
                                     </td>
                                     <td v-text="item.remark">

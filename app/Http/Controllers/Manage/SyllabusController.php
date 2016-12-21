@@ -36,7 +36,7 @@ class SyllabusController extends BaseController
                 $term = Term::first();
             }
 
-            $studentList = Syllabus::with(['studentRelate' => function ($query) {
+            $studentList = Syllabus::where('term_id',$term->id)->with(['studentRelate' => function ($query) {
                 $query->with('student');
             }, 'agendaRelate' => function ($query) {
                 $query->with('agenda');

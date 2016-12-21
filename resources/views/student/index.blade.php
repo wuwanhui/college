@@ -55,9 +55,9 @@
 
                 <div class="panel panel-success">
                     <!-- Default panel contents -->
-                    <div class="panel-heading">有效课程</div>
+                    <div class="panel-heading">已选课程</div>
                     <div class="panel-body">
-                        <span v-text="'有效课程共'+validAgenda.length+'门'"></span>
+                        <span v-text="'已选课程共'+validAgenda.length+'门'"></span>
                     </div>
                     <table class="table table-bordered">
                         <thead>
@@ -65,7 +65,7 @@
                             <th>课程名称</th>
                             <th style="width: 100px;">任课教师</th>
                             <th style="width: 100px;">状态</th>
-                            <th style="width: 100px;">操作</th>
+                            <th style="width: 100px;" class="hide">操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -75,7 +75,7 @@
                             <td style="text-align: center" v-text="item.state==0?'有效':'审核中'"
                                 v-bind:class="text-warning:item.state==1">
                             </td>
-                            <td style="text-align: center"><a v-on:click="delete(item)" v-if="item.state==1">删除</a>
+                            <td style="text-align: center"  class="hide"><a v-on:click="delete(item)" v-if="item.state==1">删除</a>
                                 <a v-else>不可删除</a>
                             </td>
                         </tr>
@@ -131,15 +131,19 @@
                             <tr v-for="item in termItem.agendas">
                                 <td v-text="item.agenda.name"></td>
                                 <td v-text="item.agenda.teacher.name"></td>
-                                <td v-text="item.agenda.parent.name">
+                                <td v-text="item.parent.agenda.name">
                                 </td>
                                 <td style="text-align: center" v-text="item.state==1?'报名中':'停止报名'"></td>
-                                <td style="text-align: center"><a v-on:click="add(item)" v-if="filterAdd(item)">加入待选</a>
+                                <td style="text-align: center">
+                                    <a v-on:click="add(item)" v-if="filterAdd(item)">加入待选</a>
                                     <a v-else>已选</a>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
+                        <div class="panel-footer">
+                            注意：若有关联课程将会自动选择！
+                        </div>
                     </div>
                 </template>
             </div>
@@ -301,6 +305,8 @@
 
             methods: {
                 initData: function () {
+                    this.validAgenda=[];
+                    this.invalidAgenda=[];
                     for (var i = 0; i < this.termStudent.syllabus.length; i++) {
                         var subItem = this.termStudent.syllabus[i];
                         if (subItem.state != 2) {
@@ -331,6 +337,7 @@
                                             _self.termStudent = _self.termItem.students[0];
                                             _self.student = _self.termItem.students[0].student;
                                             _self.syllabus = _self.termItem.students[0].syllabus;
+                                            _self.initData();
                                             //_self.termStudent = response.data.data.termStudent;
                                             return
                                         }

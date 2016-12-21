@@ -76,7 +76,7 @@
                         </td>
                         <td v-text="item.phone">
                         </td>
-                        <td style="text-align: center" v-text="item.state_cn"></td>
+                        <td style="text-align: center" v-text="stateCN(item.state)"></td>
 
                         <td style="text-align: center"><a
                                     v-on:click="edit(item)">编辑</a>
@@ -174,7 +174,15 @@
                         });
                     });
                 },
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '正常';
+                        case 1:
+                            return '禁用';
 
+                    }
+                },
 
             }
         });
