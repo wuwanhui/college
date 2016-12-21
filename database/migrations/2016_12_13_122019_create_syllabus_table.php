@@ -18,7 +18,7 @@ class CreateSyllabusTable extends Migration
             $table->integer('student_id')->default(0);//学生
             $table->integer('agenda_id')->default(0);//课程
             $table->integer('term_id')->default(0);//学期
-            $table->integer('state')->default(0);//状态
+            $table->integer('state')->default(1);//状态
             $table->integer('sort')->default(0);//排序
             $table->text('remark')->nullable();//备注
             $table->softDeletes();

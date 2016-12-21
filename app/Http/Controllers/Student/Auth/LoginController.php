@@ -56,7 +56,7 @@ class LoginController extends Controller
             return redirect('/student/');
         }
 
-        return redirect('/manage/login');
+        return redirect('/student/login');
     }
 
     protected function guard()

@@ -25,6 +25,7 @@ class CreateTeacherTable extends Migration
             $table->integer('state')->default(0);//状态
             $table->integer('sort')->default(0);//排序
             $table->text('remark')->nullable();//备注
+            $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
         });

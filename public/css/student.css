@@ -460,3 +460,15 @@ table.detail th {
     transform: scale(1.1);
 }
 
+.navbar {
+    border-radius: 0px;
+    background-color: #336699;
+}
+
+.navbar-default .navbar-brand {
+    color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-text {
+    color: #ffffff;
+}

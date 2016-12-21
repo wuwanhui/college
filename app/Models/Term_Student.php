@@ -56,16 +56,24 @@ class Term_Student extends Model
         return $this->hasOne('App\Models\Student','id', 'student_id');
     }
 
-    protected $appends = ['state_cn'];
-
-    //状态
-    public static $stateList = [0 => '正常', 1 => '禁用'];
-
-    public function getStateCnAttribute()
+    /**
+     *选课记录
+     */
+    public function syllabus()
     {
-        if (array_key_exists($this->state, self::$stateList)) {
-            return self::$stateList[$this->state];
-        }
-        return self::$stateList[0];
+        return $this->hasMany('App\Models\Syllabus','student_id');
     }
+
+//    protected $appends = ['state_cn'];
+//
+//    //状态
+//    public static $stateList = [0 => '正常', 1 => '禁用'];
+//
+//    public function getStateCnAttribute()
+//    {
+//        if (array_key_exists($this->state, self::$stateList)) {
+//            return self::$stateList[$this->state];
+//        }
+//        return self::$stateList[0];
+//    }
 }

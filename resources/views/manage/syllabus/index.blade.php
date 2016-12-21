@@ -148,11 +148,11 @@
                                                                            v-on:click="ids=!ids"/>
                                             </th>
                                             <th style="width: 60px;"><a href="">编号</a></th>
-                                            <th style="width: 120px;"><a href="">课程名称</a></th>
+                                            <th><a href="">课程名称</a></th>
                                             <th style="width: 120px;"><a href="">教师</a></th>
                                             <th style="width: 120px;"><a href="">报名人数</a></th>
                                             <th style="width: 60px;">状态</th>
-                                            <th style="width: 100px;">操作</th>
+                                            <th style="width: 120px;">操作</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -173,8 +173,7 @@
                                                 <td style="text-align: center">
                                                     <a v-on:click="edit(item);">编辑</a>
                                                     |
-                                                    <a v-on:click="delete(item.id)">删除</a>
-
+                                                    <a v-on:click="random(item)">随机选</a>
                                                 </td>
                                             </tr>
 
@@ -268,6 +267,24 @@
                         return
                     }
                     this.init();
+                },
+                random: function (item) {
+                    var _self = this;
+                    layer.prompt({title: '请输入随机选择的数量！', formType: 3}, function (text, index) {
+                        layer.close(index);
+                        //加载数据
+                        _self.$http.post("{{url('/manage/syllabus/random')}}", {agendaId: item.id, num: text})
+                                .then(function (response) {
+                                            if (response.data.code == 0) {
+                                                msg(response.data.msg);
+                                                _self.init();
+                                                return;
+                                            }
+                                            layer.alert(JSON.stringify(response.data.data));
+                                        }
+                                );
+                    });
+
                 },
                 create: function () {
                     openUrl('{{url('/manage/syllabus/create')}}?id=' + this.term.id, '新增选课记录', 800, 300);

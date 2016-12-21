@@ -8,6 +8,7 @@ use App\Models\Syllabus;
 use App\Models\Term;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use stdClass;
 
@@ -66,7 +67,7 @@ class SyllabusController extends BaseController
             $terms = Term::with(['students', 'agendas' => function ($query) {
                 // $query->where('parent_id', 0);
             }])->get();
-            return view('manage.syllabus.index', compact('studentList', 'agendaList', 'terms','term'));
+            return view('manage.syllabus.index', compact('studentList', 'agendaList', 'terms', 'term'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
@@ -109,7 +110,6 @@ class SyllabusController extends BaseController
             $state = $request->state;
             $termId = $request->term_id;
             if (!$termId) {
-
                 return response()->json($respJson->validator('未找到学期参数'));
             }
             $studentId = $request->student_id;
@@ -158,6 +158,7 @@ class SyllabusController extends BaseController
         }
     }
 
+
     public function getEdit(Request $request)
     {
         $respJson = new RespJson();
@@ -179,6 +180,7 @@ class SyllabusController extends BaseController
             return response()->json($respJson);
         }
     }
+
 
     public function postEdit(Request $request)
     {
@@ -212,6 +214,26 @@ class SyllabusController extends BaseController
         }
     }
 
+    public function postRandom(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $num = $request->num;
+            $agendaId = $request->agendaId;
+            if (!$agendaId || !$num) {
+                return response()->json($respJson->validator('参数不存在！'));
+            }
+            DB::beginTransaction();
+            Syllabus::where('agenda_id', $agendaId)->where('state', '!=', 2)->update(['state' => 1]);
+            Syllabus::where('agenda_id', $agendaId)->inRandomOrder()->limit($num)->update(['state' => 0]);
+            DB::commit();
+            return response()->json($respJson->succeed('随机选择成功'));
+        } catch (Exception $ex) {
+            $respJson->setCode(-1);
+            $respJson->setMsg('异常！' . $ex->getMessage());
+            return response()->json($respJson);
+        }
+    }
 
     public function getDetail(Request $request)
     {

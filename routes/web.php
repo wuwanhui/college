@@ -33,7 +33,7 @@ Route::group(['prefix' => 'student', 'namespace' => 'Student'], function () {
     Auth::routes();
 
     Route::get('/', 'HomeController@index');
-
+    Route::post('/edit', 'HomeController@postEdit');
     Route::group(['prefix' => 'syllabus', 'middleware' => 'auth.student'], function () {
 
         Route::post('/add', 'HomeController@addSyllabus');
@@ -264,6 +264,7 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::get('/edit', 'SyllabusController@getEdit');
         Route::post('/edit', 'SyllabusController@postEdit');
         Route::post('/delete', 'SyllabusController@delete');
+        Route::post('/random', 'SyllabusController@postRandom');
         Route::get('/api/list', 'SyllabusController@getList');
 
     });

@@ -77,18 +77,18 @@ class Agenda extends Model
     }
 
 
-    protected $appends = ['state_cn'];
-
-
-    //状态
-    public static $stateList = [0 => '正常', 1 => '禁用'];
-
-    public function getStateCnAttribute()
-    {
-        if (array_key_exists($this->state, self::$stateList)) {
-            return self::$stateList[$this->state];
-        }
-        return self::$stateList[0];
-    }
+//    protected $appends = ['state_cn'];
+//
+//
+//    //状态
+//    public static $stateList = [0 => '正常', 1 => '禁用'];
+//
+//    public function getStateCnAttribute()
+//    {
+//        if (array_key_exists($this->state, self::$stateList)) {
+//            return self::$stateList[$this->state];
+//        }
+//        return self::$stateList[0];
+//    }
 
 }

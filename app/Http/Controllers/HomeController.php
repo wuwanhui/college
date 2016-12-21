@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth.manage:manage');
+        $this->middleware('auth.student');
     }
 
     /**
@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return redirect('/manage/');
+        return redirect('/student/');
     }
 
     /**
