@@ -94,9 +94,10 @@ class StudentController extends BaseController
         }
     }
 
-    public function getEdit(Request $request, $id)
+    public function getEdit(Request $request)
     {
         try {
+            $id=$request->id;
             $student = Student::find($id);
             if (!$student) {
                 return Redirect::back()->withErrors('数据加载失败！');

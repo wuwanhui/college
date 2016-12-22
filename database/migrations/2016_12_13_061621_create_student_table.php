@@ -17,7 +17,6 @@ class CreateStudentTable extends Migration
             $table->increments('id');
             $table->string('name');//姓名
             $table->string('number')->unique();//学号
-            $table->string('idCar')->unique();//身份证号
             $table->string('email')->unique();//邮箱
             $table->string('password')->default('000000');
             $table->integer('sex')->default(0);//性别

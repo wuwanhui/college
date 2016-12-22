@@ -37,18 +37,6 @@
 
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="idCar" class="col-sm-2 control-label">身份证号：</label>
-                                    <div class="col-sm-10">
-                                        <input id="idCar" type="text" class="form-control" name="idCar"
-                                               v-model="student.idCar"
-                                               :class="{ 'error': $validator.idCar.invalid && trySubmit }"
-                                               v-validate:idCar="{ required: true}" placeholder="不能为空">
-
-                                    </div>
-
-                                </div>
-
 
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label">Email：</label>

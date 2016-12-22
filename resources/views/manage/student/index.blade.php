@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <section class="content-header" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <section class="content-header">
         <h1>
             学生管理
             <small>列表</small>
@@ -103,7 +103,7 @@
                     </div>
                     <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
                     <div class="pull-right">
-                        <page v-bind:lists="list"></page>
+                        @include("common.page")
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
             data: {
                 ids: [],
                 params: {page: '', state: ''},
-                list: jsonFilter('{{json_encode($list)}}'),
+                list: {},
                 student: {},
             },
             watch: {
@@ -135,6 +135,7 @@
                 }
             },
             ready: function () {
+                this.init();
             },
 
             methods: {
