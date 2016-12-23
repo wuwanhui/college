@@ -52,13 +52,10 @@
                             <table class="table table-bordered table-hover  table-condensed">
                                 <thead>
                                 <tr style="text-align: center" class="text-center">
-                                    <th style="width: 20px"><input type="checkbox"
-                                                                   name="CheckAll" value="Checkid"
-                                                                   v-on:click="ids=!ids"/>
-                                    </th>
+
                                     <th style="width: 60px;">序号</th>
                                     <th><a href="">课程名称</a></th>
-                                    <th style="width: 80px;"><a href="">任课教师</a></th>
+                                    <th><a href="">任课教师</a></th>
                                     <th><a href="">备注</a></th>
                                     <th style="width: 60px;">状态</th>
                                     <th style="width: 100px;">操作</th>
@@ -66,11 +63,9 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="item in list.data">
-                                    <td><input type="checkbox"
-                                               name="id" v-bind:value="item.id" v-model="ids"/></td>
                                     <td style="text-align: center" v-text="$index+1"></td>
                                     <td v-text="item.name"></td>
-                                    <td style="text-align: center" v-text="item.teacher"></td>
+                                    <td v-text="item.teacher"></td>
 
                                     <td v-text="item.remark">
                                     </td>
@@ -150,11 +145,11 @@
                     this.init();
                 },
                 create: function () {
-                    openUrl('{{url('/manage/agenda/create')}}', '新增课程', 800, 400);
+                    openUrl('{{url('/manage/agenda/create')}}', '新增课程', 800, 600);
                 },
                 edit: function (item) {
                     this.agenda = item;
-                    openUrl('{{url('/manage/agenda/edit')}}', '编辑"' + item.name + '"课程', 800, 400);
+                    openUrl('{{url('/manage/agenda/edit')}}', '编辑"' + item.name + '"课程', 800, 600);
                 },
                 state: function (item) {
                     var _self = this;

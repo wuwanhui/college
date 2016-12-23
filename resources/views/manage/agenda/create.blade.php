@@ -36,13 +36,27 @@
 
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="remark" class="col-sm-2 control-label">课程附件：</label>
+
+                                    <div class="col-sm-10">
+                                        <div class="input-group">
+
+                                            <input id="teacher" type="file" class="form-control" name="teacher"
+                                                   v-model="agenda.accessory"/>
+                                            <span class="input-group-btn">  <button class="btn btn-default"
+                                                                                    type="button">上传</button>  </span>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
-                                    <label for="remark" class="col-sm-2 control-label">内部备注：</label>
+                                    <label for="remark" class="col-sm-2 control-label">课程介绍：</label>
 
                                     <div class="col-sm-10">
                                             <textarea id="remark" type="text" class="form-control"
-                                                      style="width: 100%;height:50px;"
+                                                      style="width: 100%;height:300px;"
                                                       v-model="agenda.remark"></textarea>
                                     </div>
                                 </div>

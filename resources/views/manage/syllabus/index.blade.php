@@ -72,10 +72,6 @@
                                     <table class="table table-bordered table-hover  table-condensed">
                                         <thead>
                                         <tr style="text-align: center" class="text-center">
-                                            <th style="width: 20px"><input type="checkbox"
-                                                                           name="CheckAll" value="Checkid"
-                                                                           v-on:click="ids=!ids"/>
-                                            </th>
                                             <th style="width: 60px;">序号</th>
                                             <th style="width: 120px;"><a href="">学号</a></th>
                                             <th style="width: 120px;"><a href="">姓名</a></th>
@@ -87,8 +83,6 @@
                                         <tbody>
                                         <template v-for="item in studentList.data">
                                             <tr>
-                                                <td><input type="checkbox"
-                                                           name="id" v-bind:value="item.id" v-model="ids"/></td>
                                                 <td style="text-align: center" v-text="$index+1"></td>
                                                 <td v-text="item.student_relate.student.name"></td>
                                                 <td v-text="item.student_relate.student.number"></td>

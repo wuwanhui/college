@@ -47,8 +47,6 @@
                 <table class="table table-bordered table-hover  table-condensed">
                     <thead>
                     <tr style="text-align: center" class="text-center">
-                        <th style="width: 20px"><input type="checkbox"
-                                                       name="CheckAll" value="Checkid"/></th>
                         <th style="width: 60px;">序号
                         </th>
                         <th>姓名
@@ -60,7 +58,6 @@
                     </thead>
                     <tbody>
                     <tr v-for="item in list.data">
-                        <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
                         <td style="text-align: center" v-text="$index+1"></td>
                         <td v-text="item.name"></td>
 

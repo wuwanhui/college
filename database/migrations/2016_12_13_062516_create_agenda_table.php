@@ -18,6 +18,7 @@ class CreateAgendaTable extends Migration
             $table->string('name');//标题
             $table->string('content')->nullable();//课程内容
             $table->string('teacher')->nullable();//任课老师
+            $table->string('accessory')->nullable();//附件信息
             $table->integer('user_id')->default(0);//创建者
             $table->integer('state')->default(0);//状态
             $table->integer('sort')->default(0);//排序
