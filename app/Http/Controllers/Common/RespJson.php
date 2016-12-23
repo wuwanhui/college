@@ -73,7 +73,7 @@ class RespJson
         if (isset($data)) {
             $this->data = $data;
         }
-        return $this;
+        return response()->json($this);
     }
 
     /**
@@ -83,7 +83,7 @@ class RespJson
     {
         $this->code = 1;
         $this->msg = isset($msg) ? $msg : '效验失败';
-        return $this;
+        return response()->json($this);
     }
 
     /**
@@ -93,7 +93,7 @@ class RespJson
     {
         $this->code = 2;
         $this->msg = isset($msg) ? $msg : '数据错误';
-        return $this;
+        return response()->json($this);
     }
 
     /**
@@ -103,6 +103,6 @@ class RespJson
     {
         $this->code = -1;
         $this->msg = isset($msg) ? $msg : '系统异常';
-        return $this;
+        return response()->json($this);
     }
 }

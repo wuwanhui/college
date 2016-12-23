@@ -40,12 +40,10 @@ class SyllabusController extends BaseController
                 $query->with('student');
             }, 'agendaRelate' => function ($query) {
                 $query->with('agenda');
-                // $query->with('teacher');
             }])->orderBy('id', 'desc')->paginate($this->pageSize);
 
 
             $agendaList = $term->agendas()->with(['agenda' => function ($query) {
-                $query->with('teacher');
             }, 'agendaStudent'])->orderBy('id', 'desc')->paginate($this->pageSize);
 
 //            $studentList = $term->syllabus()->with(['term' => function ($query) {

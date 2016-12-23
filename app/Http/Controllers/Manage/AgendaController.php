@@ -40,9 +40,7 @@ class AgendaController extends BaseController
                 if (isset($request->key)) {
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
-            })->with(['teacher' => function ($request) {
-                $request->select('id', 'name');
-            }, 'parent', 'children'])->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'desc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 $respJson->setData($list);
@@ -61,11 +59,7 @@ class AgendaController extends BaseController
         $respJson = new RespJson();
         try {
             $agenda = new Agenda();
-            $teacherList = Teacher::  where('state', 0)->get();
-            $agendaList = Agenda::  where('parent_id', 0)->get();
-
-
-            return view('manage.agenda.create', compact('agenda', 'teacherList', 'agendaList'));
+            return view('manage.agenda.create', compact('agenda'));
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
@@ -105,17 +99,7 @@ class AgendaController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $id = $request->id;
-            if (!$id) {
-                return Redirect::route('alert')->with('message', '参数不存在！');
-            }
-            $id = $request->id;
-            $agenda = Agenda::find($id);
-            if (!$agenda) {
-                return Redirect::route('alert')->withErrors('数据不存在！');
-            }
-
-            return view('manage.agenda.edit', compact('agenda'));
+            return view('manage.agenda.edit');
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());

@@ -73,11 +73,11 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                list: jsonFilter('{{json_encode($list)}}'),
+                list: [],
                 term: parent.vm.term,
                 ids: [],
                 student: {},
-                params: {state: -1, page: 1},
+                params: {state: 0, page: 1},
             },
             watch: {
                 'params.state': function () {
@@ -88,18 +88,18 @@
                 }
             },
             ready: function () {
-
+                this.init();
             },
 
             methods: {
                 init: function () {
                     var _self = this;
                     //加载数据
-                    this.$http.get("{{url('/manage/term/student?json')}}", {params: this.params})
+                    this.$http.post("{{url('/manage/term/student?json')}}", this.params)
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             _self.list = response.data.data;
-                                            return
+                                            return;
                                         }
                                         layer.alert(JSON.stringify(response));
                                     }

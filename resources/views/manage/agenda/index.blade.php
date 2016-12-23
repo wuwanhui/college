@@ -70,7 +70,7 @@
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
                                     <td style="text-align: center" v-text="item.id"></td>
                                     <td v-text="item.name"></td>
-                                    <td style="text-align: center" v-text="item.teacher.name"></td>
+                                    <td style="text-align: center" v-text="item.teacher"></td>
 
                                     <td v-text="item.remark">
                                     </td>
@@ -163,7 +163,7 @@
                 },
                 edit: function (item) {
                     this.agenda = item;
-                    openUrl('{{url('/manage/agenda/edit')}}' + '?id=' + item.id, '编辑"' + item.name + '"课程', 800, 400);
+                    openUrl('{{url('/manage/agenda/edit')}}', '编辑"' + item.name + '"课程', 800, 400);
                 },
                 state: function (item) {
                     var _self = this;
@@ -207,7 +207,7 @@
                     }, function () {
                         layer.closeAll();
                     });
-                } ,
+                },
                 stateCN: function (id) {
                     switch (parseInt(id)) {
                         case 0:

@@ -170,14 +170,10 @@ class TermController extends BaseController
                 return Redirect::route('alert')->withErrors('数据不存在！');
             }
             $agendas = $term->agendas()->with(['agenda' => function ($query) {
-                $query->select('id', 'name', 'teacher_id')->with(['teacher' => function ($query) {
-                    $query->select('id', 'name');
-                }]);
+                $query->select('id', 'name');
             }, 'agendaStudent', 'parent' => function ($query) {
                 $query->with(['agenda' => function ($query) {
-                    $query->select('id', 'name', 'teacher_id')->with(['teacher' => function ($query) {
-                        $query->select('id', 'name');
-                    }]);
+                    $query->select('id', 'name', ' ');
                 }]);
             }])->orderBy('id', 'desc')->paginate($this->pageSize);
 
@@ -451,6 +447,52 @@ class TermController extends BaseController
             }
             return response()->json($respJson->errors('删除失败'));
 
+        } catch (Exception $ex) {
+            $respJson->setCode(-1);
+            $respJson->setMsg('异常！' . $ex->getMessage());
+            return response()->json($respJson);
+        }
+    }
+
+
+    public function postStudent(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $list = Student::where(function ($query) use ($request) {
+                if (isset($request->state) && $request->state != -1) {
+                    $query->where('state', $request->state);
+                }
+
+                if (isset($request->key)) {
+                    $query->Where('name', 'like', '%' . $request->key . '%');
+                }
+            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            $respJson->setData($list);
+            return response()->json($respJson);
+        } catch (Exception $ex) {
+            $respJson->setCode(-1);
+            $respJson->setMsg('异常！' . $ex->getMessage());
+            return response()->json($respJson);
+        }
+    }
+
+
+    public function postAgenda(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $list = Agenda::where(function ($query) use ($request) {
+                if (isset($request->state) && $request->state != -1) {
+                    $query->where('state', $request->state);
+                }
+
+                if (isset($request->key)) {
+                    $query->Where('name', 'like', '%' . $request->key . '%');
+                }
+            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            $respJson->setData($list);
+            return response()->json($respJson);
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());

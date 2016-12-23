@@ -151,7 +151,7 @@
                         <li >
                             <a onclick="url('{{url('/manage/agenda')}}')"><i class="fa fa-circle-o text-yellow"></i>课程设置</a>
                         </li>
-                        <li >
+                        <li class="hide">
                             <a onclick="url('{{url('/manage/teacher')}}')"><i
                                         class="fa fa-circle-o text-yellow"></i>教师管理</a>
                         </li>

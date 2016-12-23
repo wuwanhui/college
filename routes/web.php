@@ -214,6 +214,9 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::post('/bind/student', 'TermController@postBindStudent');
         Route::post('/delete/student', 'TermController@postDeleteStudent');
 
+        Route::post('/student', 'TermController@postStudent');
+        Route::post('/agenda', 'TermController@postAgenda');
+
     });
     /**
      * 课程管理

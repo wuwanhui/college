@@ -4,7 +4,7 @@
     <section class="content">
         <div class="box box-primary">
             <validator name="validator">
-                <form enctype="multipart/form-data" class="form-horizontal"  method="POST"
+                <form enctype="multipart/form-data" class="form-horizontal" method="POST"
                       novalidate>
 
                     <div class="box-body">
@@ -27,13 +27,11 @@
                                 <div class="form-group">
                                     <label for="teacher_id" class="col-sm-2 control-label">任课教师：</label>
                                     <div class="col-sm-10">
-                                        <select id="teacher_id" name="sex" class="form-control"
-                                                v-model="agenda.teacher_id"
-                                        >
-                                            <option value="" selected>请选择任课教师</option>
-                                            <option v-bind:value="item.id" v-for="item in teacherList"
-                                                    v-text="item.name"></option>
-                                        </select>
+                                        <input id="teacher" type="text" class="form-control" name="teacher"
+                                               v-model="agenda.teacher"
+                                               :class="{ 'error': $validator.teacher.invalid && trySubmit }"
+                                               v-validate:teacher="{ required: true}" placeholder="不能为空">
+
                                     </div>
 
                                 </div>
@@ -78,32 +76,21 @@
             data: {
                 trySubmit: false,
                 agenda: {},
-                teacherList: jsonFilter('{{json_encode($teacherList)}}'),
-                agendaList: jsonFilter('{{json_encode($agendaList)}}'),
             },
             watch: {},
             ready: function () {
+                this.init();
             },
 
             methods: {
                 init: function () {
-                    var _self = this;
-                    this.$http.get("{{url('/manage/teacher/api/list')}}")
-                            .then(function (response) {
-                                        if (response.data.code == 0) {
-                                            _self.teacherList = response.data.data;
-                                            return
-                                        }
-                                        parent.layer.alert(JSON.stringify(response));
-                                    }
-                            );
+
                 },
 
                 save: function (form) {
                     var _self = this;
 
                     if (form.invalid) {
-                        //this.$log('agenda');
                         this.trySubmit = true;
                         return;
                     }

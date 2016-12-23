@@ -124,16 +124,29 @@
                 list: jsonFilter('{{json_encode($list)}}'),
                 agendaList: jsonFilter('{{json_encode($agendaList)}}'),
                 term: parent.vm.term,
-                params: {term_id: '', agenda_id: '', cycle: '',parent_id:0, state: 1, remark: ''},
+                params: {term_id: '', agenda_id: '', cycle: '', parent_id: 0, state: 0, remark: ''},
             },
             watch: {},
             ready: function () {
 
                 this.params.term_id = this.term.id;
+                //this.init();
             },
 
             methods: {
-
+                init: function () {
+                    var _self = this;
+                    //加载数据
+                    this.$http.post("{{url('/manage/term/agenda?json')}}", this.params)
+                            .then(function (response) {
+                                        if (response.data.code == 0) {
+                                            _self.list = response.data.data;
+                                            return;
+                                        }
+                                        layer.alert(JSON.stringify(response));
+                                    }
+                            );
+                },
                 save: function (form) {
                     var _self = this;
                     if (form.invalid) {

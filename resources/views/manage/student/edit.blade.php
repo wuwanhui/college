@@ -110,6 +110,7 @@
                 </form>
             </validator>
         </div>
+        @{{ student|json }}
     </section>
 @endsection
 @section('script')
@@ -120,25 +121,38 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                student: jsonFilter('{{json_encode($student)}}'),
+                // student: {},
             },
             watch: {},
             ready: function () {
-
+                // this.init();
+                this.$set('student', parent.vm.student);
             },
             methods: {
+                init: function () {
 
+                    var _self = this;
+                    this.$http.get("{{url('/manage/student?json')}}", {params: this.params})
+                            .then(function (response) {
+                                        if (response.data.code == 0) {
+                                            _self.list = response.data.data;
+                                            return
+                                        }
+                                        layer.alert(JSON.stringify(response.data.data));
+                                    }
+                            );
+
+                },
 
                 save: function (form) {
                     var _self = this;
 
                     if (form.invalid) {
-                        //this.$log('student');
                         this.trySubmit = true;
                         return;
                     }
 
-                    this.$http.post("{{url('/manage/student/edit')}}", this.student)
+                    this.$http.post("{{url('/manage/student/edit?id=')}}" + this.student.id, JSON.stringify(_self.student))
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             parent.msg('编辑成功');

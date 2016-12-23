@@ -97,7 +97,7 @@ class StudentController extends BaseController
     public function getEdit(Request $request)
     {
         try {
-            $id=$request->id;
+            $id = $request->id;
             $student = Student::find($id);
             if (!$student) {
                 return Redirect::back()->withErrors('数据加载失败！');
@@ -108,32 +108,26 @@ class StudentController extends BaseController
         }
     }
 
-    public function postEdit(Request $request, $id)
+    public function postEdit(Request $request)
     {
         $respJson = new RespJson();
         try {
-
+            $id = $request->id;
             $student = Student::find($id);
             if (!$student) {
-                return Redirect::back()->withErrors('数据加载失败！');
+                return $respJson->errors('数据加载失败！');
             }
             $input = $request->all();
 
             $validator = Validator::make($input, $student->Rules(), $student->messages());
             if ($validator->fails()) {
-                $respJson->setCode(2);
-                $respJson->setMsg("效验失败");
-                $respJson->setData($validator);
-                return response()->json($respJson);
+                return $respJson->validator('效验失败！', $validator);
             }
             $student->fill($input);
             if ($student->save()) {
-                $respJson->setData($student);
-                return response()->json($respJson);
+                return $respJson->succeed('修改成功！', $student);
             }
-            $respJson->setMsg("修改失败");
-
-            return response()->json($respJson);
+            return $respJson->errors('修改失败！');
         } catch (Exception $ex) {
             $respJson->setCode(-1);
             $respJson->setMsg('异常！' . $ex->getMessage());
@@ -183,9 +177,7 @@ class StudentController extends BaseController
         $respJson = new RespJson();
         try {
             $list = Student::where(function ($query) use ($request) {
-                if (isset($request->createId)) {
-                    $query->where('createId', $request->createId);
-                }
+
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);
                 }

@@ -13,6 +13,7 @@ class Agenda extends Model
 {
     use SoftDeletes;
     protected $table = "agendas";
+    protected $fillable = ['name', 'content', 'teacher', 'state', 'sort', 'remark',];
     protected $guarded = ['_token'];
 
     /**
@@ -44,24 +45,6 @@ class Agenda extends Model
     {
         return $this->belongsToMany('App\Models\Term', 'term_agenda');
     }
-
-    /**
-     *关联课程
-     */
-    public function parent()
-    {
-        return $this->belongsTo('App\Models\Agenda', "parent_id");
-    }
-
-    /**
-     *子集课程
-     */
-    public function children()
-    {
-        return $this->hasMany('App\Models\Agenda', "parent_id");
-    }
-
-
 
 
     /**

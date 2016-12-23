@@ -16,9 +16,8 @@ class CreateAgendaTable extends Migration
         Schema::create('agendas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');//标题
-            $table->integer('teacher_id')->default(0);//任课教师
-            $table->integer('parent_id')->default(0);//上级
             $table->string('content')->nullable();//课程内容
+            $table->string('teacher')->nullable();//任课老师
             $table->integer('user_id')->default(0);//创建者
             $table->integer('state')->default(0);//状态
             $table->integer('sort')->default(0);//排序

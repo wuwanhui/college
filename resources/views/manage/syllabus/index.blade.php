@@ -162,7 +162,7 @@
                                                            name="id" v-bind:value="item.id" v-model="ids"/></td>
                                                 <td style="text-align: center" v-text="item.id"></td>
                                                 <td v-text="item.agenda.name"></td>
-                                                <td v-text="item.agenda.teacher.name"></td>
+                                                <td v-text="item.agenda.teacher"></td>
                                                 <td v-text="item.agenda_student.length"></td>
 
 
