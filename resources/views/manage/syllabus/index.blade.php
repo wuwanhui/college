@@ -76,7 +76,7 @@
                                                                            name="CheckAll" value="Checkid"
                                                                            v-on:click="ids=!ids"/>
                                             </th>
-                                            <th style="width: 60px;"><a href="">编号</a></th>
+                                            <th style="width: 60px;">序号</th>
                                             <th style="width: 120px;"><a href="">学号</a></th>
                                             <th style="width: 120px;"><a href="">姓名</a></th>
                                             <th><a href="">所选课程</a></th>
@@ -89,7 +89,7 @@
                                             <tr>
                                                 <td><input type="checkbox"
                                                            name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                                <td style="text-align: center" v-text="item.id"></td>
+                                                <td style="text-align: center" v-text="$index+1"></td>
                                                 <td v-text="item.student_relate.student.name"></td>
                                                 <td v-text="item.student_relate.student.number"></td>
                                                 <td v-text="item.agenda_relate.agenda.name"></span>
@@ -147,7 +147,7 @@
                                                                            name="CheckAll" value="Checkid"
                                                                            v-on:click="ids=!ids"/>
                                             </th>
-                                            <th style="width: 60px;"><a href="">编号</a></th>
+                                            <th style="width: 60px;">序号</th>
                                             <th><a href="">课程名称</a></th>
                                             <th style="width: 120px;"><a href="">教师</a></th>
                                             <th style="width: 120px;"><a href="">报名人数</a></th>
@@ -160,7 +160,7 @@
                                             <tr>
                                                 <td><input type="checkbox"
                                                            name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                                <td style="text-align: center" v-text="item.id"></td>
+                                                <td style="text-align: center" v-text="$index+1"></td>
                                                 <td v-text="item.agenda.name"></td>
                                                 <td v-text="item.agenda.teacher"></td>
                                                 <td v-text="item.agenda_student.length"></td>
@@ -186,16 +186,7 @@
                                 <div class="box-footer no-padding">
                                     <div class="mailbox-controls">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm"><i
-                                                        class="fa fa-trash-o"
-                                                        v-on:click="delete(ids)"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
-                                                                                                    v-on:click="btnBank()"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default btn-sm"><i
-                                                        class="fa fa-share"></i>
-                                            </button>
+
                                         </div>
                                         <button type="button" class="btn btn-default btn-sm"><i
                                                     class="fa fa-refresh"></i>

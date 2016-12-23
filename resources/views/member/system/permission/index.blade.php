@@ -88,7 +88,7 @@
                                     <tr style="text-align: center" class="text-center">
                                         <th style="width: 20px"><input type="checkbox"
                                                                        name="CheckAll" value="Checkid"/></th>
-                                        <th style="width: 60px;"><a href="">编号</a></th>
+                                        <th style="width: 60px;">序号</th>
                                         <th><a href="">名称</a></th>
                                         <th><a href="">标识</a></th>
                                         <th><a href="">父级</a></th>
@@ -103,7 +103,7 @@
                                     <tr v-for="item in childrenList.data">
                                         <td><input type="checkbox"
                                                    name="id"/></td>
-                                        <td style="text-align: center" v-text="item.id"></td>
+                                        <td style="text-align: center" v-text="$index+1"></td>
                                         <td v-text="item.name"></td>
                                         <td v-text="item.code"></td>
                                         <td v-text="item.parent.name"></td>
@@ -138,7 +138,7 @@
                                 <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
                                 </button>
                             </div>
-                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+
                             <div class="pull-right">
                             </div>
                         </div>

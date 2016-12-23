@@ -58,7 +58,7 @@
                                                                    name="CheckAll" value="Checkid"
                                                                    v-on:click="ids=!ids"/>
                                     </th>
-                                    <th style="width: 60px;"><a href="">编号</a></th>
+                                    <th style="width: 60px;">序号</th>
                                     <th><a href="">角色名称</a></th>
                                     <th><a href="">描述</a></th>
                                     <th style="width: 100px;">状态</th>
@@ -69,7 +69,7 @@
                                 <tr v-for="item in lists.data">
                                     <td><input type="checkbox"
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                    <td style="text-align: center" v-text="item.id"></td>
+                                    <td style="text-align: center" v-text="$index+1"></td>
                                     <td v-text="item.name"></td>
 
                                     <td v-text="item.remark">

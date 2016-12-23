@@ -49,14 +49,12 @@ class TermController extends BaseController
             }, 'students'])->orderBy('id', 'desc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
-                $respJson->setData($list);
-                return response()->json($respJson);
+                return $respJson->succeed('成功', $list);
             }
             return view('manage.term.index', compact('list'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
+
         }
     }
 
@@ -67,9 +65,7 @@ class TermController extends BaseController
             $term = new Term();
             return view('manage.term.create', compact('term'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -81,23 +77,17 @@ class TermController extends BaseController
             $inputs = $request->all();
             $validator = Validator::make($inputs, $term->Rules(), $term->messages());
             if ($validator->fails()) {
-                $respJson->setCode(2);
-                $respJson->setMsg("效验失败");
-                $respJson->setData($validator);
-                return response()->json($respJson);
+                return $respJson->validator('效验失败', $validator);
             }
             $term->fill($inputs);
             if ($term->save()) {
-                $respJson->setData($term);
-                return response()->json($respJson);
+                return $respJson->succeed('成功', $term);
+
             }
-            $respJson->setCode(1);
-            $respJson->setMsg("新增失败");
-            return response()->json($respJson);
+            return $respJson->failure('新增失败');
+
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -117,9 +107,7 @@ class TermController extends BaseController
 
             return view('manage.term.edit', compact('term'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -143,15 +131,13 @@ class TermController extends BaseController
 //                $job->onQueue('emails') ->delay(Carbon::now()->addMinutes(1));
 //
 //                dispatch($job);
-                $respJson->setData($term);
-                return response()->json($respJson);
+
+                return $respJson->failure('成功', $term);
             }
-            $respJson->setMsg("修改失败");
-            return response()->json($respJson);
+            return $respJson->failure('修改失败');
+
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -187,14 +173,12 @@ class TermController extends BaseController
                 $obj->agendas = $agendas;
                 $obj->students = $students;
                 $respJson->setData($obj);
-                return response()->json($respJson);
+                return $respJson->succeed('成功', $obj);
             }
 
             return view('manage.term.detail', compact('term', 'agendas', 'students'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -205,25 +189,20 @@ class TermController extends BaseController
         try {
             $ids = $request->ids;
             if (!$ids) {
-                $respJson->setCode(2);
-                $respJson->setMsg('参数错误');
-                return response()->json($respJson);
+                return $respJson->validator('参数错误');
             }
             $count = Term::destroy($ids);
 
             if ($count > 0) {
-                $respJson->setMsg('删除成功');
-                $respJson->setData($count);
-                return response()->json($respJson);
+                return $respJson->succeed('删除成功', $count);
+
             }
-            $respJson->setCode(1);
-            $respJson->setMsg('删除失败');
-            return response()->json($respJson);
+
+            return $respJson->failure('删除失败');
+
 
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -245,13 +224,10 @@ class TermController extends BaseController
                     $query->where('state', $request->state);
                 }
             })->orderBy('id', 'desc')->select('id', 'name')->get();
+            return $respJson->succeed('成功', $list);
 
-            $respJson->setData($list);
-            return response()->json($respJson);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -273,19 +249,16 @@ class TermController extends BaseController
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'desc')->get();
             if (isset($request->json)) {
-                $respJson->setData($list);
-                return response()->json($respJson);
+                return $respJson->succeed('成功', $list);
             }
 
             $agendaList = $term->agendas()->where('parent_id', 0)->with('agenda')->get();
 
             return view('manage.term.bindAgenda', compact('list', 'agendaList'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -296,37 +269,36 @@ class TermController extends BaseController
             $parentId = $request->parent_id;
             $agendaId = $request->agenda_id;
             if (!$agendaId) {
-                return response()->json($respJson->validator('请选择课程'));
+                return $respJson->validator('请选择课程');
             }
 
             $termId = $request->term_id;
             if (!$termId) {
-                return response()->json($respJson->validator());
+                return $respJson->validator('参数错误');
             }
 
             $cycle = $request->cycle;
             if (!$cycle) {
-                return response()->json($respJson->validator('请选择开课周期'));
+                return $respJson->validator('请选择开课周期');
             }
             $state = $request->state;
             if (!$state) {
-                return response()->json($respJson->validator('请选择课程状态'));
+                return $respJson->validator('请选择课程状态');
             }
             $term = Term::find($termId);
             if (!$term) {
-                return response()->json($respJson->errors('数据不存在!'));
+                return $respJson->errors('数据不存在!');
             }
 
             $termAgenda = Term_Agenda::firstOrCreate(['term_id' => $termId, 'agenda_id' => $agendaId, 'parent_id' => $parentId, 'cycle' => $cycle, 'state' => $state]);
 
             if ($termAgenda) {
-                return response()->json($respJson->succeed('绑定课程成功'));
+                return $respJson->succeed('绑定课程成功', $termAgenda);
             }
 
-            $respJson->setMsg("绑定失败");
-            return response()->json($respJson);
+            return $respJson->failure('绑定失败');
         } catch (Exception $ex) {
-            return response()->json($respJson->exception('异常！' . $ex->getMessage()));
+            return $respJson->exception($ex);
         }
     }
 
@@ -337,29 +309,26 @@ class TermController extends BaseController
         try {
             $id = $request->id;
             if (!$id) {
-                return response()->json($respJson->validator('参数错误'));
+                return $respJson->validator('参数错误');
             }
             $agenda = Term_Agenda::find($id);
             if (!$agenda) {
-                return response()->json($respJson->validator('数据不存在！'));
+                return $respJson->validator('数据不存在！');
             }
             if (count($agenda->agendaStudent) > 0) {
-                return response()->json($respJson->validator('对不起此课程已经有学生选择！'));
+                return $respJson->validator('对不起此课程已经有学生选择！');
             }
 
             $count = $agenda->delete();
 
             if ($count > 0) {
-                return response()->json($respJson->succeed('删除成功'));
+                return $respJson->succeed('删除成功', $count);
             }
-            $respJson->setCode(1);
-            $respJson->setMsg('删除失败');
-            return response()->json($respJson);
+            return $respJson->failure('删除失败');
+
 
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -379,17 +348,14 @@ class TermController extends BaseController
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'desc')->get();
             if (isset($request->json)) {
-                $respJson->setData($list);
-                return response()->json($respJson);
+                return $respJson->succeed('成功', $list);
             }
 
             return view('manage.term.bindStudent', compact('list'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -399,28 +365,28 @@ class TermController extends BaseController
         try {
             $termId = $request->term_id;
             if (!$termId) {
-                return response()->json($respJson->errors('参数不存在'));
+                return $respJson->errors('参数不存在');
             }
             $term = Term::find($termId);
             if (!$term) {
-                return response()->json($respJson->errors('数据不存在'));
+                return $respJson->errors('数据不存在');
             }
             $studentId = $request->student_id;
             if (!$studentId) {
-                return response()->json($respJson->errors('参数不存在'));
+                return $respJson->errors('参数不存在');
             }
             $student = Student::find($studentId);
             if (!$student) {
-                return response()->json($respJson->errors('参数不存在'));
+                return $respJson->errors('参数不存在');
             }
             $termStudent = Term_Student::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId]);
             if ($termStudent) {
-                return response()->json($respJson->succeed('绑定学生成功'));
+                return $respJson->succeed('绑定学生成功');
             }
 
-            return response()->json($respJson->errors('新增失败'));
+            return $respJson->errors('新增失败');
         } catch (Exception $ex) {
-            return response()->json($respJson->exception('异常！' . $ex->getMessage()));
+            return $respJson->exception($ex);
         }
     }
 
@@ -430,27 +396,25 @@ class TermController extends BaseController
         try {
             $id = $request->id;
             if (!$id) {
-                return response()->json($respJson->validator('参数错误'));
+                return $respJson->validator('参数错误');
             }
             $student = Term_Student::find($id);
             if (!$student) {
-                return response()->json($respJson->validator('数据不存在！'));
+                return $respJson->validator('数据不存在！');
             }
             if (count($student->agendaAgenda) > 0) {
-                return response()->json($respJson->validator('对不起此学生已经有选择课程！'));
+                return $respJson->validator('对不起此学生已经有选择课程！');
             }
 
             $count = $student->delete();
 
             if ($count > 0) {
-                return response()->json($respJson->succeed('删除成功'));
+                return $respJson->succeed('删除成功');
             }
-            return response()->json($respJson->errors('删除失败'));
+            return $respJson->errors('删除失败');
 
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -468,12 +432,9 @@ class TermController extends BaseController
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
             })->orderBy('id', 'desc')->paginate($this->pageSize);
-            $respJson->setData($list);
-            return response()->json($respJson);
+            return $respJson->succeed('成功', $list);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -491,12 +452,9 @@ class TermController extends BaseController
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
             })->orderBy('id', 'desc')->paginate($this->pageSize);
-            $respJson->setData($list);
-            return response()->json($respJson);
+            return $respJson->succeed('成功', $list);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 }

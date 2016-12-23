@@ -1,5 +1,8 @@
 <?php
 namespace App\Http\Controllers\Common;
+
+use Exception;
+
 /**
  * Created by PhpStorm.
  * User: wuhong
@@ -79,30 +82,52 @@ class RespJson
     /**
      * @param mixed $data
      */
-    public function validator($msg = null)
+    public function validator($msg = null, $data = null)
     {
         $this->code = 1;
         $this->msg = isset($msg) ? $msg : '效验失败';
+        if (isset($data)) {
+            $this->data = $data;
+        }
         return response()->json($this);
     }
 
     /**
      * @param mixed $data
      */
-    public function errors($msg = null)
+    public function failure($msg = null, $data = null)
     {
         $this->code = 2;
-        $this->msg = isset($msg) ? $msg : '数据错误';
+        $this->msg = isset($msg) ? $msg : '失败';
+        if (isset($data)) {
+            $this->data = $data;
+        }
         return response()->json($this);
     }
 
     /**
      * @param mixed $data
      */
-    public function exception($msg = null)
+    public function errors($msg = null, $data = null)
     {
-        $this->code = -1;
-        $this->msg = isset($msg) ? $msg : '系统异常';
+        $this->code = 3;
+        $this->msg = isset($msg) ? $msg : '数据错误';
+        if (isset($data)) {
+            $this->data = $data;
+        }
         return response()->json($this);
+    }
+
+
+    /**
+     * @param mixed $data
+     */
+    public function exception(Exception $ex)
+    {
+        if (isset($ex)) {
+            $this->code = -1;
+            $this->msg = '异常！' . $ex->getMessage() . '，第' . $ex->getLine() . '行';
+            return response()->json($this);
+        }
     }
 }

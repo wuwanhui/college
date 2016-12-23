@@ -56,7 +56,7 @@
                                                                    name="CheckAll" value="Checkid"
                                                                    v-on:click="ids=!ids"/>
                                     </th>
-                                    <th style="width: 60px;"><a href="">编号</a></th>
+                                    <th style="width: 60px;">序号</th>
                                     <th><a href="">名称</a></th>
                                     <th style="width: 120px;"><a href="">课程</a></th>
                                     <th style="width: 120px;"><a href="">学生</a></th>
@@ -69,20 +69,20 @@
                                 <tr v-for="item in list.data">
                                     <td><input type="checkbox"
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                    <td style="text-align: center" v-text="item.id"></td>
-                                    <td><a v-on:click="detail(item)"  v-text="item.name"></a></td>
+                                    <td style="text-align: center" v-text="$index+1"></td>
+                                    <td><a v-on:click="detail(item)" v-text="item.name"></a></td>
                                     <td style="text-align: center"><a
-                                                                      v-text="'绑定课程('+item.agendas.length+')'"></a>
+                                                v-text="'绑定课程('+item.agendas.length+')'"></a>
                                     </td>
                                     <td style="text-align: center"><a
-                                                                      v-text="'绑定学生('+item.students.length+')'"></a>
+                                                v-text="'绑定学生('+item.students.length+')'"></a>
                                     </td>
                                     <td v-text="item.remark">
                                     </td>
 
                                     <td style="text-align: center"><a
                                                 v-bind:class="{'text-warning':item.state==1 }"
-                                                v-on:click="state(item);" v-text="item.state_cn"></a>
+                                                v-on:click="state(item);" v-text="stateCN(item.state)"></a>
                                     </td>
 
                                     <td style="text-align: center">
@@ -98,16 +98,8 @@
                         <div class="box-footer no-padding">
                             <div class="mailbox-controls">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"
-                                                                                            v-on:click="delete(ids)"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
-                                                                                            v-on:click="btnBank()"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
-                                    </button>
+
                                 </div>
-                                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i>
                                 </button>
                                 <div class="pull-right">
                                     @include("common.page")
@@ -243,8 +235,16 @@
                     }, function () {
                         layer.closeAll();
                     });
-                }
+                },
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '正常';
+                        case 1:
+                            return '禁用';
 
+                    }
+                },
 
             }
         });

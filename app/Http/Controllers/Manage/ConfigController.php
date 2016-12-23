@@ -64,9 +64,7 @@ class ConfigController extends BaseController
             }
             return view('manage.config.index', compact('config'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 }

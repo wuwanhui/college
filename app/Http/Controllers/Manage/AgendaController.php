@@ -48,9 +48,7 @@ class AgendaController extends BaseController
             }
             return view('manage.agenda.index', compact('list'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -61,9 +59,7 @@ class AgendaController extends BaseController
             $agenda = new Agenda();
             return view('manage.agenda.create', compact('agenda'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -89,9 +85,7 @@ class AgendaController extends BaseController
             $respJson->setMsg("新增失败");
             return response()->json($respJson);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -133,9 +127,7 @@ class AgendaController extends BaseController
             $respJson->setMsg("修改失败");
             return response()->json($respJson);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -166,9 +158,7 @@ class AgendaController extends BaseController
             }
             return view('manage.agenda.detail', compact('agenda'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -195,9 +185,7 @@ class AgendaController extends BaseController
             return response()->json($respJson);
 
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -223,9 +211,7 @@ class AgendaController extends BaseController
             $respJson->setData($list);
             return response()->json($respJson);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 

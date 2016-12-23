@@ -52,7 +52,7 @@
                                                            name="CheckAll" value="Checkid"
                                                            v-on:click="ids=!ids"/>
                             </th>
-                            <th style="width: 60px;"><a href="">编号</a></th>
+                            <th style="width: 60px;">序号</th>
                             <th><a href="">课程名称</a></th>
                             <th style="width: 140px;"><a href="">周期</a></th>
                             <th style="width: 80px;"><a href="">任课教师</a></th>
@@ -66,7 +66,7 @@
                         <tr v-for="item in agendas.data">
                             <td><input type="checkbox"
                                        name="id" v-bind:value="item.id" v-model="ids"/></td>
-                            <td style="text-align: center" v-text="item.id"></td>
+                            <td style="text-align: center" v-text="$index+1"></td>
                             <td v-text="item.agenda.name"></td>
                             <td v-text="cycleCN(item.cycle)"></td>
                             <td style="text-align: center" v-text="item.agenda.teacher"></td>
@@ -100,7 +100,7 @@
                             <tr style="text-align: center" class="text-center">
                                 <th style="width: 20px"><input type="checkbox"
                                                                name="CheckAll" value="Checkid"/></th>
-                                <th style="width: 60px;"><a href="">编号</a></th>
+                                <th style="width: 60px;">序号</th>
                                 <th>姓名</th>
                                 <th><a href="">学号</a></th>
                                 <th><a href="">身份证号</a></th>
@@ -114,7 +114,7 @@
                             <tbody>
                             <tr v-for="item in students.data">
                                 <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
-                                <td style="text-align: center" v-text="item.id"></td>
+                                <td style="text-align: center" v-text="$index+1"></td>
                                 <td style="text-align: center" v-text="item.student.name"></td>
 
                                 <td style="text-align: center" v-text="item.student.number">

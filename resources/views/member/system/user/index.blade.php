@@ -49,7 +49,7 @@
                     <tr style="text-align: center" class="text-center">
                         <th style="width: 20px"><input type="checkbox"
                                                        name="CheckAll" value="Checkid"/></th>
-                        <th style="width: 60px;"><a href="">编号</a>
+                        <th style="width: 60px;">序号
                         </th>
                         <th>姓名
                         </th>
@@ -62,7 +62,7 @@
                     <tbody>
                     <tr v-for="item in userList.data">
                         <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
-                        <td style="text-align: center" v-text="item.id"></td>
+                        <td style="text-align: center" v-text="$index+1"></td>
                         <td v-text="item.name"></td>
 
                         <td v-text="item.email">
@@ -98,7 +98,7 @@
                         <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
                         </button>
                     </div>
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+
                     <div class="pull-right">
                         <page v-bind:lists="userList"></page>
                     </div>

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class BaseController extends Controller
 {
-    public $pageSize = 10;
+    public $pageSize = 20;
 
     public function __construct()
     {

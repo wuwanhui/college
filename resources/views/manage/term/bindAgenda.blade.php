@@ -22,7 +22,7 @@
                                                     v-validate:agenda_id="{ required: true}"
                                             >
                                                 <option value="" selected>请选择课程</option>
-                                                <option v-bind:value="item.id" v-for="item in list.data"
+                                                <option v-bind:value="item.id" v-for="item in list"
                                                         v-text="item.name"></option>
                                             </select>
 

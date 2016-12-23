@@ -56,7 +56,7 @@
                                                                    name="CheckAll" value="Checkid"
                                                                    v-on:click="ids=!ids"/>
                                     </th>
-                                    <th style="width: 60px;"><a href="">编号</a></th>
+                                    <th style="width: 60px;">序号</th>
                                     <th><a href="">课程名称</a></th>
                                     <th style="width: 80px;"><a href="">任课教师</a></th>
                                     <th><a href="">备注</a></th>
@@ -68,7 +68,7 @@
                                 <tr v-for="item in list.data">
                                     <td><input type="checkbox"
                                                name="id" v-bind:value="item.id" v-model="ids"/></td>
-                                    <td style="text-align: center" v-text="item.id"></td>
+                                    <td style="text-align: center" v-text="$index+1"></td>
                                     <td v-text="item.name"></td>
                                     <td style="text-align: center" v-text="item.teacher"></td>
 
@@ -93,16 +93,7 @@
                         <div class="box-footer no-padding">
                             <div class="mailbox-controls">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"
-                                                                                            v-on:click="delete(ids)"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
-                                                                                            v-on:click="btnBank()"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
-                                    </button>
                                 </div>
-                                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i>
                                 </button>
                                 <div class="pull-right">
                                     @include("common.page")

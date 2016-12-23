@@ -71,7 +71,7 @@
                         <tbody>
                         <tr v-for="item in validAgenda">
                             <td v-text="item.agenda_relate.agenda.name"></td>
-                            <td v-text="item.agenda_relate.agenda.teacher.name"></td>
+                            <td v-text="item.agenda_relate.agenda.teacher"></td>
                             <td style="text-align: center" v-text="item.state==0?'有效':'审核中'"
                                 v-bind:class="text-warning:item.state==1">
                             </td>
@@ -100,7 +100,7 @@
                             <tbody>
                             <tr v-for="item in invalidAgenda">
                                 <td v-text="item.agenda_relate.agenda.name"></td>
-                                <td v-text="item.agenda_relate.agenda.teacher.name"></td>
+                                <td v-text="item.agenda_relate.agenda.teacher"></td>
                                 <td style="text-align: center" v-text="'课程已满'"></td>
                                 <td style="text-align: center"><a v-on:click="delete(item)"
                                                                   v-if="termItem.state==0">删除</a>
@@ -130,7 +130,7 @@
                             <tbody>
                             <tr v-for="item in termItem.agendas">
                                 <td v-text="item.agenda.name"></td>
-                                <td v-text="item.agenda.teacher.name"></td>
+                                <td v-text="item.agenda.teacher"></td>
                                 <td v-text="item.parent.agenda.name">
                                 </td>
                                 <td style="text-align: center" v-text="item.state==1?'报名中':'停止报名'"></td>

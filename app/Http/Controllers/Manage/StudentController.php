@@ -46,20 +46,19 @@ class StudentController extends BaseController
             }
             return view('manage.student.index', compact('list'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
 
     public function getCreate(Request $request)
     {
+        $respJson = new RespJson();
         try {
             $student = new Student();
             return view('manage.student.create', compact('student'));
         } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常：' . $ex->getMessage() . ",行号：" . $ex->getLine());
+            return $respJson->exception($ex);
         }
     }
 
@@ -88,14 +87,13 @@ class StudentController extends BaseController
             $respJson->setMsg("新增失败");
             return response()->json($respJson);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
     public function getEdit(Request $request)
     {
+        $respJson = new RespJson();
         try {
             $id = $request->id;
             $student = Student::find($id);
@@ -104,7 +102,7 @@ class StudentController extends BaseController
             }
             return view('manage.student.edit', compact('student'));
         } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
+            return $respJson->exception($ex);
         }
     }
 
@@ -129,14 +127,13 @@ class StudentController extends BaseController
             }
             return $respJson->errors('修改失败！');
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
     public function getDetail(Request $request, $id)
     {
+        $respJson = new RespJson();
         try {
             $student = Student::find($id);
             if (!$student) {
@@ -144,12 +141,13 @@ class StudentController extends BaseController
             }
             return view('manage.student.detail', compact('student'));
         } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
+            return $respJson->exception($ex);
         }
     }
 
     public function delete(Request $request, $id)
     {
+        $respJson = new RespJson();
         try {
             $student = Student::find($id);
             if (!$student) {
@@ -162,7 +160,7 @@ class StudentController extends BaseController
             return Redirect::back()->withErrors('删除失败！');
 
         } catch (Exception $ex) {
-            return Redirect::back()->withInput()->withErrors('异常！' . $ex->getMessage());
+            return $respJson->exception($ex);
         }
     }
 
@@ -181,14 +179,12 @@ class StudentController extends BaseController
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);
                 }
-            })->orderBy('id', 'desc')->select('id', 'name')->get();
+            })->orderBy('id', 'ase')->select('id', 'name')->get();
 
             $respJson->setData($list);
             return response()->json($respJson);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 }

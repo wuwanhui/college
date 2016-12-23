@@ -54,7 +54,7 @@ class HomeController extends BaseController
 //               / $query->whereNotIn('id', $query->syllabus()->pluck('id'));
                 $query->where('parent_id', 0);
                 $query->with(['agenda' => function ($query) {
-                    $query->with(['teacher', 'parent']);
+                    $query->with([  'parent']);
                 }, 'parent' => function ($query) {
                     $query->with(['agenda' => function ($query) {
                         $query->select('id', 'name', 'parent_id');
@@ -69,10 +69,8 @@ class HomeController extends BaseController
                 }, 'syllabus' => function ($query) {
                     $query->with(['agendaRelate' => function ($query) {
                         $query->with(['agenda' => function ($query) {
-                            $query->with(['teacher' => function ($qurey) {
-                                $qurey->select('id', 'name');
-                            }]);
-                            $query->select('id', 'name', 'teacher_id');
+
+                            $query->select('id', 'name' );
                         }]);
                     }]);
                 }]);

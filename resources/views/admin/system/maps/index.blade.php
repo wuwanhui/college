@@ -77,7 +77,7 @@
                             <tr style="text-align: center" class="text-center">
                                 <th style="width: 20px"><input type="checkbox"
                                                                name="CheckAll" value="Checkid"/></th>
-                                <th style="width: 60px;"><a href="">编号</a></th>
+                                <th style="width: 60px;">序号</th>
                                 <th>名称
                                 </th>
                                 <th>标识
@@ -117,16 +117,9 @@
                     <div class="box-footer no-padding">
                         <div class="mailbox-controls">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"
-                                                                                        v-on:click="delete(ids)"></i>
-                                </button>
-                                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"
-                                                                                        v-on:click="btnBank()"></i>
-                                </button>
-                                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i>
-                                </button>
+
                             </div>
-                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+
                             <div class="pull-right">
                                 <page v-bind:lists="baseMapsList.data"></page>
                             </div>
