@@ -261,8 +261,8 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                initBase: jsonFilter('{{json_encode($initBase)}}'),
-                customer: jsonFilter('{{json_encode($customer)}}')
+                initBase: eval({!!json_encode($initBase)!!}),
+                customer: eval({!!json_encode($customer)!!})
             },
             ready: function () {
             },

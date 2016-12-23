@@ -85,7 +85,7 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                term: jsonFilter('{{json_encode($term)}}'),
+                term: eval({!!json_encode($term)!!}),
                 agenda: {},
                 student: {},
                 state: 1

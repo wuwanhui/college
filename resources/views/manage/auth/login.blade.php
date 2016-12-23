@@ -40,16 +40,14 @@
         </div>
         <!-- /.login-logo -->
         <div class="login-box-body">
-            <p class="login-box-msg h4"><i class="icon-desktop"></i> 在线选课系统-管理平台</p>
+            <p class="login-box-msg h4"><i class="icon-desktop"></i> 在线选课系统-管理员入口</p>
             <form role="form" method="POST">
                 {{ csrf_field() }}
                 <div class="form-group has-feedback">
                     <input id="email" name="email" type="email" class="form-control" placeholder="邮箱">
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
                     <input id="password" name="password" type="password" class="form-control" placeholder="密码">
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <div class="row">
                     <div class="col-xs-6">
@@ -66,8 +64,7 @@
             </form>
             <div class="social-auth-links text-center">
                 <p>- OR -</p>
-                <a href="#">忘记密码</a>
-                <a href="/manage/register"> 注册</a>
+                <a href="/student/login">学生登录</a>
             </div>
 
         </div>

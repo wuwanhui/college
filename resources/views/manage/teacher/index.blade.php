@@ -103,7 +103,7 @@
             data: {
                 ids: [],
                 params: {page: '', state: ''},
-                list: jsonFilter('{{json_encode($list)}}'),
+                list: eval({!!json_encode($list)!!}),
                 teacher: {},
             },
             watch: {

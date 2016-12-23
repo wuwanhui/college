@@ -39,7 +39,7 @@ class TeacherController extends BaseController
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'asc')->paginate($this->pageSize);
             if (isset($request->json)) {
                 $respJson->setData($list);
                 return response()->json($respJson);
@@ -186,7 +186,7 @@ class TeacherController extends BaseController
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);
                 }
-            })->orderBy('id', 'desc')->select('id', 'name')->get();
+            })->orderBy('id', 'asc')->select('id', 'name')->get();
 
             $respJson->setData($list);
             return response()->json($respJson);

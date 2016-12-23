@@ -12,7 +12,6 @@
                             <th style="width: 60px;">序号</th>
                             <th>姓名</th>
                             <th><a href="">学号</a></th>
-                            <th><a href="">身份证号</a></th>
                             <th><a href="">邮箱</a></th>
                             <th><a href="">性别</a></th>
                             <th><a href="">手机号</a></th>
@@ -25,8 +24,6 @@
                             <td style="text-align: center" v-text="item.name"></td>
 
                             <td style="text-align: center" v-text="item.number">
-                            </td>
-                            <td style="text-align: center" v-text="item.idCar">
                             </td>
                             <td v-text="item.email">
                             </td>
@@ -73,7 +70,7 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                list: [],
+                list: eval({!!json_encode($list) !!}),
                 term: parent.vm.term,
                 ids: [],
                 student: {},
@@ -88,14 +85,15 @@
                 }
             },
             ready: function () {
-                this.init();
+                //this.init();
             },
 
             methods: {
                 init: function () {
                     var _self = this;
+                    _self.list = [];
                     //加载数据
-                    this.$http.post("{{url('/manage/term/student?json')}}", this.params)
+                    this.$http.get("{{url('/manage/term/bind/student?json')}}", {params: {id: this.term.id}})
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             _self.list = response.data.data;
@@ -117,8 +115,8 @@
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             parent.msg('绑定成功');
-                                            parent.layer.close(frameindex);
                                             parent.vm.init();
+                                            _self.init();
                                             return
                                         }
                                         parent.layer.alert(JSON.stringify(response));

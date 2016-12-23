@@ -42,10 +42,7 @@
                                     <div class="col-sm-10">
                                         <div class="input-group">
 
-                                            <input id="teacher" type="file" class="form-control" name="teacher"
-                                                   v-model="agenda.accessory"/>
-                                            <span class="input-group-btn">  <button class="btn btn-default"
-                                                                                    type="button">上传</button>  </span>
+
                                         </div>
                                     </div>
                                 </div>
@@ -79,9 +76,37 @@
                 </form>
             </validator>
         </div>
+        <div class="dropz"></div>
     </section>
+
 @endsection
 @section('script')
+    <link rel="stylesheet" href="/js/dropzone/min/basic.min.css">
+    <link rel="stylesheet" href="/js/dropzone/min/dropzone.min.css">
+    <script src="/js/dropzone/min/dropzone.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".dropz").dropzone({
+                url: "handle-upload.php",
+                addRemoveLinks: true,
+                dictRemoveLinks: "x",
+                dictCancelUpload: "x",
+                maxFiles: 10,
+                maxFilesize: 5,
+                acceptedFiles: ".js",
+                init: function () {
+                    this.on("success", function (file) {
+                        console.log("File " + file.name + "uploaded");
+                    });
+                    this.on("removedfile", function (file) {
+                        console.log("File " + file.name + "removed");
+                    });
+                }
+            });
+        });
+
+    </script>
+
     <script type="application/javascript">
         var frameindex = parent.layer.getFrameIndex(window.name);
         parent.layer.iframeAuto(frameindex);

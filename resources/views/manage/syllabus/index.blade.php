@@ -204,11 +204,11 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                studentList: jsonFilter('{{json_encode($studentList)}}'),
-                agendaList: jsonFilter('{{json_encode($agendaList)}}'),
-                terms: jsonFilter('{{json_encode($terms)}}'),
+                studentList: eval({!!json_encode($studentList)!!}),
+                agendaList: eval({!!json_encode($agendaList)!!}),
+                terms: eval({!!json_encode($terms)!!}),
                 syllabus: {},
-                term: jsonFilter('{{json_encode($term)}}'),
+                term: eval({!!json_encode($term)!!}),
                 ids: [],
                 params: {state: -1, page: 1,termId:0},
             },

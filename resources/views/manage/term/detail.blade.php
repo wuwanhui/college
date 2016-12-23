@@ -103,7 +103,6 @@
                                 <th style="width: 60px;">序号</th>
                                 <th>姓名</th>
                                 <th><a href="">学号</a></th>
-                                <th><a href="">身份证号</a></th>
                                 <th><a href="">邮箱</a></th>
                                 <th><a href="">性别</a></th>
                                 <th><a href="">手机号</a></th>
@@ -119,8 +118,7 @@
 
                                 <td style="text-align: center" v-text="item.student.number">
                                 </td>
-                                <td style="text-align: center" v-text="item.student.idCar">
-                                </td>
+
                                 <td v-text="item.student.email">
                                 </td>
                                 <td style="text-align: center" v-text="sexCN(item.student.sex)">
@@ -158,9 +156,9 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                term: jsonFilter('{{json_encode($term)}}'),
-                agendas: jsonFilter('{{json_encode($agendas)}}'),
-                students: jsonFilter('{{json_encode($students)}}'),
+                term: eval({!!json_encode($term)!!}),
+                agendas: eval({!!json_encode($agendas)!!}),
+                students: eval({!!json_encode($students)!!}),
             },
             ready: function () {
             },
@@ -275,9 +273,9 @@
                     switch (parseInt(id)) {
 
                         case 0:
-                            return '男生';
+                            return '男';
                         case 1:
-                            return '女生';
+                            return '女';
                         default :
                             return '未知';
                     }

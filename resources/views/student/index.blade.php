@@ -45,8 +45,8 @@
                                             v-bind:selected="termItem.id==item.id"
                                             v-text="item.name"></option>
                                 </select></div>
-                            <div class="col-sm-6 text-right" ><h4 class="text-danger"
-                                        v-text="'当前可选4门课程，已选：'+validAgenda.length+'门，待选：'+(4-validAgenda.length)+'门'"></h4>
+                            <div class="col-sm-6 text-right"><h4 class="text-danger"
+                                                                 v-text="'当前可选4门课程，已选：'+validAgenda.length+'门，待选：'+(4-validAgenda.length)+'门'"></h4>
                             </div>
                         </div>
 
@@ -75,7 +75,8 @@
                             <td style="text-align: center" v-text="item.state==0?'有效':'审核中'"
                                 v-bind:class="text-warning:item.state==1">
                             </td>
-                            <td style="text-align: center"  class="hide"><a v-on:click="delete(item)" v-if="item.state==1">删除</a>
+                            <td style="text-align: center" class="hide"><a v-on:click="delete(item)"
+                                                                           v-if="item.state==1">删除</a>
                                 <a v-else>不可删除</a>
                             </td>
                         </tr>
@@ -269,8 +270,8 @@
             el: '.content',
             data: {
                 params: {page: '', state: '', term_id: 0},
-                termList: jsonFilter('{{json_encode($termList)}}'),
-                termItem: jsonFilter('{{json_encode($termItem)}}'),
+                termList: eval({!!json_encode($termList)!!}),
+                termItem: eval({!!json_encode($termItem)!!}),
                 termStudent: {},
                 student: {},
                 syllabus: {},
@@ -305,8 +306,8 @@
 
             methods: {
                 initData: function () {
-                    this.validAgenda=[];
-                    this.invalidAgenda=[];
+                    this.validAgenda = [];
+                    this.invalidAgenda = [];
                     for (var i = 0; i < this.termStudent.syllabus.length; i++) {
                         var subItem = this.termStudent.syllabus[i];
                         if (subItem.state != 2) {

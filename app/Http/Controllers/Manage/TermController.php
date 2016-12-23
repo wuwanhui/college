@@ -46,7 +46,7 @@ class TermController extends BaseController
                 }
             })->with(['agendas' => function ($query) {
                 // $query->select('agenda_id');
-            }, 'students'])->orderBy('id', 'desc')->paginate($this->pageSize);
+            }, 'students'])->orderBy('id', 'asc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 return $respJson->succeed('成功', $list);
@@ -159,13 +159,13 @@ class TermController extends BaseController
                 $query->select('id', 'name');
             }, 'agendaStudent', 'parent' => function ($query) {
                 $query->with(['agenda' => function ($query) {
-                    $query->select('id', 'name', ' ');
+                    $query->select('id', 'name', 'teacher');
                 }]);
-            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+            }])->orderBy('id', 'asc')->paginate($this->pageSize);
 
             $students = $term->students()->with(['student' => function ($query) {
 
-            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+            }])->orderBy('id', 'asc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 $obj = new stdClass();
@@ -223,7 +223,7 @@ class TermController extends BaseController
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);
                 }
-            })->orderBy('id', 'desc')->select('id', 'name')->get();
+            })->orderBy('id', 'asc')->select('id', 'name')->get();
             return $respJson->succeed('成功', $list);
 
         } catch (Exception $ex) {
@@ -249,7 +249,7 @@ class TermController extends BaseController
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->get();
+            })->orderBy('id', 'asc')->get();
             if (isset($request->json)) {
                 return $respJson->succeed('成功', $list);
             }
@@ -336,19 +336,23 @@ class TermController extends BaseController
     public function getBindStudent(Request $request)
     {
         $respJson = new RespJson();
+        $termId = $request->id;
+        $term = Term::find($termId);
         try {
-            $list = Student::where(function ($query) use ($request) {
-                $termId = $request->id;
-                if (isset($termId)) {
-                    $query->whereNotIn('id', Term::find($termId)->students()->pluck('student_id'));
+            $list = Student::where(function ($query) use ($request, $term) {
+
+                if (isset($term)) {
+                    $query->whereNotIn('id', $term->students()->pluck('student_id'));
                 }
+
                 if ($request->state) {
                     $query->where('state', $request->state);
                 }
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->get();
+
+            })->orderBy('id', 'asc')->orderBy('id', 'asc')->paginate($this->pageSize);
             if (isset($request->json)) {
                 return $respJson->succeed('成功', $list);
             }
@@ -431,7 +435,7 @@ class TermController extends BaseController
                 if (isset($request->key)) {
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'asc')->paginate($this->pageSize);
             return $respJson->succeed('成功', $list);
         } catch (Exception $ex) {
             return $respJson->exception($ex);
@@ -451,7 +455,7 @@ class TermController extends BaseController
                 if (isset($request->key)) {
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'asc')->paginate($this->pageSize);
             return $respJson->succeed('成功', $list);
         } catch (Exception $ex) {
             return $respJson->exception($ex);

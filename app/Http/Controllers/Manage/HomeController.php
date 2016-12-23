@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manage;
 
 use App\Http\Controllers\Common\RespJson;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller

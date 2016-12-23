@@ -40,7 +40,7 @@ class AgendaController extends BaseController
                 if (isset($request->key)) {
                     $query->Where('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'asc')->paginate($this->pageSize);
 
             if (isset($request->json)) {
                 $respJson->setData($list);
@@ -206,7 +206,7 @@ class AgendaController extends BaseController
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);
                 }
-            })->orderBy('id', 'desc')->select('id', 'name')->get();
+            })->orderBy('id', 'asc')->select('id', 'name')->get();
 
             $respJson->setData($list);
             return response()->json($respJson);

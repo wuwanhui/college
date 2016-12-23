@@ -121,8 +121,8 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                list: jsonFilter('{{json_encode($list)}}'),
-                agendaList: jsonFilter('{{json_encode($agendaList)}}'),
+                list: eval({!!json_encode($list)!!}),
+                agendaList: eval({!!json_encode($agendaList)!!}),
                 term: parent.vm.term,
                 params: {term_id: '', agenda_id: '', cycle: '', parent_id: 0, state: 0, remark: ''},
             },

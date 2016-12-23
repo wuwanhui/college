@@ -64,8 +64,8 @@
 
                                         <select v-model="student.sex" id="sex" class="form-control" name="sex">
                                             <option value="-1">未知</option>
-                                            <option value="0">男生</option>
-                                            <option value="0">女生</option>
+                                            <option value="0">男</option>
+                                            <option value="1">女</option>
                                         </select>
 
 
@@ -110,7 +110,6 @@
                 </form>
             </validator>
         </div>
-        @{{ student|json }}
     </section>
 @endsection
 @section('script')

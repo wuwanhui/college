@@ -106,7 +106,7 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                list: jsonFilter('{{json_encode($list)}}'),
+                list: eval({!! json_encode($list) !!}),
                 agenda: {},
                 ids: [],
                 params: {state: -1, page: 1},

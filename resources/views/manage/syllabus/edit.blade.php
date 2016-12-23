@@ -148,7 +148,7 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                linkman: jsonFilter('{{json_encode($linkman)}}'),
+                linkman: eval({!!json_encode($linkman)!!}),
             },
             watch: {},
             ready: function () {

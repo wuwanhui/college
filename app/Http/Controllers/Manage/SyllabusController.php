@@ -40,11 +40,11 @@ class SyllabusController extends BaseController
                 $query->with('student');
             }, 'agendaRelate' => function ($query) {
                 $query->with('agenda');
-            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+            }])->orderBy('id', 'asc')->paginate($this->pageSize);
 
 
             $agendaList = $term->agendas()->with(['agenda' => function ($query) {
-            }, 'agendaStudent'])->orderBy('id', 'desc')->paginate($this->pageSize);
+            }, 'agendaStudent'])->orderBy('id', 'asc')->paginate($this->pageSize);
 
 //            $studentList = $term->syllabus()->with(['term' => function ($query) {
 //                $query->select('id', 'name');
@@ -52,7 +52,7 @@ class SyllabusController extends BaseController
 //                $query->select('id', 'name');
 //            }, 'agenda' => function ($query) {
 //                $query->select('id', 'name');
-//            }])->orderBy('id', 'desc')->paginate($this->pageSize);
+//            }])->orderBy('id', 'asc')->paginate($this->pageSize);
 
 
             if (isset($request->json)) {
@@ -311,7 +311,7 @@ class SyllabusController extends BaseController
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);
                 }
-            })->orderBy('id', 'desc')->select('id', 'name')->get();
+            })->orderBy('id', 'asc')->select('id', 'name')->get();
 
             $respJson->setData($list);
             return response()->json($respJson);

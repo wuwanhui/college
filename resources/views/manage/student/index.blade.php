@@ -50,7 +50,6 @@
                         <th style="width: 60px;">序号</th>
                         <th>姓名</th>
                         <th><a href="">学号</a></th>
-                        <th><a href="">身份证号</a></th>
                         <th><a href="">邮箱</a></th>
                         <th><a href="">性别</a></th>
                         <th><a href="">手机号</a></th>
@@ -64,8 +63,6 @@
                         <td style="text-align: center" v-text="item.name"></td>
 
                         <td style="text-align: center" v-text="item.number">
-                        </td>
-                        <td style="text-align: center" v-text="item.idCar">
                         </td>
                         <td v-text="item.email">
                         </td>
@@ -107,7 +104,7 @@
             data: {
                 ids: [],
                 params: {page: '', state: ''},
-                list: {},
+                list: eval({!! json_encode($list) !!}),
                 student: {},
             },
             watch: {
@@ -125,7 +122,7 @@
                 }
             },
             ready: function () {
-                this.init();
+                //this.init();
             },
 
             methods: {
@@ -147,11 +144,11 @@
                 },
 
                 create: function () {
-                    openUrl('{{url('/manage/student/create')}}', '新增学生', 800, 600);
+                    openUrl('{{url('/manage/student/create')}}', '新增学生', 800, 500);
                 },
                 edit: function (item) {
                     this.student = item;
-                    openUrl('{{url('/manage/student/edit')}}?id=' + item.id, '编辑"' + item.name + '"学生', 800, 600);
+                    openUrl('{{url('/manage/student/edit')}}?id=' + item.id, '编辑"' + item.name + '"学生', 800, 500);
                 },
                 delete: function (item) {
                     layer.confirm('您确认要删除“' + item.name + '”吗？', {

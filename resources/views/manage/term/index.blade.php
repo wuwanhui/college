@@ -112,7 +112,7 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                list: jsonFilter('{{json_encode($list)}}'),
+                list: eval({!!json_encode($list)!!}),
                 term: {},
                 ids: [],
                 agendaIds: [],
@@ -236,6 +236,17 @@
                             return '正常';
                         case 1:
                             return '禁用';
+
+                    }
+                },
+                sexCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '男';
+                        case 1:
+                            return '女';
+                        default:
+                            return '未知';
 
                     }
                 },

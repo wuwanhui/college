@@ -39,7 +39,7 @@ class StudentController extends BaseController
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->orderBy('id', 'desc')->paginate($this->pageSize);
+            })->orderBy('id', 'asc')->paginate($this->pageSize);
             if (isset($request->json)) {
                 $respJson->setData($list);
                 return response()->json($respJson);
