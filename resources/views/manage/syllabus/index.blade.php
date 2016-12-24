@@ -45,7 +45,7 @@
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="home">
-                        <div class="box box-primary">
+                        <div class="box box-primary ">
                             <div class="box-body no-padding">
                                 <form method="Post" class="form-inline">
                                     <table class="table table-bordered table-hover  table-condensed">
@@ -68,7 +68,8 @@
                                                 <td v-text="item.agenda_relate.agenda.name"></span>
                                                 </td>
 
-                                                <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
+                                                <td style="text-align: center" v-text="stateCN(item.state)"
+                                                    v-bind:class="{'text-warning':item.state==2}">
 
                                                 </td>
                                                 <td style="text-align: center"><a v-on:click="mail(item);">邮件</a>
@@ -127,12 +128,11 @@
                                                 <td v-text="item.agenda_student.length" style="text-align: center"></td>
 
 
-                                                <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
+                                                <td style="text-align: center" v-text="stateAgendaCN(item.state)">
 
                                                 </td>
 
                                                 <td style="text-align: center">
-
                                                     <template v-if="item.agenda_student.length>4">
                                                         |
                                                         <a v-on:click="random(item)">随机选</a>
@@ -303,7 +303,29 @@
                     }, function () {
                         layer.closeAll();
                     });
-                }
+                },
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '生效';
+                        case 1:
+                            return '待审';
+                        case 2:
+                            return '拒绝';
+                    }
+                },
+                stateAgendaCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '开课中';
+                        case 1:
+                            return '报名中';
+                        case 2:
+                            return '结束报名';
+                        case 3:
+                            return '取消课程';
+                    }
+                },
 
 
             }

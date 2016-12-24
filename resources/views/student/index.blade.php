@@ -26,6 +26,7 @@
                 </div>
             </div>
         </nav>
+        <h4 v-text="'欢迎'+student.name+'登录系统'"></h4>
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
@@ -134,10 +135,17 @@
                                 <td v-text="item.agenda.teacher"></td>
                                 <td v-text="item.parent.agenda.name">
                                 </td>
-                                <td style="text-align: center" v-text="item.state==1?'报名中':'停止报名'"></td>
+                                <td style="text-align: center" v-text="stateCN(item.state)"></td>
                                 <td style="text-align: center">
-                                    <a v-on:click="add(item)" v-if="filterAdd(item)">加入待选</a>
-                                    <a v-else>已选</a>
+                                    <template v-if="filterAdd(item)">
+                                        <template v-if="item.state==1">
+                                            <a v-on:click="add(item)">加入待选</a>
+                                        </template>
+                                    </template>
+                                    <template v-else>
+                                        <a>已选</a>
+                                    </template>
+
                                 </td>
                             </tr>
                             </tbody>
@@ -341,8 +349,8 @@
                     openUrl('{{url('/student/agenda/detail?id=')}}' + item.id, '课程详情', 800, 600);
                 },
                 add: function (item) {
-                    if(this.validAgenda.length>4){
-                     return   msg('课程已选满！');
+                    if (this.validAgenda.length > 3) {
+                        return msg('课程已选满！');
                     }
                     this.syllabus = item;
                     var _self = this;
@@ -425,7 +433,18 @@
 
 
                 },
-
+                stateCN: function (id) {
+                    switch (parseInt(id)) {
+                        case 0:
+                            return '开课中';
+                        case 1:
+                            return '报名中';
+                        case 2:
+                            return '结束报名';
+                        case 3:
+                            return '取消课程';
+                    }
+                },
 
             }
         });

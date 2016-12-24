@@ -47,8 +47,9 @@ class SyllabusController extends BaseController
 
             $agendaList = $term->agendas()->with(['agenda' => function ($query) {
             }, 'agendaStudent' => function ($query) {
-                $query->where('state', '!=', 2);
-            }])->orderBy('id', 'asc')->get();
+                $query->select('id', 'student_id', 'agenda_id', 'term_id', 'state');
+
+            }])->orderBy('id', 'asc')->orderBy('state', 'asc')->get();
 
 //            $studentList = $term->syllabus()->with(['term' => function ($query) {
 //                $query->select('id', 'name');

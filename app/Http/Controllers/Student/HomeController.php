@@ -55,7 +55,7 @@ class HomeController extends BaseController
             })->with(['agendas' => function ($query) {
                 // $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->get();
 //               / $query->whereNotIn('id', $query->syllabus()->pluck('id'));
-//               / $query->where('parent_id', 0);
+                $query->where('parent_id', 0);
                 $query->with(['agenda' => function ($query) {
                     //  $query->with([  'parent']);
                 }, 'parent' => function ($query) {
@@ -141,7 +141,6 @@ class HomeController extends BaseController
             }
 
             DB::commit();
-            Mail::send(new SyllabusMail($syllabusItem));
             return $respJson->succeed('选课成功', $syllabusItem);
         } catch (Exception $ex) {
             return $respJson->exception($ex);
