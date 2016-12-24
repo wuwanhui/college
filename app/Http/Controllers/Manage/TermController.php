@@ -161,11 +161,11 @@ class TermController extends BaseController
                 $query->with(['agenda' => function ($query) {
                     $query->select('id', 'name', 'teacher');
                 }]);
-            }])->orderBy('id', 'asc')->paginate($this->pageSize);
+            }])->orderBy('id', 'asc')->get();
 
             $students = $term->students()->with(['student' => function ($query) {
 
-            }])->orderBy('id', 'asc')->paginate($this->pageSize);
+            }])->orderBy('id', 'asc')->get();
 
             if (isset($request->json)) {
                 $obj = new stdClass();
@@ -302,6 +302,41 @@ class TermController extends BaseController
         }
     }
 
+    public function getEditAgenda(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $id = $request->id;
+            $termAgenda = Term_Agenda::where('id', $id)->with('agenda')->first();
+            $term = $termAgenda->term;
+
+            $agendaList = $term->agendas()->where('parent_id', 0)->where('agenda_id', '!=', $termAgenda->agenda_id)->with('agenda')->get();
+
+            return view('manage.term.editAgenda', compact('agendaList', 'termAgenda'));
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+    }
+
+    public function postEditAgenda(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $id = $request->id;
+            $termAgenda = Term_Agenda::find($id);
+            if (!$termAgenda) {
+                return $respJson->validator('数据不存在');
+            }
+            $termAgenda->fill($request->all());
+            if ($termAgenda->save()) {
+                return $respJson->succeed('成功', $termAgenda);
+            }
+
+            return $respJson->failure('修改失败');
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+    }
 
     public function postDeleteAgenda(Request $request)
     {

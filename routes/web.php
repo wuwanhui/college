@@ -207,6 +207,8 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
 
         Route::get('/bind/agenda', 'TermController@getBindAgenda');
         Route::post('/bind/agenda', 'TermController@postBindAgenda');
+        Route::get('/edit/agenda', 'TermController@getEditAgenda');
+        Route::post('/edit/agenda', 'TermController@postEditAgenda');
         Route::post('/delete/agenda', 'TermController@postDeleteAgenda');
 
 

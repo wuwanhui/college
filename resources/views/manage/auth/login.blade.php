@@ -64,7 +64,7 @@
             </form>
             <div class="social-auth-links text-center">
                 <p>- OR -</p>
-                <a href="/student/login">学生登录</a>
+                <a href="/student">学生登录</a>
             </div>
 
         </div>

@@ -25,9 +25,9 @@
                     <tbody>
                     <tr>
                         <th style="width:200px;">课程数:</th>
-                        <td v-text="agendas.total"></td>
+                        <td v-text="agendas.length"></td>
                         <th style="width:200px;">学生数:</th>
-                        <td v-text="students.total"></td>
+                        <td v-text="students.length"></td>
                     </tr>
 
                     </tbody>
@@ -63,7 +63,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="item in agendas.data">
+                        <tr v-for="item in agendas">
                             <td><input type="checkbox"
                                        name="id" v-bind:value="item.id" v-model="ids"/></td>
                             <td style="text-align: center" v-text="$index+1"></td>
@@ -80,7 +80,7 @@
                                         v-text="stateCN(item.state)"></a>
                             </td>
 
-                            <td style="text-align: center">
+                            <td style="text-align: center"><a v-on:click="editAgenda(item)">编辑</a> |
                                 <a v-on:click="deleteAgenda(item.id)">移除</a>
                             </td>
                         </tr>
@@ -111,7 +111,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="item in students.data">
+                            <tr v-for="item in students">
                                 <td><input type="checkbox" v-model="ids" v-bind:value="item.id"/></td>
                                 <td style="text-align: center" v-text="$index+1"></td>
                                 <td style="text-align: center" v-text="item.student.name"></td>
@@ -159,6 +159,7 @@
                 term: eval({!!json_encode($term)!!}),
                 agendas: eval({!!json_encode($agendas)!!}),
                 students: eval({!!json_encode($students)!!}),
+                termAgenda: {}
             },
             ready: function () {
             },
@@ -187,6 +188,12 @@
                 bindAgenda: function () {
 
                     openUrl('{{url('/manage/term/bind/agenda')}}?id=' + this.term.id, '绑定课程', 800, 400);
+                },
+
+
+                editAgenda: function (item) {
+                    this.termAgenda = item;
+                    openUrl('{{url('/manage/term/edit/agenda')}}?id=' + item.id, '编辑课程', 800, 400);
                 },
                 deleteAgenda: function (id) {
                     var _self = this;

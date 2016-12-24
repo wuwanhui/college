@@ -13,6 +13,7 @@ class Term_Agenda extends Model
 {
 
     protected $table = "term_agenda";
+    protected $fillable = ['agenda_id', 'term_id', 'cycle','parent_id','user_id', 'state', 'sort', 'remark',];
     // use SoftDeletes;
     protected $guarded = ['_token'];
 

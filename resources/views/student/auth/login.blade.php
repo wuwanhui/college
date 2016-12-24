@@ -64,7 +64,7 @@
             </form>
             <div class="social-auth-links text-center">
                 <p>- OR -</p>
-                <a href="/manage/login">管理员登录</a>
+                <a href="/manage">管理员登录</a>
             </div>
 
         </div>
