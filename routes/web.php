@@ -242,6 +242,7 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::get('/edit', 'AgendaController@getEdit');
         Route::post('/edit', 'AgendaController@postEdit');
         Route::post('/delete', 'AgendaController@delete');
+        Route::post('/upload', 'AgendaController@postUpload');
         Route::get('/api/list', 'AgendaController@getList');
 
     });

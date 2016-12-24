@@ -29,8 +29,7 @@
                                     <div class="col-sm-10">
                                         <input id="teacher" type="text" class="form-control" name="teacher"
                                                v-model="agenda.teacher"
-                                               :class="{ 'error': $validator.teacher.invalid && trySubmit }"
-                                               v-validate:teacher="{ required: true}" placeholder="不能为空">
+                                        >
 
                                     </div>
 
@@ -39,8 +38,16 @@
                                 <div class="form-group">
                                     <label for="remark" class="col-sm-2 control-label">课程附件：</label>
 
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-10"><input id="accessory" type="text" class="form-control"
+                                                                  name="accessory"
+                                                                  v-model="agenda.accessory"
+                                        >
                                         <div class="input-group">
+
+                                            <input id="fileToUpload" type="file" name="upfile" class="form-control">
+                                            <span class="input-group-btn">
+        <button type="button" class="btn btn-default" v-on:click="upload()">上传</button>
+      </span>
 
 
                                         </div>
@@ -76,40 +83,17 @@
                 </form>
             </validator>
         </div>
-        <div class="dropz"></div>
+
+
     </section>
 
 @endsection
 @section('script')
-    <link rel="stylesheet" href="/js/dropzone/min/basic.min.css">
-    <link rel="stylesheet" href="/js/dropzone/min/dropzone.min.css">
-    <script src="/js/dropzone/min/dropzone.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".dropz").dropzone({
-                url: "handle-upload.php",
-                addRemoveLinks: true,
-                dictRemoveLinks: "x",
-                dictCancelUpload: "x",
-                maxFiles: 10,
-                maxFilesize: 5,
-                acceptedFiles: ".js",
-                init: function () {
-                    this.on("success", function (file) {
-                        console.log("File " + file.name + "uploaded");
-                    });
-                    this.on("removedfile", function (file) {
-                        console.log("File " + file.name + "removed");
-                    });
-                }
-            });
-        });
-
-    </script>
-
+    <script src="/js/ajaxfileupload.js"></script>
     <script type="application/javascript">
         var frameindex = parent.layer.getFrameIndex(window.name);
         parent.layer.iframeAuto(frameindex);
+
         var vm = new Vue({
             el: '.content',
             data: {
@@ -123,7 +107,6 @@
 
             methods: {
                 init: function () {
-
                 },
 
                 save: function (form) {
@@ -135,17 +118,35 @@
                     }
 
                     this.$http.post("{{url('/manage/agenda/create')}}", this.agenda)
-                            .then(function (response) {
-                                        if (response.data.code == 0) {
-                                            parent.msg('新增成功');
-                                            parent.layer.close(frameindex);
-                                            parent.vm.init();
-                                            return
-                                        }
-                                        parent.layer.alert(JSON.stringify(response));
-                                    }
-                            );
+                        .then(function (response) {
+                                if (response.data.code == 0) {
+                                    parent.msg('新增成功');
+                                    parent.layer.close(frameindex);
+                                    parent.vm.init();
+                                    return
+                                }
+                                parent.layer.alert(JSON.stringify(response));
+                            }
+                        );
+                },
+                upload: function () {
+                    var _self = this;
+
+                    $.ajaxFileUpload({
+                        url: '{{url('manage/agenda/upload')}}',
+                        secureuri: false,
+                        fileElementId: 'fileToUpload',//file标签的id
+                        dataType: 'json',//返回数据的类型
+                        success: function (data, status) {
+                            _self.$set('agenda.accessory','/'+data.data.replace("public", "storage"));
+
+                        },
+                        error: function (data, status, e) {
+                            alert(e);
+                        }
+                    });
                 }
+
 
             }
         });

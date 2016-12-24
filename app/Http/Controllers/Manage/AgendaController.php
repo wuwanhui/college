@@ -215,4 +215,17 @@ class AgendaController extends BaseController
         }
     }
 
+
+    public function postUpload(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+
+            $path = $request->file('upfile')->store('public');
+            str_replace("public","storage",$path);
+            return $respJson->succeed("上传成功",$path);
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+    }
 }

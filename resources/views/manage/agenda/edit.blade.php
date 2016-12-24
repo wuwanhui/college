@@ -29,11 +29,29 @@
                                     <div class="col-sm-10">
                                         <input id="teacher" type="text" class="form-control" name="teacher"
                                                v-model="agenda.teacher"
-                                               :class="{ 'error': $validator.teacher.invalid && trySubmit }"
-                                               v-validate:teacher="{ required: true}" placeholder="不能为空">
+                                        >
 
                                     </div>
 
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="remark" class="col-sm-2 control-label">课程附件：</label>
+
+                                    <div class="col-sm-10"><input id="accessory" type="text" class="form-control"
+                                                                  name="accessory"
+                                                                  v-model="agenda.accessory"
+                                        >
+                                        <div class="input-group">
+
+                                            <input id="fileToUpload" type="file" name="upfile" class="form-control">
+                                            <span class="input-group-btn">
+        <button type="button" class="btn btn-default" v-on:click="upload()">上传</button>
+      </span>
+
+
+                                        </div>
+                                    </div>
                                 </div>
 
 
@@ -65,10 +83,10 @@
                 </form>
             </validator>
         </div>
-        @{{agenda|json  }}
     </section>
 @endsection
 @section('script')
+    <script src="/js/ajaxfileupload.js"></script>
     <script type="application/javascript">
         var frameindex = parent.layer.getFrameIndex(window.name);
         parent.layer.iframeAuto(frameindex);
@@ -108,7 +126,24 @@
                                         parent.layer.alert(JSON.stringify(response));
                                     }
                             );
+                },upload: function () {
+                    var _self = this;
+
+                    $.ajaxFileUpload({
+                        url: '{{url('manage/agenda/upload')}}',
+                        secureuri: false,
+                        fileElementId: 'fileToUpload',//file标签的id
+                        dataType: 'json',//返回数据的类型
+                        success: function (data, status) {
+                            _self.$set('agenda.accessory','/'+data.data.replace("public", "storage"));
+
+                        },
+                        error: function (data, status, e) {
+                            alert(e);
+                        }
+                    });
                 }
+
 
             }
         });

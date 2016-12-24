@@ -13,7 +13,7 @@ class Agenda extends Model
 {
     use SoftDeletes;
     protected $table = "agendas";
-    protected $fillable = ['name', 'content', 'teacher', 'state', 'sort', 'remark',];
+    protected $fillable = ['name', 'content', 'teacher', 'accessory','state', 'sort', 'remark',];
     protected $guarded = ['_token'];
 
     /**
