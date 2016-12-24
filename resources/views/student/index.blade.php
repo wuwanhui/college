@@ -63,7 +63,7 @@
                         <thead>
                         <tr>
                             <th>课程名称</th>
-                            <th  >任课教师</th>
+                            <th>任课教师</th>
                             <th style="width: 100px;">状态</th>
                             <th style="width: 100px;" class="hide">操作</th>
                         </tr>
@@ -93,7 +93,7 @@
                             <thead>
                             <tr>
                                 <th>课程名称</th>
-                                <th >任课教师</th>
+                                <th>任课教师</th>
                                 <th style="width: 100px;">状态</th>
                                 <th style="width: 100px;">操作</th>
                             </tr>
@@ -130,7 +130,7 @@
                             </thead>
                             <tbody>
                             <tr v-for="item in termItem.agendas">
-                                <td v-text="item.agenda.name"></td>
+                                <td><a v-on:click="detail(item.agenda)" v-text="item.agenda.name"></a></td>
                                 <td v-text="item.agenda.teacher"></td>
                                 <td v-text="item.parent.agenda.name">
                                 </td>
@@ -251,7 +251,6 @@
 
             </div>
         </div>
-        @{{ student|json }}
     </section>
 @endsection
 
@@ -264,7 +263,7 @@
                 termList: eval({!!json_encode($termList)!!}),
                 termItem: eval({!!json_encode($termItem)!!}),
                 termStudent: {},
-                student: {},
+                student: eval({!!json_encode(Base::student())!!}),
                 syllabus: {},
                 validAgenda: [],
                 invalidAgenda: []
@@ -289,8 +288,8 @@
             },
             ready: function () {
                 this.termStudent = this.termItem.students[0];
-                this.student = this.termItem.students[0].student;
-                this.student.password = '';
+//                this.student = this.termItem.students[0].student;
+//                this.student.password = '';
                 this.syllabus = this.termItem.students[0].syllabus;
                 this.initData();
             },
@@ -338,7 +337,13 @@
                             );
 
                 },
+                detail: function (item) {
+                    openUrl('{{url('/student/agenda/detail?id=')}}' + item.id, '课程详情', 800, 600);
+                },
                 add: function (item) {
+                    if(this.validAgenda.length>4){
+                     return   msg('课程已选满！');
+                    }
                     this.syllabus = item;
                     var _self = this;
                     layer.confirm('确认加入吗？', {
@@ -370,7 +375,7 @@
                     if (_self.student.password == '') {
                         // return msg('邮箱不能为空！');
                     }
-                    this.$http.post("{{url('/student/edit')}}", _self.student)
+                    this.$http.post("{{url('/student/user/edit')}}", _self.student)
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             msg(response.data.msg);

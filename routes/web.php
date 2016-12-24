@@ -33,7 +33,7 @@ Route::group(['prefix' => 'student', 'namespace' => 'Student'], function () {
     Auth::routes();
 
     Route::get('/', 'HomeController@index');
-    Route::post('/edit', 'HomeController@postEdit');
+
 
     Route::group(['prefix' => 'syllabus', 'middleware' => 'auth.student'], function () {
 
@@ -42,6 +42,17 @@ Route::group(['prefix' => 'student', 'namespace' => 'Student'], function () {
 
     });
 
+    Route::group(['prefix' => 'agenda', 'middleware' => 'auth.student'], function () {
+
+        Route::get('/detail', 'HomeController@agendaDetail');
+
+    });
+    Route::group(['prefix' => 'user', 'middleware' => 'auth.student'], function () {
+
+        Route::post('/edit', 'HomeController@postEdit');
+
+
+    });
 
 });
 
@@ -271,6 +282,7 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::post('/edit', 'SyllabusController@postEdit');
         Route::post('/delete', 'SyllabusController@delete');
         Route::post('/random', 'SyllabusController@postRandom');
+        Route::post('/mail', 'SyllabusController@postMail');
         Route::get('/api/list', 'SyllabusController@getList');
 
     });

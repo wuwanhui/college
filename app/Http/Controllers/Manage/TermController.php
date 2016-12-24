@@ -156,7 +156,7 @@ class TermController extends BaseController
                 return Redirect::route('alert')->withErrors('数据不存在！');
             }
             $agendas = $term->agendas()->with(['agenda' => function ($query) {
-                $query->select('id', 'name');
+                $query->select('id', 'name', 'teacher');
             }, 'agendaStudent', 'parent' => function ($query) {
                 $query->with(['agenda' => function ($query) {
                     $query->select('id', 'name', 'teacher');

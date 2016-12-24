@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Manage;
 
 use App\Http\Controllers\Common\RespJson;
 
+use App\Mail\SyllabusMail;
 use App\Models\Syllabus;
 use App\Models\Term;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use stdClass;
 
@@ -141,6 +143,7 @@ class SyllabusController extends BaseController
             $syllabusItem = Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $agendaId, 'state' => $state]);
 
             if ($syllabusItem) {
+                Mail::send(new SyllabusMail($syllabusItem));
                 return $respJson->succeed('成功', $syllabusItem);
             }
             return $respJson->failure('选课失败！');
@@ -200,6 +203,7 @@ class SyllabusController extends BaseController
 
             $syllabus->fill($request->all());
             if ($syllabus->save()) {
+                Mail::send(new SyllabusMail($syllabus));
                 return $respJson->succeed('修改成功！', $syllabus);
             }
             return $respJson->failure('修改失败！');
@@ -245,6 +249,23 @@ class SyllabusController extends BaseController
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }
+    }
+
+    public function postMail(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $id = $request->id;
+            $syllabusItem = Syllabus::find($id);
+            if (!isset($syllabusItem)) {
+                return $respJson->validator('数据不存在！');
+            }
+            Mail::send(new SyllabusMail($syllabusItem));
+            return $respJson->succeed('邮件发送成功');
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+
     }
 
 

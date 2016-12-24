@@ -56,7 +56,7 @@
                                             <th style="width: 120px;"><a href="">学号</a></th>
                                             <th><a href="">所选课程</a></th>
                                             <th style="width: 60px;">状态</th>
-                                            <th style="width: 100px;">操作</th>
+                                            <th style="width: 120px;">操作</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -71,8 +71,8 @@
                                                 <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
 
                                                 </td>
-
-                                                <td style="text-align: center">
+                                                <td style="text-align: center"><a v-on:click="mail(item);">邮件</a>
+                                                    |
                                                     <a v-on:click="edit(item);">编辑</a>
                                                     |
                                                     <a v-on:click="delete(item.id)">删除</a>
@@ -110,7 +110,7 @@
                                             </th>
                                             <th style="width: 60px;">序号</th>
                                             <th><a href="">课程名称</a></th>
-                                            <th ><a href="">教师</a></th>
+                                            <th><a href="">教师</a></th>
                                             <th style="width: 120px;"><a href="">报名人数</a></th>
                                             <th style="width: 60px;">状态</th>
                                             <th style="width: 120px;">操作</th>
@@ -124,7 +124,7 @@
                                                 <td style="text-align: center" v-text="$index+1"></td>
                                                 <td v-text="item.agenda.name"></td>
                                                 <td v-text="item.agenda.teacher"></td>
-                                                <td v-text="item.agenda_student.length"  style="text-align: center"></td>
+                                                <td v-text="item.agenda_student.length" style="text-align: center"></td>
 
 
                                                 <td style="text-align: center" v-text="item.state==0?'生效':'审核中'">
@@ -232,6 +232,25 @@
                                             layer.alert(JSON.stringify(response.data.data));
                                         }
                                 );
+                    });
+
+                },
+                mail: function (item) {
+                    var _self = this;
+                    layer.confirm('确认发送邮件吗？', {
+                        btn: ['确认', '取消']
+                    }, function () {
+                        _self.$http.post("{{url('/manage/syllabus/mail')}}", {id: item.id})
+                                .then(function (response) {
+                                            if (response.data.code == 0) {
+                                                msg(response.data.msg);
+                                                return
+                                            }
+                                            layer.alert(JSON.stringify(response));
+                                        }
+                                );
+                    }, function () {
+                        layer.closeAll();
                     });
 
                 },

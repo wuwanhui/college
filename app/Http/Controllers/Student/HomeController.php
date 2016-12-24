@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Common\RespJson;
 use App\Http\Controllers\Controller;
 use App\Http\Facades\Base;
+use App\Mail\SyllabusMail;
 use App\Models\Agenda;
 use App\Models\Student;
 use App\Models\Syllabus;
@@ -15,6 +16,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -65,12 +68,12 @@ class HomeController extends BaseController
                 $query->where('student_id', Base::student('id'))->first()->select('id', 'name');
 
                 $query->with(['student' => function ($query) {
-                  //  $query->select('id', 'name');
+                    //  $query->select('id', 'name');
                 }, 'syllabus' => function ($query) {
                     $query->with(['agendaRelate' => function ($query) {
                         $query->with(['agenda' => function ($query) {
 
-                            $query->select('id', 'name','teacher');
+                            $query->select('id', 'name', 'teacher');
                         }]);
                     }]);
                 }]);
@@ -136,7 +139,9 @@ class HomeController extends BaseController
                 Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $parent->id]);
 
             }
+
             DB::commit();
+            Mail::send(new SyllabusMail($syllabusItem));
             return $respJson->succeed('选课成功', $syllabusItem);
         } catch (Exception $ex) {
             return $respJson->exception($ex);
@@ -183,6 +188,24 @@ class HomeController extends BaseController
                 return $respJson->succeed('修改成功！', $student);
             }
             return $respJson->errors('修改失败！');
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+    }
+
+    public function agendaDetail(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $id = $request->id;
+            if (!$id) {
+                return Redirect::route('alert')->with('message', '参数不存在！');
+            }
+            $agenda = Agenda::find($id);
+            if (!$agenda) {
+                return Redirect::route('alert')->with('message', '数据不存在！');
+            }
+            return view('student.detail', compact('agenda'));
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }

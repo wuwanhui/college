@@ -55,7 +55,7 @@
                             <th style="width: 60px;">序号</th>
                             <th><a href="">课程名称</a></th>
                             <th style="width: 140px;"><a href="">周期</a></th>
-                            <th style="width: 80px;"><a href="">任课教师</a></th>
+                            <th  ><a href="">任课教师</a></th>
                             <th><a href="">关联课程</a></th>
                             <th><a href="">报名数</a></th>
                             <th style="width: 60px;">状态</th>
@@ -69,7 +69,7 @@
                             <td style="text-align: center" v-text="$index+1"></td>
                             <td v-text="item.agenda.name"></td>
                             <td v-text="cycleCN(item.cycle)"></td>
-                            <td style="text-align: center" v-text="item.agenda.teacher"></td>
+                            <td  v-text="item.agenda.teacher"></td>
 
                             <td><span v-text="item.parent.agenda.name"></span></td>
                             <td v-text="item.agenda_student.length">
