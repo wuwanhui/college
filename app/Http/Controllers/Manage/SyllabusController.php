@@ -42,11 +42,13 @@ class SyllabusController extends BaseController
                 $query->with('student');
             }, 'agendaRelate' => function ($query) {
                 $query->with('agenda');
-            }])->orderBy('id', 'asc')->paginate($this->pageSize);
+            }])->orderBy('student_id', 'asc')->paginate($this->pageSize);
 
 
             $agendaList = $term->agendas()->with(['agenda' => function ($query) {
-            }, 'agendaStudent'])->orderBy('id', 'asc')->paginate($this->pageSize);
+            }, 'agendaStudent' => function ($query) {
+                $query->where('state', '!=', 2);
+            }])->orderBy('id', 'asc')->get();
 
 //            $studentList = $term->syllabus()->with(['term' => function ($query) {
 //                $query->select('id', 'name');
@@ -222,7 +224,7 @@ class SyllabusController extends BaseController
                 return $respJson->validator('参数不存在！');
             }
             DB::beginTransaction();
-            Syllabus::where('agenda_id', $agendaId)->where('state', '!=', 2)->update(['state' => 1]);
+            Syllabus::where('agenda_id', $agendaId)->update(['state' => 2]);
             Syllabus::where('agenda_id', $agendaId)->inRandomOrder()->limit($num)->update(['state' => 0]);
             DB::commit();
             return $respJson->succeed('随机选择成功');

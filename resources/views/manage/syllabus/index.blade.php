@@ -60,7 +60,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <template v-for="item in studentList.data">
+                                        <template v-for="item in list.data">
                                             <tr>
                                                 <td style="text-align: center" v-text="$index+1"></td>
                                                 <td v-text="item.student_relate.student.name"></td>
@@ -117,7 +117,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <template v-for="item in agendaList.data">
+                                        <template v-for="item in agendaList">
                                             <tr>
                                                 <td><input type="checkbox"
                                                            name="id" v-bind:value="item.id" v-model="ids"/></td>
@@ -150,7 +150,6 @@
                                                     class="fa fa-refresh"></i>
                                         </button>
                                         <div class="pull-right">
-                                            @include("common.page")
                                         </div>
                                     </div>
                                 </div>
@@ -168,7 +167,7 @@
         var vm = new Vue({
             el: '.content',
             data: {
-                studentList: eval({!!json_encode($studentList)!!}),
+                list: eval({!!json_encode($studentList)!!}),
                 agendaList: eval({!!json_encode($agendaList)!!}),
                 terms: eval({!!json_encode($terms)!!}),
                 syllabus: {},
@@ -184,8 +183,9 @@
                     this.init();
                 },
                 'params.termId': function (val) {
-                    // Vue.set(this.params, 'termId', this.term.id);
-                    this.init();
+                    if (val != this.term.id) {
+                        this.init();
+                    }
                 }
 
 
@@ -201,7 +201,7 @@
                     this.$http.get("{{url('/manage/syllabus?json')}}", {params: this.params})
                             .then(function (response) {
                                         if (response.data.code == 0) {
-                                            _self.studentList = response.data.data.studentList;
+                                            _self.list = response.data.data.studentList;
                                             _self.agendaList = response.data.data.agendaList;
                                             return
                                         }

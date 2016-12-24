@@ -40,7 +40,6 @@ class SyllabusMail extends Mailable
                 'agenda' => $agenda->name,
                 'state' => $state,
             ]);
-            // return $this->to($student->email, $student->name)->subject('选课通知')->view('emails.syllabus')->with('student','agenda');
         }
     }
 
