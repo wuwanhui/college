@@ -102,7 +102,6 @@
                     var _self = this;
 
                     if (form.invalid) {
-                        //this.$log('term');
                         this.trySubmit = true;
                         return;
                     }
@@ -114,13 +113,18 @@
                         state: _self.state
                     })
                             .then(function (response) {
+                                        if (response.data.code == -1) {
+                                            parent.layer.alert(JSON.stringify(response));
+                                            return;
+                                        }
                                         if (response.data.code == 0) {
-                                            parent.msg('新增成功');
+                                            parent.msg(response.data.msg);
                                             parent.layer.close(frameindex);
                                             parent.vm.init();
-                                            return
+                                            return;
                                         }
-                                        parent.layer.alert(JSON.stringify(response));
+                                        parent.layer.alert(response.data.msg);
+
                                     }
                             );
                 }

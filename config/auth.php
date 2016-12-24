@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'student',
-        'passwords' => 'student',
+        'passwords' => 'students',
     ],
 
     /*
@@ -38,19 +38,15 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'manage',
+            'provider' => 'manages',
         ],
         'manage' => [
             'driver' => 'session',
-            'provider' => 'manage',
+            'provider' => 'manages',
         ],
         'student' => [
             'driver' => 'session',
-            'provider' => 'student',
-        ],
-        'teacher' => [
-            'driver' => 'session',
-            'provider' => 'teacher',
+            'provider' => 'students',
         ],
         'api' => [
             'driver' => 'token',
@@ -76,22 +72,19 @@ return [
     */
 
     'providers' => [
-        'manage' => [
+        'manages' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'student' => [
+        'students' => [
             'driver' => 'eloquent',
             'model' => App\Models\Student::class,
         ],
-        'teacher' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Teacher::class,
-        ],
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+
+         'users' => [
+             'driver' => 'eloquent',
+             'table' => 'users',
+         ],
     ],
 
     /*
@@ -111,20 +104,16 @@ return [
 
     'passwords' => [
         'manage' => [
-            'provider' => 'manage',
+            'provider' => 'manages',
             'table' => 'password_resets',
             'expire' => 60,
         ],
         'student' => [
-            'provider' => 'student',
+            'provider' => 'students',
             'table' => 'student_resets',
             'expire' => 60,
         ],
-        'teacher' => [
-            'provider' => 'teacher',
-            'table' => 'teacher_resets',
-            'expire' => 60,
-        ],
+
     ],
 
 ];

@@ -50,24 +50,25 @@ class LoginController extends Controller
     }
 
 
-    public function redirectToLogin()
-    {
-        if ($this->guard('student')->user()) {
-            return redirect('/student/');
-        }
-
-        return redirect('/student/login');
-    }
+//    public function redirectToLogin()
+//    {
+//        if ($this->guard('student')->user()) {
+//            return redirect('/student/');
+//        }
+//
+//        return redirect('/student/login');
+//    }
 
     protected function guard()
     {
-        return Auth::guard('student');
+        return auth()->guard('student');
     }
 
     public function logout(Request $request)
     {
         $respJson = new RespJson();
         try {
+            Auth::logout();
             $this->guard('student')->logout();
             return response()->json($respJson);
         } catch (Exception $ex) {

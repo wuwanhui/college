@@ -122,6 +122,9 @@ class StudentController extends BaseController
                 return $respJson->validator('效验失败！', $validator);
             }
             $student->fill($input);
+            if (isset($request->password)) {
+                $student->password = bcrypt($request->password);
+            }
             if ($student->save()) {
                 return $respJson->succeed('修改成功！', $student);
             }

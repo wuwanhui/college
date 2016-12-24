@@ -50,19 +50,20 @@ class LoginController extends Controller
     }
 
 
-    public function redirectToLogin()
-    {
-        if ($this->guard('manage')->user()) {
-            return redirect('/manage/');
-        }
-
-        return redirect('/manage/login');
-    }
+//    public function redirectToLogin()
+//    {
+//        if ($this->guard('manage')->user()) {
+//            return redirect('/manage/');
+//        }
+//
+//        return redirect('/manage/login');
+//    }
 
     protected function guard()
     {
-        return Auth::guard('manage');
+        return auth()->guard('manage');
     }
+
 
     public function logout(Request $request)
     {

@@ -63,7 +63,7 @@
                         <thead>
                         <tr>
                             <th>课程名称</th>
-                            <th style="width: 100px;">任课教师</th>
+                            <th  >任课教师</th>
                             <th style="width: 100px;">状态</th>
                             <th style="width: 100px;" class="hide">操作</th>
                         </tr>
@@ -93,7 +93,7 @@
                             <thead>
                             <tr>
                                 <th>课程名称</th>
-                                <th style="width: 100px;">任课教师</th>
+                                <th >任课教师</th>
                                 <th style="width: 100px;">状态</th>
                                 <th style="width: 100px;">操作</th>
                             </tr>
@@ -179,16 +179,6 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="idCar" class="col-sm-2 control-label">身份证号：</label>
-                                        <div class="col-sm-10">
-                                            <p class="form-control-static" v-text="student.idCar"></p>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="form-group">
                                         <label for="email" class="col-sm-2 control-label">Email：</label>
                                         <div class="col-sm-10">
                                             <input id="email" type="text" class="form-control" name="email"
@@ -215,8 +205,8 @@
 
                                             <select v-model="student.sex" id="sex" class="form-control" name="sex">
                                                 <option value="-1">未知</option>
-                                                <option value="0">男生</option>
-                                                <option value="0">女生</option>
+                                                <option value="0">男</option>
+                                                <option value="1">女</option>
                                             </select>
 
 
@@ -261,6 +251,7 @@
 
             </div>
         </div>
+        @{{ student|json }}
     </section>
 @endsection
 

@@ -35,10 +35,11 @@ class HomeController extends Controller
      */
     public function welcome()
     {
-        if (Auth::check()) {
+
+        if (Auth::guard('manage')->check()) {
             return redirect('/manage');
         }
-        return redirect('/manage/login');
+        return redirect('/student');
     }
 
 

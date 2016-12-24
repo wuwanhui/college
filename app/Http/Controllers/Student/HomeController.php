@@ -52,12 +52,12 @@ class HomeController extends BaseController
             })->with(['agendas' => function ($query) {
                 // $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->get();
 //               / $query->whereNotIn('id', $query->syllabus()->pluck('id'));
-                $query->where('parent_id', 0);
+//               / $query->where('parent_id', 0);
                 $query->with(['agenda' => function ($query) {
-                    $query->with([  'parent']);
+                    //  $query->with([  'parent']);
                 }, 'parent' => function ($query) {
                     $query->with(['agenda' => function ($query) {
-                        $query->select('id', 'name', 'parent_id');
+                        $query->select('id', 'name');
                     }]);
                 }]);
 
@@ -65,20 +65,19 @@ class HomeController extends BaseController
                 $query->where('student_id', Base::student('id'))->first()->select('id', 'name');
 
                 $query->with(['student' => function ($query) {
-                    $query->select('id', 'name');
+                  //  $query->select('id', 'name');
                 }, 'syllabus' => function ($query) {
                     $query->with(['agendaRelate' => function ($query) {
                         $query->with(['agenda' => function ($query) {
 
-                            $query->select('id', 'name' );
+                            $query->select('id', 'name','teacher');
                         }]);
                     }]);
                 }]);
             }])->first();
 
             if (isset($request->json)) {
-                $respJson->setData($termItem);
-                return response()->json($respJson);
+                return $respJson->succeed('修改成功！', $termItem);
             }
 
             //获取我所有学期信息
@@ -87,9 +86,7 @@ class HomeController extends BaseController
             })->where('state', 0)->get();
             return view('student.index', compact('termList', 'termItem'));
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -99,16 +96,16 @@ class HomeController extends BaseController
         try {
             $termId = $request->term_id;
             if (!$termId) {
-                return response()->json($respJson->validator('学期参数错误！'));
+                return $respJson->validator('学期参数错误！');
             }
             $studentId = $request->student_id;
             if (!$studentId) {
-                return response()->json($respJson->validator('学生参数错误！'));
+                return $respJson->validator('学生参数错误！');
             }
 
             $agendaId = $request->agenda_id;
             if (!$agendaId) {
-                return response()->json($respJson->validator('课程参数错误！'));
+                return $respJson->validator('课程参数错误！');
             }
 
             $term = Term::where('id', $termId)->with(['students' => function ($query) use ($studentId) {
@@ -118,17 +115,17 @@ class HomeController extends BaseController
             }])->first();
 
             if (count($term->students) == 0) {
-                return response()->json($respJson->validator('未找到学生信息'));
+                return $respJson->validator('未找到学生信息');
             }
 
             if (count($term->agendas) == 0) {
-                return response()->json($respJson->validator('未找到课程信息'));
+                return $respJson->validator('未找到课程信息');
             }
 
             $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->get();
 
             if (count($syllabus) == 4) {
-                return response()->json($respJson->errors('选课失败，此学生课程已经超限'));
+                return $respJson->errors('选课失败，此学生课程已经超限');
             }
 
             DB::beginTransaction();
@@ -140,11 +137,9 @@ class HomeController extends BaseController
 
             }
             DB::commit();
-            return response()->json($respJson->succeed('选课成功', $syllabusItem));
+            return $respJson->succeed('选课成功', $syllabusItem);
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -155,16 +150,14 @@ class HomeController extends BaseController
         try {
             $id = $request->id;
             if (!$id) {
-                return response()->json($respJson->validator('参数错误！'));
+                return $respJson->validator('参数错误！');
             }
             if (Syllabus::destroy($id)) {
-                return response()->json($respJson->succeed('删除成功！'));
+                return $respJson->succeed('删除成功！');
             }
-            return response()->json($respJson->errors("删除失败"));
+            return $respJson->errors("删除失败");
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 
@@ -179,7 +172,7 @@ class HomeController extends BaseController
 
             $validator = Validator::make($input, $student->Rules(), $student->messages());
             if ($validator->fails()) {
-                return response()->json($respJson->validator('效验失败！'));
+                return $respJson->validator('效验失败！');
 
             }
             $student->fill($input);
@@ -187,11 +180,11 @@ class HomeController extends BaseController
                 $student->password = bcrypt($request->password);
             }
             if ($student->save()) {
-                return response()->json($respJson->succeed('修改成功！'));
+                return $respJson->succeed('修改成功！', $student);
             }
-            return response()->json($respJson->errors('修改失败！'));
+            return $respJson->errors('修改失败！');
         } catch (Exception $ex) {
-            return response()->json($respJson->exception('异常！' . $ex->getMessage()));
+            return $respJson->exception($ex);
         }
     }
 
@@ -211,11 +204,9 @@ class HomeController extends BaseController
         $respJson = new RespJson();
         try {
             Cache::flush();
-            return response()->json($respJson);
+            return $respJson->succeed('清除缓存成功！');
         } catch (Exception $ex) {
-            $respJson->setCode(-1);
-            $respJson->setMsg('异常！' . $ex->getMessage());
-            return response()->json($respJson);
+            return $respJson->exception($ex);
         }
     }
 }

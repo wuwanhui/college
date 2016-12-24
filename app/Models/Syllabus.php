@@ -13,6 +13,7 @@ class Syllabus extends Model
 {
     use SoftDeletes;
     protected $table = "syllabus";
+    protected $fillable = ['student_id', 'agenda_id', 'term_id', 'state', 'sort', 'remark',];
     protected $guarded = ['_token'];
 
     /**

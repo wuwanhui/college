@@ -34,6 +34,7 @@ Route::group(['prefix' => 'student', 'namespace' => 'Student'], function () {
 
     Route::get('/', 'HomeController@index');
     Route::post('/edit', 'HomeController@postEdit');
+
     Route::group(['prefix' => 'syllabus', 'middleware' => 'auth.student'], function () {
 
         Route::post('/add', 'HomeController@addSyllabus');
