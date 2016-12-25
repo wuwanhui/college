@@ -7,6 +7,7 @@ use App\Http\Controllers\Common\RespJson;
 use App\Mail\SyllabusMail;
 use App\Models\Syllabus;
 use App\Models\Term;
+use App\Models\Term_Student;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,10 +47,17 @@ class SyllabusController extends BaseController
 
 
             $agendaList = $term->agendas()->with(['agenda' => function ($query) {
+                $query->select('id', 'name', 'teacher');
             }, 'agendaStudent' => function ($query) {
                 $query->select('id', 'student_id', 'agenda_id', 'term_id', 'state');
+                $query->with(['studentRelate' => function ($query) {
+                    $query->select('id', 'student_id', 'term_id', 'state');
+                    $query->with(['student' => function ($query) {
+                        $query->select('id', 'name', 'state');
+                    }]);
+                }])->select('id', 'student_id', 'agenda_id', 'term_id', 'state');
 
-            }])->orderBy('id', 'asc')->orderBy('state', 'asc')->get();
+            }])->select('id', 'agenda_id', 'term_id', 'state')->orderBy('id', 'asc')->orderBy('state', 'asc')->get();
 
 //            $studentList = $term->syllabus()->with(['term' => function ($query) {
 //                $query->select('id', 'name');
@@ -74,6 +82,47 @@ class SyllabusController extends BaseController
             return $respJson->exception($ex);
         }
     }
+
+    /**
+     * 课程表
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getReport(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
+            $termId = $request->termId;
+            if (isset($termId)) {
+                $term = Term::find($termId);
+            } else {
+                $term = Term::first();
+            }
+
+            $studentList = Term_Student::where('term_id', $term->id)->with(['student' => function ($query) {
+
+            }, 'syllabus' => function ($query) {
+                $query->with(['agendaRelate' => function ($query) {
+                    $query->with(['agenda' => function ($query) {
+                    }]);
+                }]);
+            }])->orderBy('student_id', 'asc')->paginate($this->pageSize);
+
+            if (isset($request->json)) {
+                $obj = new stdClass();
+                $obj->studentList = $studentList;
+                $obj->term = $term;
+                return $respJson->succeed('成功', $obj);
+            }
+            $terms = Term::with(['students', 'agendas' => function ($query) {
+                // $query->where('parent_id', 0);
+            }])->get();
+            return view('manage.syllabus.report', compact('studentList', 'terms', 'term'));
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+    }
+
 
     public function getCreate(Request $request)
     {

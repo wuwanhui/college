@@ -6,7 +6,7 @@
             <small>列表</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
+            <li><a href="{{url('/manage')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
             <li class="active">学期</li>
         </ol>
     </section>

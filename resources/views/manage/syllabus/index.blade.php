@@ -6,7 +6,7 @@
             <small>列表</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 选课系统</a></li>
+            <li><a href="{{url('/manage')}}"><i class="fa fa-dashboard"></i> 选课系统</a></li>
             <li class="active">选课记录</li>
         </ol>
     </section>
@@ -111,8 +111,8 @@
                                             </th>
                                             <th style="width: 60px;">序号</th>
                                             <th><a href="">课程名称</a></th>
-                                            <th><a href="">教师</a></th>
-                                            <th style="width: 120px;"><a href="">报名人数</a></th>
+                                            <th><a href="">报名数</a></th>
+                                            <th><a href="">筛选情况</a></th>
                                             <th style="width: 60px;">状态</th>
                                             <th style="width: 120px;">操作</th>
                                         </tr>
@@ -123,18 +123,33 @@
                                                 <td><input type="checkbox"
                                                            name="id" v-bind:value="item.id" v-model="ids"/></td>
                                                 <td style="text-align: center" v-text="$index+1"></td>
-                                                <td v-text="item.agenda.name"></td>
-                                                <td v-text="item.agenda.teacher"></td>
-                                                <td v-text="item.agenda_student.length" style="text-align: center"></td>
+                                                <td>
+                                                    <span v-text="item.agenda.name"></span>
+                                                    <hr/>
+                                                    <span class="text-primary"
+                                                          v-text="'教师：'+item.agenda.teacher"></span>
+                                                </td>
+                                                <td style="text-align: center" v-text="item.agenda_student.length">
 
-
+                                                </td>
+                                                <td>
+                                                    <span v-text="'待审：'"></span><span
+                                                            v-for="subItem in item.agenda_student | filterBy '1' in 'state'"
+                                                            v-text="subItem.student_relate.student.name+'，'"></span><br>
+                                                    <span v-text="'通过：'"></span><span
+                                                            v-for="subItem in item.agenda_student | filterBy '0' in 'state'"
+                                                            v-text="subItem.student_relate.student.name+'，'"></span><br>
+                                                    <span class="text-warning" v-text="'拒绝：'"></span><span
+                                                            class="text-warning"
+                                                            v-for="subItem in item.agenda_student | filterBy '2' in 'state'"
+                                                            v-text="subItem.student_relate.student.name+'，'"></span>
+                                                </td>
                                                 <td style="text-align: center" v-text="stateAgendaCN(item.state)">
 
                                                 </td>
 
                                                 <td style="text-align: center">
-                                                    <template v-if="item.agenda_student.length>4">
-                                                        |
+                                                    <template v-if="item.agenda_student.length>1">
                                                         <a v-on:click="random(item)">随机选</a>
                                                     </template>
                                                 </td>
@@ -160,6 +175,7 @@
 
             </div>
         </div>
+        @{{ agendaList|json }}
     </section>
 @endsection
 @section('script')
@@ -193,7 +209,18 @@
             ready: function () {
 
             },
-
+            computed: {
+                succeedApply: function (list) {
+                    return list.filter(function (item) {
+                        return item.state == 0;
+                    })
+                },
+                failureApply: function (list) {
+                    return list.filter(function (item) {
+                        return item.state != 0;
+                    })
+                },
+            },
             methods: {
                 init: function () {
                     var _self = this;

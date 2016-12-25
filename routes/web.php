@@ -284,6 +284,8 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::post('/delete', 'SyllabusController@delete');
         Route::post('/random', 'SyllabusController@postRandom');
         Route::post('/mail', 'SyllabusController@postMail');
+        Route::get('/report', 'SyllabusController@getReport');
+
         Route::get('/api/list', 'SyllabusController@getList');
 
     });

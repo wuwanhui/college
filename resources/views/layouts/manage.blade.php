@@ -137,14 +137,14 @@
 
                     </ul>
                 </li>
-                <li class="treeview" >
+                <li class="treeview active" >
                     <a>
                         <i class="fa fa-th"></i> <span>选课管理</span>
                         <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                     </a>
-                    <ul class="treeview-menu">
+                    <ul class="treeview-menu ">
                         <li >
                             <a onclick="url('{{url('/manage/term')}}')"><i class="fa fa-circle-o"></i>学期信息</a>
                         </li>
@@ -163,7 +163,10 @@
                             <a onclick="url('{{url('/manage/syllabus')}}')"><i
                                         class="fa fa-circle-o text-yellow"></i>选课记录</a>
                         </li>
-
+                        <li >
+                            <a onclick="url('{{url('/manage/syllabus/report')}}')"><i
+                                        class="fa fa-circle-o text-yellow"></i>课程表</a>
+                        </li>
                     </ul>
                 </li>
 

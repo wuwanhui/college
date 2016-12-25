@@ -354,7 +354,7 @@
                     }
                     this.syllabus = item;
                     var _self = this;
-                    layer.confirm('确认加入吗？', {
+                    layer.confirm('请再次仔细核对自己选择的课程，提交后，将不允许修改！？', {
                         btn: ['确认', '取消']
                     }, function () {
                         _self.$http.post("{{url('/student/syllabus/add')}}", {

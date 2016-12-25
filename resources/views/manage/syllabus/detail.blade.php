@@ -7,7 +7,7 @@
             <small>客户详情</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="{{url('/manage/crm')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
+            <li><a href="{{url('/manage')}}"><i class="fa fa-dashboard"></i> 客户关系</a></li>
             <li class="active">客户档案</li>
         </ol>
     </section>
