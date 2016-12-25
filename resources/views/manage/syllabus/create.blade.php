@@ -40,6 +40,7 @@
                                                     v-model="state">
                                                 <option value="1" selected>待审</option>
                                                 <option value="0">有效</option>
+                                                <option value="2">拒绝</option>
                                             </select>
                                         </div>
                                     </div>

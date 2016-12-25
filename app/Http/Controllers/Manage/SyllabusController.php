@@ -249,13 +249,12 @@ class SyllabusController extends BaseController
                 return $respJson->validator('数据不存在！');
             }
             $syllabus = Syllabus::find($id);
-            if (count(Syllabus::where('id', '!=', $id)->where('agenda_id', $request->agenda_id)->get()) > 0) {
-                return $respJson->validator('对不起，此课程已经选择过，请重新选择！');
-            }
 
             $syllabus->fill($request->all());
             if ($syllabus->save()) {
-                Mail::send(new SyllabusMail($syllabus));
+                if ($syllabus->state == 2) {
+                    Mail::send(new SyllabusMail($syllabus));
+                }
                 return $respJson->succeed('修改成功！', $syllabus);
             }
             return $respJson->failure('修改失败！');

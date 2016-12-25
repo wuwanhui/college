@@ -116,28 +116,37 @@ class HomeController extends BaseController
             }, 'agendas' => function ($query) use ($agendaId) {
                 $query->where('id', $agendaId);
             }])->first();
-
-            if (count($term->students) == 0) {
+            $student = $term->students->first();//当前学生
+            $agenda = $term->agendas->first();//当前课程
+            if (!isset($student)) {
                 return $respJson->validator('未找到学生信息');
             }
 
-            if (count($term->agendas) == 0) {
+            if (!isset($agenda)) {
                 return $respJson->validator('未找到课程信息');
             }
 
-            $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->get();
+            $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->where('state', '!=', 2)->with(['agendaRelate' => function ($query) use ($agenda) {
+                $query->where('cycle', $agenda->cycle);
+            }])->get();
 
-            if (count($syllabus) == 4) {
-                return $respJson->errors('选课失败，此学生课程已经超限');
+            $countAgenda = count($syllabus);
+
+            $parent = $term->agendas->first()->parent;
+            if (isset($parent)) {
+                $countAgenda = $countAgenda + 1;
             }
+            if ($countAgenda > 3) {
+                return $respJson->failure('选课失败，此学生课程已经超限');
+            }
+            // $syllabus = Syllabus::where('term_id', $termId)->where('student_id', $studentId)->get();
+
 
             DB::beginTransaction();
 
             $syllabusItem = Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $agendaId]);
-            $parent = $term->agendas->first()->parent;
             if (isset($parent)) {
                 Syllabus::firstOrCreate(['term_id' => $termId, 'student_id' => $studentId, 'agenda_id' => $parent->id]);
-
             }
 
             DB::commit();

@@ -21,11 +21,9 @@
                                     <div class="form-group">
                                         <label for="name" class="col-sm-2 control-label">课程：</label>
                                         <div class="col-sm-10">
-                                            <select id="parent_id" name="sex" class="form-control auto"
-                                                    v-model="syllabus.agenda_id">
-                                                <option v-bind:value="item.id" v-for="item in term.agendas"
-                                                        v-text="item.agenda.name"></option>
-                                            </select>
+                                            <p class="form-control-static"
+                                               v-text="syllabus.agenda_relate.agenda.name"></p>
+
                                         </div>
                                     </div>
 
@@ -36,6 +34,7 @@
                                                     v-model="syllabus.state">
                                                 <option value="1">待审</option>
                                                 <option value="0">有效</option>
+                                                <option value="2">拒绝</option>
                                             </select>
                                         </div>
                                     </div>

@@ -47,7 +47,7 @@
                                             v-text="item.name"></option>
                                 </select></div>
                             <div class="col-sm-6 text-right"><h4 class="text-danger"
-                                                                 v-text="'当前可选4门课程，已选：'+validAgenda.length+'门，待选：'+(4-validAgenda.length)+'门'"></h4>
+                                                                 v-text="'可选4门课程，已选：'+validAgenda.length+'门'"></h4>
                             </div>
                         </div>
 
@@ -64,22 +64,21 @@
                         <thead>
                         <tr>
                             <th>课程名称</th>
-                            <th>任课教师</th>
+                            <th>时间</th>
                             <th style="width: 100px;">状态</th>
-                            <th style="width: 100px;" class="hide">操作</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="item in validAgenda">
-                            <td v-text="item.agenda_relate.agenda.name"></td>
-                            <td v-text="item.agenda_relate.agenda.teacher"></td>
+                            <td><a v-on:click="detail(item.agenda_relate.agenda)"
+                                   v-text="item.agenda_relate.agenda.name"></a>
+                                <p class="text-primary" v-text="'教师：'+item.agenda_relate.agenda.teacher"></p>
+                            </td>
+                            <td v-text="cycleCN(item.agenda_relate.cycle)"></td>
                             <td style="text-align: center" v-text="item.state==0?'有效':'审核中'"
                                 v-bind:class="text-warning:item.state==1">
                             </td>
-                            <td style="text-align: center" class="hide"><a v-on:click="delete(item)"
-                                                                           v-if="item.state==1">删除</a>
-                                <a v-else>不可删除</a>
-                            </td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -94,19 +93,20 @@
                             <thead>
                             <tr>
                                 <th>课程名称</th>
-                                <th>任课教师</th>
+                                <th>时间</th>
                                 <th style="width: 100px;">状态</th>
-                                <th style="width: 100px;">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="item in invalidAgenda">
-                                <td v-text="item.agenda_relate.agenda.name"></td>
-                                <td v-text="item.agenda_relate.agenda.teacher"></td>
-                                <td style="text-align: center" v-text="'课程已满'"></td>
-                                <td style="text-align: center"><a v-on:click="delete(item)"
-                                                                  v-if="termItem.state==0">删除</a>
+
+
+                                <td><a v-on:click="detail(item.agenda_relate.agenda)"
+                                       v-text="item.agenda_relate.agenda.name"></a>
+                                    <p class="text-primary" v-text="'教师：'+item.agenda_relate.agenda.teacher"></p>
                                 </td>
+                                <td v-text="cycleCN(item.agenda_relate.cycle)"></td>
+                                <td style="text-align: center" v-text="'课程已满'"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -117,42 +117,50 @@
                         <!-- Default panel contents -->
                         <div class="panel-heading">可选课程</div>
                         <div class="panel-body">
-                            <span v-text="'可选课程共'+termItem.agendas.length+'门'"></span>
+                            <h4 v-text="'可选课程共'+termItem.agendas.length+'门，注意：若有关联课程将会自动选择，同一月只能选择一门课程！'"></h4>
                         </div>
                         <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th>课程名称</th>
-                                <th>任课教师</th>
-                                <th>关联课程</th>
+                                <th>时间</th>
                                 <th style="width: 100px;">状态</th>
                                 <th style="width: 100px;">操作</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr v-for="item in termItem.agendas">
-                                <td><a v-on:click="detail(item.agenda)" v-text="item.agenda.name"></a></td>
-                                <td v-text="item.agenda.teacher"></td>
-                                <td v-text="item.parent.agenda.name">
+                                <td><a v-on:click="detail(item.agenda)" v-text="item.agenda.name"></a>
+                                    <p class="text-primary" v-text="'教师：'+item.agenda.teacher"></p>
+                                    <template v-if="item.parent!=null">
+                                        <span class="text-warning"
+                                              v-text="'关联课程：'+item.parent.agenda.name"></span>
+                                        <span class="text-primary"
+                                              v-text="'（'+cycleCN(item.parent.cycle)+'）'"></span></template>
                                 </td>
+
+                                <td v-text="cycleCN(item.cycle)"></td>
                                 <td style="text-align: center" v-text="stateCN(item.state)"></td>
                                 <td style="text-align: center">
                                     <template v-if="filterAdd(item)">
-                                        <template v-if="item.state==1">
-                                            <a v-on:click="add(item)">加入待选</a>
+                                        <template v-if="!filterData(item)||!filterData(item.parent)">
+                                            <span class="text-warning" title="当月已选或关联课程已经包含">当月已选</span>
+
+                                        </template>
+                                        <template v-else>
+                                            <template v-if="item.state==1">
+                                                <a v-on:click="add(item)">加入待选</a>
+                                            </template>
                                         </template>
                                     </template>
                                     <template v-else>
-                                        <a>已选</a>
+                                        <span class="text-success">已选</span>
                                     </template>
-
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                        <div class="panel-footer">
-                            注意：若有关联课程将会自动选择！
-                        </div>
+
                     </div>
                 </template>
             </div>
@@ -325,6 +333,16 @@
                     }
                     return true;
                 },
+                filterData: function (item) {
+                    var _self = this;
+                    for (var i = 0; i < _self.validAgenda.length; i++) {
+                        var subItem = _self.validAgenda[i];
+                        if (subItem.agenda_relate.cycle == item.cycle) {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
                 init: function () {
                     var _self = this;
                     this.$http.get("{{url('/student?json')}}", {params: this.params})
@@ -365,6 +383,10 @@
                                     if (response.data.code == 0) {
                                         msg(response.data.msg);
                                         _self.init();
+                                        return
+                                    }
+                                    if (response.data.code != -1) {
+                                        msg(response.data.msg);
                                         return
                                     }
                                     parent.layer.alert(JSON.stringify(response));
@@ -445,6 +467,28 @@
                             return '取消课程';
                     }
                 },
+                cycleCN: function (id) {
+                    switch (parseInt(id)) {
+
+                        case 1:
+                            return '第一月 1周-4周';
+                        case 2:
+                            return '第二月 5周-8周';
+                        case 3:
+                            return '第三月 9周-12周';
+                        case 4:
+                            return '第四月 13周-16周';
+                        case 5:
+                            return '第五月 1周-4周';
+                        case 6:
+                            return '第六月 5周-8周';
+                        case 7:
+                            return '第七月 9周-12周';
+                        case 8:
+                            return '第八月 13周-16周';
+                    }
+                },
+
 
             }
         });
