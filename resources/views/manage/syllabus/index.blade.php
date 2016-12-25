@@ -175,7 +175,6 @@
 
             </div>
         </div>
-        @{{ agendaList|json }}
     </section>
 @endsection
 @section('script')
