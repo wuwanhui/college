@@ -285,6 +285,7 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
         Route::post('/random', 'SyllabusController@postRandom');
         Route::post('/mail', 'SyllabusController@postMail');
         Route::get('/report', 'SyllabusController@getReport');
+        Route::post('/excel/export','SyllabusController@postExport');
 
         Route::get('/api/list', 'SyllabusController@getList');
 

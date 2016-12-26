@@ -33,8 +33,8 @@
                                             <select id="state" name="state" class="form-control" style="width: auto;"
                                                     v-model="syllabus.state">
                                                 <option value="1">待审</option>
-                                                <option value="0">有效</option>
-                                                <option value="2">拒绝</option>
+                                                <option value="0">审核通过</option>
+                                                <option value="2">未通过</option>
                                             </select>
                                         </div>
                                     </div>

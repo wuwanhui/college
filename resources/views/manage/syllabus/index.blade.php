@@ -74,7 +74,7 @@
                                                 </td>
                                                 <td style="text-align: center"><a v-on:click="mail(item);">邮件</a>
                                                     |
-                                                    <a v-on:click="edit(item);">编辑</a>
+                                                    <a v-on:click="edit(item);">审核</a>
                                                     |
                                                     <a v-on:click="delete(item.id)">删除</a>
 
@@ -105,11 +105,7 @@
                                     <table class="table table-bordered table-hover  table-condensed">
                                         <thead>
                                         <tr style="text-align: center" class="text-center">
-                                            <th style="width: 20px"><input type="checkbox"
-                                                                           name="CheckAll" value="Checkid"
-                                                                           v-on:click="ids=!ids"/>
-                                            </th>
-                                            <th style="width: 60px;">序号</th>
+                                                <th style="width: 60px;">序号</th>
                                             <th><a href="">课程名称</a></th>
                                             <th><a href="">报名数</a></th>
                                             <th><a href="">筛选情况</a></th>
@@ -120,8 +116,7 @@
                                         <tbody>
                                         <template v-for="item in agendaList">
                                             <tr>
-                                                <td><input type="checkbox"
-                                                           name="id" v-bind:value="item.id" v-model="ids"/></td>
+
                                                 <td style="text-align: center" v-text="$index+1"></td>
                                                 <td>
                                                     <span v-text="item.agenda.name"></span>
@@ -333,11 +328,11 @@
                 stateCN: function (id) {
                     switch (parseInt(id)) {
                         case 0:
-                            return '生效';
+                            return '审核通过';
                         case 1:
                             return '待审';
                         case 2:
-                            return '拒绝';
+                            return '未通过';
                     }
                 },
                 stateAgendaCN: function (id) {

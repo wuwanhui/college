@@ -148,19 +148,19 @@ class StudentController extends BaseController
         }
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request)
     {
         $respJson = new RespJson();
         try {
+            $id=$request->id;
             $student = Student::find($id);
             if (!$student) {
                 return redirect('/manage/student')->withErrors('数据加载失败！');
             }
-            $student->delete();
-            if ($student) {
-                return redirect('/manage/student')->withSuccess('删除成功！');
+            if ($student->delete()) {
+                return $respJson->succeed('删除成功！',1);
             }
-            return Redirect::back()->withErrors('删除失败！');
+            return $respJson->failure('删除失败！');
 
         } catch (Exception $ex) {
             return $respJson->exception($ex);
