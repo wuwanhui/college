@@ -33,7 +33,7 @@
                                 </form>
                             </div>
                             <div class="col-md-2 text-right">
-
+                                <button type="button" class="btn btn-success" v-on:click="export()">导出</button>
                             </div>
                         </div>
                     </div>
@@ -220,6 +220,29 @@
                                         layer.alert(JSON.stringify(response));
                                     }
                             );
+                },
+                export: function (form) {
+                    var _self = this;
+
+
+                    this.$http.post("{{url('/manage/syllabus/excel/export')}}", {
+                        term_id: _self.term.id,
+                    })
+                        .then(function (response) {
+                                if (response.data.code == -1) {
+                                    parent.layer.alert(JSON.stringify(response));
+                                    return;
+                                }
+                                if (response.data.code == 0) {
+                                    parent.msg(response.data.msg);
+                                    parent.layer.close(frameindex);
+                                    parent.vm.init();
+                                    return;
+                                }
+                                parent.layer.alert(JSON.stringify(response));
+
+                            }
+                        );
                 },
                 search: function (reset) {
                     if (reset) {

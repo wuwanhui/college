@@ -85,7 +85,7 @@
                         <td style="text-align: center"><a
                                     v-on:click="edit(item)">编辑</a>
                             |
-                            <a v-on:click="delete(item)">删除</a>
+                            <a v-on:click="delete(item.id)">删除</a>
 
                         </td>
                     </tr>
@@ -164,16 +164,24 @@
                     this.student = item;
                     openUrl('{{url('/manage/student/edit')}}?id=' + item.id, '编辑"' + item.name + '"学生', 800, 500);
                 },
-                delete: function (item) {
-                    layer.confirm('您确认要删除“' + item.name + '”吗？', {
+                delete: function (id) {
+                    var _self = this;
+                    layer.confirm('确认删除吗？', {
                         btn: ['确认', '取消']
                     }, function () {
-                        layer.msg('的确很重要', {icon: 1});
+                        _self.$http.post("{{url('/manage/student/delete')}}", {id: id})
+                            .then(function (response) {
+                                    if (response.data.code == 0) {
+                                        _self.init();
+                                        layer.closeAll();
+                                        msg('成功删除' + response.data.data + '条记录！');
+                                        return
+                                    }
+                                    layer.alert(JSON.stringify(response));
+                                }
+                            );
                     }, function () {
-                        layer.msg('也可以这样', {
-                            time: 20000, //20s后自动关闭
-                            btn: ['明白了', '知道了']
-                        });
+                        layer.closeAll();
                     });
                 },
                 stateCN: function (id) {

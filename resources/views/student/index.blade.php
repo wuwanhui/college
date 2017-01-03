@@ -66,6 +66,7 @@
                             <th>课程名称</th>
                             <th>时间</th>
                             <th style="width: 100px;">状态</th>
+                            <th style="width: 100px;">操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -78,7 +79,9 @@
                             <td style="text-align: center" v-text="item.state==0?'有效':'审核中'"
                                 v-bind:class="text-warning:item.state==1">
                             </td>
-
+                            <td style="text-align: center" v-if="item.state==1">
+                                <a v-on:click="delete(item)">删除</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -95,6 +98,7 @@
                                 <th>课程名称</th>
                                 <th>时间</th>
                                 <th style="width: 100px;">状态</th>
+                                <th style="width: 100px;">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -107,6 +111,9 @@
                                 </td>
                                 <td v-text="cycleCN(item.agenda_relate.cycle)"></td>
                                 <td style="text-align: center" v-text="'课程已满'"></td>
+                                <td style="text-align: center" v-if="item.state==2">
+                                    <a v-on:click="delete(item)">删除</a>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -154,7 +161,7 @@
                                         </template>
                                     </template>
                                     <template v-else>
-                                        <span class="text-success">已选</span>
+                                        <span class="text-error">不可选</span>
                                     </template>
                                 </td>
                             </tr>

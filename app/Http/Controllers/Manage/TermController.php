@@ -127,12 +127,7 @@ class TermController extends BaseController
             $term->fill($request->all());
             if ($term->save()) {
 
-//                $job =new TermChangeJob($term);
-//                $job->onQueue('emails') ->delay(Carbon::now()->addMinutes(1));
-//
-//                dispatch($job);
-
-                return $respJson->failure('成功', $term);
+                return $respJson->succeed('成功', $term);
             }
             return $respJson->failure('修改失败');
 

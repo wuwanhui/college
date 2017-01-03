@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
 use stdClass;
 
 class SyllabusController extends BaseController
@@ -341,7 +342,36 @@ class SyllabusController extends BaseController
             return $respJson->exception($ex);
         }
     }
+    /**
+     * export导出
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function postExport(Request $request)
+    {
+        $respJson = new RespJson();
+        try {
 
+            $tempid=$request->temp_id;
+            $list = Term_Student::where('term_id', $tempid)->with(['student' => function ($query) {
+
+            }, 'syllabus' => function ($query) {
+                $query->with(['agendaRelate' => function ($query) {
+                    $query->with(['agenda' => function ($query) {
+                    }]);
+                }]);
+            }])->orderBy('student_id', 'asc')->get();
+
+            Excel::create('学生课程表',function($excel) use ($list){
+                $excel->sheet('syllabus', function($sheet) use ($list){
+                    $sheet->rows($list);
+                });
+            })->export('xls');
+            return $respJson->succeed('导出成功', $list);
+        } catch (Exception $ex) {
+            return $respJson->exception($ex);
+        }
+    }
 
     /**
      * API
@@ -366,5 +396,7 @@ class SyllabusController extends BaseController
             return $respJson->exception($ex);
         }
     }
+
+
 
 }
