@@ -37,6 +37,19 @@
 
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="classes_id" class="col-sm-2 control-label">所在班级：</label>
+                                    <div class="col-sm-10">
+
+                                        <select v-model="student.classes_id" id="sex" class="form-control"
+                                                name="classes_id">
+                                            <option value="0" selected>未分班</option>
+                                            <option v-bind:value="item.id" v-for="item in classes"
+                                                    v-text="item.name"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label">Email：</label>
@@ -121,14 +134,14 @@
             data: {
                 trySubmit: false,
                 student: {},
+                classes: eval({!!json_encode($classes) !!}),
             },
             watch: {},
             ready: function () {
 
             },
+
             methods: {
-
-
                 save: function (form) {
                     var _self = this;
 

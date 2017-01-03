@@ -260,6 +260,20 @@ Route::group(['prefix' => 'manage', 'namespace' => 'Manage'], function () {
 
     });
     /**
+     * 班级管理
+     */
+    Route::group(['prefix' => 'classes', 'middleware' => 'auth.manage'], function () {
+        Route::get('/', 'ClassesController@index');
+        Route::get('/create', 'ClassesController@getCreate');
+        Route::post('/create', 'ClassesController@postCreate');
+        Route::get('/edit', 'ClassesController@getEdit');
+        Route::post('/edit', 'ClassesController@postEdit');
+        Route::post('/delete', 'ClassesController@delete');
+        Route::get('/api/list', 'ClassesController@getList');
+
+    });
+
+    /**
      * 学生管理
      */
     Route::group(['prefix' => 'student', 'middleware' => 'auth.manage'], function () {

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Student extends Authenticatable
 {
@@ -15,7 +15,7 @@ class Student extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'number', 'email', 'password', 'sex', 'phone', 'state', 'sort', 'remark',
+        'name', 'number','classes_id', 'email', 'password', 'sex', 'phone', 'state', 'sort', 'remark',
     ];
 
     /**
@@ -66,33 +66,15 @@ class Student extends Authenticatable
                     $query->select('id', 'name');
                 }]);
             }]);
-        }])->select('id','student_id','agenda_id','term_id','state')->get();
-        // return $this->hasMany('App\Models\Syllabus','student_id');
+        }])->select('id', 'student_id', 'agenda_id', 'term_id', 'state')->get();
     }
 
-//
-//    protected $appends = ['state_cn', 'sex_cn'];
-//
-//
-//    //状态
-//    public static $stateList = [0 => '正常', 1 => '禁用'];
-//
-//    public function getStateCnAttribute()
-//    {
-//        if (array_key_exists($this->state, self::$stateList)) {
-//            return self::$stateList[$this->state];
-//        }
-//        return self::$stateList[0];
-//    }
-//
-//    //性别
-//    public static $sexList = [-1 => '未知', 0 => '男生', 1 => '女生'];
-//
-//    public function getSexCnAttribute()
-//    {
-//        if (array_key_exists($this->state, self::$sexList)) {
-//            return self::$sexList[$this->sex];
-//        }
-//        return self::$sexList[0];
-//    }
+    /**
+     *所属班级
+     */
+    public function classes()
+    {
+        return $this->belongsTo('App\Models\Classes', "classes_id");
+    }
+
 }

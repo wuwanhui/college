@@ -6,21 +6,20 @@ use App\Http\Controllers\Common\RespJson;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Manage\BaseController;
 use App\Http\Facades\Base;
-use App\Models\Classes;
 use App\Models\Role;
-use App\Models\Student;
+use App\Models\Classes;
 use Exception;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
-class StudentController extends BaseController
+class ClassesController extends BaseController
 {
     public function __construct()
     {
         parent::__construct();
-        view()->share(['_model' => 'manage/student']);
+        view()->share(['_model' => 'manage/classes']);
     }
 
     /**
@@ -32,26 +31,20 @@ class StudentController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $list = Student::where(function ($query) use ($request) {
+            $list = Classes::where(function ($query) use ($request) {
 
                 if ($request->state) {
                     $query->where('state', $request->state);
                 }
-                if ($request->classes) {
-                    $query->where('classes_id', $request->classes);
-                }
                 if ($request->key) {
                     $query->orWhere('name', 'like', '%' . $request->key . '%');
                 }
-            })->with(['classes' => function ($query) {
-                $query->select('id', 'name');
-            }])->orderBy('id', 'asc')->paginate($this->pageSize);
+            })->withCount('students')->orderBy('id', 'asc')->paginate($this->pageSize);
             if (isset($request->json)) {
                 $respJson->setData($list);
                 return response()->json($respJson);
             }
-            $classes = Classes::where('state', 0)->get();
-            return view('manage.student.index', compact('list', 'classes'));
+            return view('manage.classes.index', compact('list'));
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }
@@ -62,9 +55,8 @@ class StudentController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $student = new Student();
-            $classes = Classes::where('state', 0)->get();
-            return view('manage.student.create', compact('student', 'classes'));
+            $classes = new Classes();
+            return view('manage.classes.create', compact('classes'));
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }
@@ -75,25 +67,18 @@ class StudentController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $student = new Student();
+            $classes = new Classes();
             $input = $request->all();
 
-            $validator = Validator::make($input, $student->Rules(), $student->messages());
+            $validator = Validator::make($input, $classes->Rules(), $classes->messages());
             if ($validator->fails()) {
-                $respJson->setCode(2);
-                $respJson->setMsg("效验失败");
-                $respJson->setData($validator);
-                return response()->json($respJson);
+                return $respJson->validator('效验失败', $validator);
             }
-            $student->fill($input);
-            $student->password = bcrypt($request->password);
-            if ($student->save()) {
-                $respJson->setData($student);
-                return response()->json($respJson);
+            $classes->fill($input);
+            if ($classes->save()) {
+                return $respJson->succeed('新增成功', $classes);
             }
-            $respJson->setCode(1);
-            $respJson->setMsg("新增失败");
-            return response()->json($respJson);
+            return $respJson->failure('新增失败');
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }
@@ -104,12 +89,11 @@ class StudentController extends BaseController
         $respJson = new RespJson();
         try {
             $id = $request->id;
-            $student = Student::find($id);
-            if (!$student) {
+            $classes = Classes::find($id);
+            if (!$classes) {
                 return Redirect::back()->withErrors('数据加载失败！');
             }
-            $classes = Classes::where('state', 0)->get();
-            return view('manage.student.edit', compact('student', 'classes'));
+            return view('manage.classes.edit', compact('classes'));
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }
@@ -120,22 +104,19 @@ class StudentController extends BaseController
         $respJson = new RespJson();
         try {
             $id = $request->id;
-            $student = Student::find($id);
-            if (!$student) {
+            $classes = Classes::find($id);
+            if (!$classes) {
                 return $respJson->errors('数据加载失败！');
             }
             $input = $request->all();
 
-            $validator = Validator::make($input, $student->Rules(), $student->messages());
+            $validator = Validator::make($input, $classes->Rules(), $classes->messages());
             if ($validator->fails()) {
                 return $respJson->validator('效验失败！', $validator);
             }
-            $student->fill($input);
-            if (isset($request->password)) {
-                $student->password = bcrypt($request->password);
-            }
-            if ($student->save()) {
-                return $respJson->succeed('修改成功！', $student);
+            $classes->fill($input);
+            if ($classes->save()) {
+                return $respJson->succeed('修改成功！', $classes);
             }
             return $respJson->errors('修改失败！');
         } catch (Exception $ex) {
@@ -147,11 +128,11 @@ class StudentController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $student = Student::find($id);
-            if (!$student) {
-                return redirect('/manage/student')->withErrors('数据加载失败！');
+            $classes = Classes::find($id);
+            if (!$classes) {
+                return redirect('/manage/classes')->withErrors('数据加载失败！');
             }
-            return view('manage.student.detail', compact('student'));
+            return view('manage.classes.detail', compact('classes'));
         } catch (Exception $ex) {
             return $respJson->exception($ex);
         }
@@ -161,13 +142,13 @@ class StudentController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $student = Student::find($id);
-            if (!$student) {
-                return redirect('/manage/student')->withErrors('数据加载失败！');
+            $classes = Classes::find($id);
+            if (!$classes) {
+                return redirect('/manage/classes')->withErrors('数据加载失败！');
             }
-            $student->delete();
-            if ($student) {
-                return redirect('/manage/student')->withSuccess('删除成功！');
+            $classes->delete();
+            if ($classes) {
+                return redirect('/manage/classes')->withSuccess('删除成功！');
             }
             return Redirect::back()->withErrors('删除失败！');
 
@@ -186,7 +167,7 @@ class StudentController extends BaseController
     {
         $respJson = new RespJson();
         try {
-            $list = Student::where(function ($query) use ($request) {
+            $list = Classes::where(function ($query) use ($request) {
 
                 if (isset($request->state) && $request->state != -1) {
                     $query->where('state', $request->state);

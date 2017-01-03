@@ -36,7 +36,18 @@
                                     </div>
 
                                 </div>
+                                <div class="form-group">
+                                    <label for="classes_id" class="col-sm-2 control-label">所在班级：</label>
+                                    <div class="col-sm-10">
 
+                                        <select v-model="student.classes_id" id="sex" class="form-control"
+                                                name="classes_id">
+                                            <option value="0">未分班</option>
+                                            <option v-bind:value="item.id" v-for="item in classes"
+                                                    v-text="item.name"></option>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label">Email：</label>
@@ -120,28 +131,15 @@
             el: '.content',
             data: {
                 trySubmit: false,
-                // student: {},
+                student:eval({!!json_encode($student) !!}),
+                classes: eval({!!json_encode($classes) !!}),
             },
             watch: {},
             ready: function () {
-                // this.init();
-                this.$set('student', parent.vm.student);
+//                // this.init();
+//                this.$set('student', parent.vm.student);
             },
             methods: {
-                init: function () {
-
-                    var _self = this;
-                    this.$http.get("{{url('/manage/student?json')}}", {params: this.params})
-                            .then(function (response) {
-                                        if (response.data.code == 0) {
-                                            _self.list = response.data.data;
-                                            return
-                                        }
-                                        layer.alert(JSON.stringify(response.data.data));
-                                    }
-                            );
-
-                },
 
                 save: function (form) {
                     var _self = this;

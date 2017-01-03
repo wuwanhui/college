@@ -156,6 +156,10 @@
                                         class="fa fa-circle-o text-yellow"></i>教师管理</a>
                         </li>
                         <li >
+                            <a onclick="url('{{url('/manage/classes')}}')"><i
+                                        class="fa fa-circle-o text-yellow"></i>班级管理</a>
+                        </li>
+                        <li >
                             <a onclick="url('{{url('/manage/student')}}')"><i
                                         class="fa fa-circle-o text-yellow"></i>学生档案</a>
                         </li>

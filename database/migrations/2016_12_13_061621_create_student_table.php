@@ -15,6 +15,7 @@ class CreateStudentTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('classes_id')->default(0);//所在班级
             $table->string('name');//姓名
             $table->string('number')->unique();//学号
             $table->string('email')->unique();//邮箱

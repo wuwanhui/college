@@ -2,12 +2,12 @@
 @section('content')
     <section class="content-header">
         <h1>
-            学生管理
-            <small>列表</small>
+            班级管理
+            <small></small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> 管理中心</a></li>
-            <li class="active">学生管理</li>
+            <li class="active">班级管理</li>
         </ol>
     </section>
     <section class="content">
@@ -20,16 +20,9 @@
                     <div class="col-md-10 text-right">
                         <form method="get" class="form-inline">
                             <div class="input-group">
-                                <select id="classes" name="classes" class="form-control" style="width: auto;"
-                                        v-model="params.classes">
-                                    <option value="" selected>所有班级</option>
-                                    <option v-for="item in classes" v-text="item.name" v-bind:value="item.id"></option>
-                                </select>
-                            </div>
-                            <div class="input-group">
                                 <select id="type" name="type" class="form-control" style="width: auto;"
                                         v-model="params.state">
-                                    <option value="" selected>学生状态</option>
+                                    <option value="" selected>班级状态</option>
                                     <option v-bind:value="0">正常</option>
                                     <option v-bind:value="1">禁用</option>
                                 </select>
@@ -55,12 +48,8 @@
                     <thead>
                     <tr style="text-align: center" class="text-center">
                         <th style="width: 60px;">序号</th>
-                        <th>姓名</th>
-                        <th><a href="">学号</a></th>
-                        <th><a href="">班级</a></th>
-                        <th><a href="">邮箱</a></th>
-                        <th><a href="">性别</a></th>
-                        <th><a href="">手机号</a></th>
+                        <th>班级名称</th>
+                        <th><a href="">学生</a></th>
                         <th style="width: 100px;">状态</th>
                         <th style="width: 100px;">操作</th>
                     </tr>
@@ -69,16 +58,7 @@
                     <tr v-for="item in list.data">
                         <td style="text-align: center" v-text="$index+1"></td>
                         <td style="text-align: center" v-text="item.name"></td>
-
-                        <td style="text-align: center" v-text="item.number">
-                        </td>
-                        <td v-text="item.classes.name">
-                        </td>
-                        <td v-text="item.email">
-                        </td>
-                        <td style="text-align: center" v-text="sexCN(item.sex)">
-                        </td>
-                        <td v-text="item.phone">
+                        <td style="text-align: center" v-text="item.students_count">
                         </td>
                         <td style="text-align: center" v-text="stateCN(item.state)"></td>
 
@@ -113,10 +93,9 @@
             el: '.content',
             data: {
                 ids: [],
-                params: {page: '', state: '', classes: ''},
+                params: {page: '', state: ''},
                 list: eval({!! json_encode($list) !!}),
-                classes: eval({!! json_encode($classes) !!}),
-                student: {},
+                classes: {},
             },
             watch: {
                 'params.state': function () {
@@ -125,10 +104,7 @@
                 'params.page': function () {
                     this.init();
                 },
-                'params.classes': function () {
-                    this.init();
-                },
-                'student': function () {
+                'classes': function () {
                     var _self = this;
                     this.ids = [];
 
@@ -142,7 +118,7 @@
             methods: {
                 init: function () {
                     var _self = this;
-                    this.$http.get("{{url('/manage/student?json')}}", {params: this.params})
+                    this.$http.get("{{url('/manage/classes?json')}}", {params: this.params})
                             .then(function (response) {
                                         if (response.data.code == 0) {
                                             _self.list = response.data.data;
@@ -158,11 +134,11 @@
                 },
 
                 create: function () {
-                    openUrl('{{url('/manage/student/create')}}', '新增学生', 800, 500);
+                    openUrl('{{url('/manage/classes/create')}}', '新增班级', 800, 500);
                 },
                 edit: function (item) {
-                    this.student = item;
-                    openUrl('{{url('/manage/student/edit')}}?id=' + item.id, '编辑"' + item.name + '"学生', 800, 500);
+                    this.classes = item;
+                    openUrl('{{url('/manage/classes/edit')}}?id=' + item.id, '编辑"' + item.name + '"班级', 800, 500);
                 },
                 delete: function (item) {
                     layer.confirm('您确认要删除“' + item.name + '”吗？', {
